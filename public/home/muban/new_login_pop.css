@@ -1,0 +1,479 @@
+@media (min-height: 730px) {
+    #login-component .box {
+        top: 20%;
+    }
+}
+
+#password-too-simple .box .content {
+    width: 100% !important;
+    min-height: auto !important;
+}
+
+@media (max-height: 729px) and (min-height: 630px) {
+    #login-component .box {
+        top: 10%;
+    }
+}
+
+@media (max-height: 629px) {
+    #login-component .box {
+        top: 5%;
+    }
+}
+
+#login-component .close,
+.class-choose .close,
+#login-VX .box .close {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    right: 12px;
+    top: 12px;
+    background: url(/static/images/plugin_center/close.png) no-repeat 3px 3px;
+}
+.login_care{
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background-image: url(/static/images/login_care.png);
+    background-size:100% auto; 
+    vertical-align: middle;
+}
+.login_bottom_text{
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 5px;
+}
+#login-component .close:hover,
+.class-choose .close:hover,
+#login-VX .close:hover {
+    cursor: pointer;
+}
+.class-choose{
+    text-align: center;
+}
+#login-component .box,
+#login-VX .box {
+    width: 600px;
+    height: 547px;
+    background: #fff;
+    border-radius: 4px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    z-index: 1000;
+}
+#qq_for_loginpopup:hover {
+    background-color: #1769FF;
+}
+
+#weixin_for_loginpopup:hover {
+    background-color: #00B800;
+}
+#login-component .account_login {
+    display: inline-block;
+}
+
+#login-component .box .login_wrap {
+    /* width: 402px; */
+    margin: 0 auto;
+    overflow: hidden;
+    padding: 0px 100px;
+    margin-top:20px; 
+}
+
+#login-component .box .login_wrap .nav_bar {
+    margin: 48px auto 0;
+}
+#login-component>.box>.login_wrap>.nav_bar:after {
+    clear: both;
+    display: block;
+    content: "";
+}
+
+#login-component .box .login_wrap .nav_bar li {
+    float: left;
+    width: 50%;
+    height: 50px;
+    font-size: 36px;
+    line-height: 36px;
+    position: relative;
+    text-align: center;
+    font-weight: 100;
+    color: #707070;
+}
+
+#login-component .box .login_wrap .nav_bar li.active {
+    color: #000;
+}
+
+#login-component .box .login_wrap .nav_bar li:hover {
+    color: #000;
+    cursor: pointer;
+}
+
+#login-component .box .login_wrap .nav_bar li:first-child::before {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 18px;
+    background-color: #dcdcdc;
+    position: absolute;
+    right: 0;
+    top: 10px;
+}
+
+#login-component .box .login_wrap .nav_bar li.active:after {
+    content: '';
+    display: block;
+    width: 100px;
+    height: 2px;
+    background-color: #2672ff;
+    position: absolute;
+    top: 52px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#login-component .box .login_wrap .tab_box {
+    margin-top: 40px;
+    font-size: 14px;
+    color: #484848;
+}
+
+#login-component .box .login_wrap .tab_box .error,
+#login-component .box .login_wrap .log_error {
+    color: #ed6365;
+}
+
+#login-component .box .login_wrap .log_error.top10 {
+    position: relative;
+    height: 10px;
+    top: 10px;
+}
+
+#login-component .box .login_wrap .title_wrap label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 6px;
+}
+
+#login-component .box .login_wrap .title_wrap input {
+    text-indent: 10px;
+    width: 100%;
+    height: 40px;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#login-component .box .login_wrap .title_wrap.login_vcode input {
+    text-indent: 10px;
+    width: 270px;
+    height: 40px;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    margin-right: 6px;
+}
+
+#login-component .box .login_wrap .title_wrap.login_vcode span {
+    display: inline-block;
+    width: 115px;
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    border-radius: 4px;
+    border: solid 2px #2672ff;
+    position: relative;
+    box-sizing: content-box;
+}
+
+#login-component .box .login_wrap .title_wrap.login_vcode span:hover {
+    cursor: pointer;
+    background-color: #f3f3f3;
+}
+
+#login-component .box .login_wrap .little_bar {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #484848;
+}
+
+#login-component .box .login_wrap .little_bar {
+    margin-top: 12px;
+}
+
+#login-component .box .login_wrap .little_bar span :hover {
+    cursor: pointer;
+}
+
+#login-component .box .login_wrap .little_bar span i {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 5px;
+    border: 1px solid #006ff2;
+    border-radius: 3px;
+    vertical-align: middle;
+    position: relative;
+    top: -2px;
+}
+
+#login-component .box .login_wrap .little_bar span.checked i {
+    background: url(/static/images/register/check.png) no-repeat;
+}
+
+#login-component .box .login_wrap .little_bar a {
+    color: #006ff2;
+    display: inline;
+    margin-left: 5px;
+}
+
+#login-component .box .login_wrap .tab_box>a {
+    margin-top: 24px;
+    display: block;
+    width: 100%;
+    height: 50px;
+    background-color: #006ff2;
+    color: #fff;
+    font-size: 18px;
+    text-align: center;
+    border-radius: 4px;
+    line-height: 50px;
+    cursor: pointer;
+}
+
+#login-component .box .login_wrap .tab_box>a:hover {
+    background-color: #007cff;
+}
+
+#login-component .box .login_wrap .form_wrap>.third_login {
+    color: #aaa;
+    font-size: 12px;
+    text-align: center;
+}
+
+#login-component .box .login_wrap .form_wrap>.third_login p {
+    margin: 24px 0;
+}
+
+#login-component .box .login_wrap .form_wrap>.third_login .icon_box {
+    text-align: center;
+}
+
+#login-component .box .login_wrap .form_wrap>.third_login .icon_box a {
+    display: inline-block;
+    width: 38px;
+    height: 38px;
+    margin: 0 10px;
+    /* border-radius: 20px; */
+    background-image: url(/static/images/logo_icon.png?v=181214);
+    background-repeat: no-repeat;
+    transition: all 0s;
+}
+
+#login-component .box .login_wrap .icon_box a.qq_for_loginpopup {
+    background-position: left 0;
+}
+
+#login-component .box .login_wrap .icon_box a.qq_for_loginpopup:hover {
+    background-position: left bottom;
+}
+
+#login-component .box .login_wrap .icon_box a.weixin_for_loginpopup {
+    background-position: -50px 0;
+}
+
+#login-component .box .login_wrap .icon_box a.weixin_for_loginpopup:hover {
+    background-position: -50px bottom;
+}
+
+#login-component .box .login_wrap .icon_box a.weibo_for_loginpopup {
+    background-position: -100px 0;
+}
+
+#login-component .box .login_wrap .icon_box a.weibo_for_loginpopup:hover {
+    background-position: -100px bottom;
+}
+#login-component .box .login_wrap .icon_box a.wxbusiness_for_loginpopup {
+    background-position: left -46px;
+}
+
+#login-component .box .login_wrap .icon_box a.wxbusiness_for_loginpopup:hover {
+    background-position: -50px -46px;
+}
+
+#i-accept {
+    margin-bottom: 15px;
+}
+
+.show {
+    display: block !important;
+}
+
+.class-login,
+.class-choose {
+    width: 600px;
+    height: 547px;
+    background: #fff;
+    border-radius: 4px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    display: none;
+    z-index: 1000;
+}
+
+.choose-lg-method {
+    width: 252px;
+    height: 50px;
+    font-size: 36px;
+    color: #484848;
+    line-height: 50px;
+    font-weight: 300;
+    margin: 0 auto;
+    margin-top: 117px;
+    margin-bottom: 27px;
+}
+
+.lg-button {
+    margin: 0 174px;
+    position: relative;
+    min-height: 110px;
+}
+
+.button-basic,
+.lg-link,
+.lg-remind,
+.form-title,
+.i-accept,
+.lg-xxyi {
+    font-weight: 300;
+}
+
+.lg-bg-qq {
+    background-color: #2672ff;
+}
+
+.icon-qq {
+    height: 22.5px;
+    width: 21px;
+    background-image: url(/static/images/icon-qq.png);
+}
+
+.lg-icon {
+    display: inline-block;
+    vertical-align: middle;
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin: 0 7px 0 0;
+    background-position: 0px 0px;
+}
+
+.lg-title {
+    vertical-align: middle;
+    font-size: 16px;
+    line-height: 26px;
+}
+
+.lg-recommend,
+.lg-last-time {
+    font-size: 12px;
+}
+
+.lg-recommend,
+.lg-last-time {
+    vertical-align: middle;
+    position: relative;
+}
+
+.lg-bg-wx {
+    background-color: #47ba41;
+}
+
+.lg-button .button-basic {
+    padding: 20px 53px;
+    display: block;
+    text-align: center;
+    border-radius: 4px;
+    vertical-align: middle;
+    text-decoration: none;
+    margin-bottom: 10px;
+    display: none;
+}
+.lg-button a.button-basic {
+    color: #FFFFFF;
+}
+
+.lg-button a.button-basic:hover {
+    color: #FFFFFF;
+}
+.icon-wx {
+    height: 23px;
+    width: 28px;
+    background-image: url(/static/images/icon-wx.png);
+}
+
+.icon-wx {
+    display: inline-block;
+    vertical-align: middle;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.lg-title {
+    vertical-align: middle;
+    font-size: 16px;
+    line-height: 26px;
+}
+
+.lg-link {
+    font-size: 14px;
+    display: inline-block;
+    color: #484848;
+    margin: 20px auto;
+    line-height: 20px;
+}
+.lg-link:hover{
+    color: #2672FF;  
+}
+.lg-remind {
+    font-size: 12px;
+    color: #AAAAAA;
+    margin: 30px auto 0;
+    display: block;
+    text-align: center;
+    text-decoration: unset;
+}
+
+#password-too-simple {
+    z-index: 1001;
+}
+
+.body_shadow {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    left: 0px;
+    bottom: 0px;
+    z-index: 999;
+    display: none;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.none {
+    display: none;
+}
+
+.lg-link,
+.button-basic,
+.new-q_login,
+.icon_box>a {
+    cursor: pointer;
+}

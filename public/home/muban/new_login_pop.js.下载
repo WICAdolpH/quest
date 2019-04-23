@@ -1,0 +1,281 @@
+$('.lg-bg-qq').addClass('show');
+$('.lg-bg-wx').addClass('show');
+var burial_point_arr = ['qq', 'weixin', 'check_lg_link', 'get_moble_code', 'express_page', 'login_forget_password', 'account_login', 'qq', 'weixin', 'sina'];
+var burial_point_element = ["#qq_for_loginpopup", "#weixin_for_loginpopup", ".lg-link", "#id-get-mobile-code", "#express_page",
+    "#login_forget_password", "#account_login", "#third_qq_for_loginpopup", "#third_weixin_for_loginpopup", "#third_weibo_for_loginpopup"
+];
+
+function baidu_statics_login(method) {
+    _hmt.push(['_trackEvent', 'new_login_page' + method, 'click', method + '_login']);
+    if (method == 'qq' || method == 'sina' || method == 'weixin') {
+        login_form_openapi(method);
+    }
+    //VX二维码图片暂时不用
+    // if (method == 'weixin') {
+    //     $('#login-component,.class-choose').removeClass("show").addClass("none");
+    //     $("#login-VX").removeClass("none").addClass("show");
+    // } else {
+    //     login_form_openapi(method);
+    // }
+}
+// 绑定埋点事件
+for (var i = 0; i < burial_point_arr.length; i++) {
+    (function attach(i) {
+        $(burial_point_element[i]).click(function () {
+            baidu_statics_login(burial_point_arr[i])
+        });
+    })(i);
+}
+
+function set_login_status(url) {
+     //if (getCookie('login_pop_status')) {
+         // if (getCookie('login_pop_status') == '1') {
+         //     window.location.href = url;
+         // } else {
+         //    $(".body_shadow,.class-choose").removeClass("none").addClass("show");
+         // }
+    // } else {
+        // if (Math.random() > 0.5) {
+            //setCookie('login_pop_status', '0', 30);
+            delCookie('topic-create');
+            $(".body_shadow,.class-choose").removeClass("none").addClass("show");
+            _hmt.push(['_trackEvent', 'login_pop_status', 'click', 'pop']);
+        // } else {
+        //     setCookie('login_pop_status', '1', 30);
+        //     window.location.href = url;
+        //     _hmt.push(['_trackEvent', 'login_pop_status', 'click', 'jump']);
+        // }
+    //}
+
+}
+$(function () {
+    $('.new-account_login').click(function () {
+        _hmt.push(['_trackEvent', 'new-account_login 账号登录点击', 'click', 'account_login']);
+        if ($('.error,.log_error').length >= 1) {
+            return false
+        } else if ($('#loginwin_emailorusername').val() == '') {
+            $('#loginwin_emailorusername').parent().append(
+                '<div class="error">账号不能为空</div>');
+        } else if ($('#loginwin_password').val() == '') {
+            $('#loginwin_password').parent().append('<div class="error">密码不能为空</div>');
+        } else {
+            $(".account_login").text('登录中');
+            $.ajax({
+                url: "/jslogin/",
+                async: false,
+                data: {
+                    emailorusername: $('#loginwin_emailorusername').val(),
+                    password: $('#loginwin_password').val(),
+                    vcode: '',
+                    saveme: saveme,
+                    nexturl: window.nexturl_for_senior,
+                },
+                dataType: 'json',
+                type: 'post',
+                success: function (data) {
+                    var obj = data;
+                    if (obj.error == 0) {
+                        // login success
+                        // 添加密码过于简单的提示框
+                        if ($.cookie("show_mima_too_simple_popup") == "1") {
+                            location.href = obj.nexturl;
+                        } else {
+                            var reg = /^[0-9]{1,8}$/;
+                            if (reg.test($('#loginwin_password').val())) {
+                                $.cookie("show_mima_too_simple_popup", "1", {
+                                    expires: 14,
+                                    path: "/"
+                                });
+                                show_password_too_simple_popup(obj.nexturl)
+                            } else {
+                                location.href = obj.nexturl;
+                            }
+                        }
+                    } else {
+                        $(".account_login").text('登 录');
+                        if (obj.err_msg == 'appeal') {
+                            $('.account_login').before(
+                                '<div class="log_error top10"><a target="_blank" href="/about/appeal?username=' +
+                                $("#loginwin_emailorusername").val() +
+                                '">账号被禁，立即申诉</a></div>');
+                        } else {
+                            $('.account_login').before(
+                                '<div class="log_error top10">' + obj.err_msg +
+                                '</div>');
+                        }
+                    }
+                },
+                error: function (xhr) {
+                    $('.tc_login_cq .error').text(xhr.responseText);
+                }
+            });
+        }
+    });
+
+    $('.new-q_login').click(function () {
+        _hmt.push(['_trackEvent', 'new-q_login 快速登录点击', 'click', 'q_login']);
+        // $('.log_list:eq(1) .error').remove();
+        $('.error').remove();
+        if ($('#log_emailorusername').val() == '') {
+            $('#log_emailorusername').parent().append('<div class="error">手机号不能为空</div>');
+        } else if (idyLoginValidate.mobile($('#log_emailorusername').val())) {
+            var text = '手机号格式有误，如非中国大陆用户<a target="_blank" class="loginHelpURL" href="' + idyLoginValidate.loginHelpURL + '">请点此<a>'
+            appendError($('#log_emailorusername').parent(), text)
+        } else if ($('.login_vcode .mobile_code').val() == '') {
+            $('.login_vcode .mobile_code').parent().append('<div class="error">验证码不能为空</div>');
+        } else if (!agreeTrue) { //是否确认用户协议
+            $('#i-accept').append('<div class="error">请确认用户协议！</div>');
+            return false;
+        } else {
+            $('.new-q_login').text('登录中');
+            $('#quick_form input.quick_mobile').val($('#log_emailorusername').val());
+            $('#quick_form input.quick_mobile_code').val($('.login_vcode .mobile_code').val());
+            $("#quick_form input.utm-source").val('library');
+            ajaxSubmit($("#quick_form"));
+        }
+    });
+    //账号登录和快速登录敲回车时相当于点击登录按钮
+    $('#loginwin_emailorusername,#loginwin_password').keydown(function (e) {
+        if (e.keyCode == 13) {
+            $('.error, .log_error').remove();
+            $('.new-account_login').click();
+        }
+    });
+    $('#log_emailorusername').keydown(function (e) {
+        if (e.keyCode == 13) {
+            $('.error, .log_error').remove();
+            $('.new-q_login').click();
+        }
+    });
+    $('.login_vcode .mobile_code.required_r').keydown(function (e) {
+        if (e.keyCode == 13) {
+            $('.error, .log_error').remove();
+            $('.new-q_login').click();
+        }
+    });
+
+    // 用于高级版页面
+    window.month_or_year = 'seniorUser_1'; // 1--年付 0--月付
+    window.$nexturl_input = $('input[name="nexturl"]');
+    window.$loading = $('.loading_pic'); //  引用register.js 防止报错
+    window.$regCaptcha = $('.regCaptcha'); //  引用register.js 防止报错
+    window.agreeTrue = true;
+    saveme = 1;
+    $('#id-remember-me').click(function () {
+        if ($(this).attr('class') == 'checked') {
+            saveme = 0
+        } else {
+            saveme = 1
+        };
+    });
+
+
+    // 参数    0--免费注册   1--立即升级   2--免费试用   3--引用模板
+    window.goto_login = function (btn_info, furl_for_template_lib) {
+        // nexturl
+        if (btn_info == 1) {
+            delCookie('login_furl'); //第三方登录
+            window.nexturl_for_senior = 'senior_user/?login_from=' + window.month_or_year; //账号登录
+            window.$nexturl_input.val('senior_user/?login_from=' + window.month_or_year); //快速登录
+            setCookie('login_furl', '/senior_user/?login_from=' + window.month_or_year, 1); //第三方登录
+        } else if (btn_info == 3 || btn_info == 4) {
+            if (btn_info == 3) {
+                delCookie('topic-create'); //第三方登录
+            }
+            delCookie('login_furl'); //第三方登录
+            window.nexturl_for_senior = furl_for_template_lib; //账号登录
+            window.$nexturl_input.val(furl_for_template_lib); //快速登录
+            setCookie('login_furl', furl_for_template_lib, 1); //第三方登录
+        } else {
+            window.nexturl_for_senior == ''; //账号登录
+            window.$nexturl_input.val(''); //快速登录
+            delCookie('login_furl'); //第三方登录
+        }
+        // window.show_login_popup();
+        // if (getCookie('login_pop_status')) {
+        //     if (getCookie('login_pop_status') == '1') {
+        //         $(".body_shadow").removeClass("none").addClass("show");
+        //         window.show_login_popup();
+        //     } else {
+        //         $(".body_shadow,.class-choose").removeClass("none").addClass("show");
+        //     }
+        // } else {
+        //     if (Math.random() > 0.5) {
+        //         setCookie('login_pop_status', '0', 30);
+                $(".body_shadow,.class-choose").removeClass("none").addClass("show");
+                _hmt.push(['_trackEvent', 'login_pop_status', 'click', 'pop']);
+        //     } else {
+        //         setCookie('login_pop_status', '1', 30);
+                // $(".body_shadow").removeClass("none").addClass("show");
+                // window.show_login_popup()
+                // _hmt.push(['_trackEvent', 'login_pop_status', 'click', 'jump']);
+           //}
+        // }
+        return false;
+    }
+
+    // 禁止页面滚动
+    function ban_scroll() {
+        return false;
+    }
+
+    // 显示登录弹窗
+    window.show_login_popup = function () {
+        $('#login-component').removeClass('none').addClass("show");
+        $('.class-choose').removeClass('show').addClass("none");
+        // $(window).on('mousewheel', ban_scroll);
+    }
+    // 隐藏登录弹窗
+    window.hide_login_popup = function () {
+        $('#login-component ,.class-choose ,#login-VX ').removeClass("show").addClass("none");
+        $(".body_shadow").removeClass('show').addClass("none");
+    }
+
+    $('.lg-link').click(show_login_popup);
+
+    // 点击关闭按钮
+    $('#login-component .close,.class-choose .close,#login-VX .close').click(hide_login_popup);
+
+    // 对号选中
+    $('#login-component .box .login_wrap .little_bar span').click(function () {
+        if ($(this).attr('class') == 'checked') {
+            agreeTrue = false;
+        } else {
+            agreeTrue = true;
+        };
+        $(this).toggleClass('checked');
+    });
+
+    // 账号登录,快速登录的切换
+    $('#login-component .nav_bar .account').click(function () {
+        $('.error, .log_error').remove();
+        $(this).addClass('active').siblings().removeClass('active');
+        $('#login-component .form_wrap .account').removeClass('none').siblings('.tab_box').addClass('none');
+    });
+    $('#login-component .nav_bar .fast').click(function () {
+        $('.error, .log_error').remove();
+        $(this).addClass('active').siblings().removeClass('active');
+        $('#login-component .form_wrap .fast').removeClass('none').siblings('.tab_box').addClass('none');
+    });
+
+    $('input').live('focus', function () {
+        $('.error, .log_error').remove();
+    });
+
+    // cookie 相关操作
+    // function getCookie(key) {
+    //     var arr1 = document.cookie.split(';');
+    //     for (var i = 0; i < arr1.length; i++) {
+    //         var arr2 = arr1[i].split('=');
+    //         if (arr2[0] == key) {
+    //             return decodeURI(arr2[1]);
+    //         };
+    //     };
+    // };
+
+    // function setCookie(key, value, iDay) {
+    //     var oDate = new Date();
+    //     oDate.setDate(oDate.getDate() + iDay);
+    //     document.cookie = key + '=' + value + ';expires=' + oDate + ';path=/;domain=wenjuan.com';
+    // }
+});

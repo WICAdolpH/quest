@@ -1,0 +1,37 @@
+
+
+.col {
+  padding: 0 1em;
+}
+.row .row {
+  margin: 0 -1em;
+}
+.row:before,
+.row:after {
+  content: "";
+  display: table;
+}
+.row:after {
+  clear: both;
+}
+@media only screen {
+  .col {
+    float: left;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+}
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+.examples {
+  margin: auto;
+  width: 980px;
+  padding: 0.5em 0;
+}
+.examples .col {
+  width: 50%;
+}

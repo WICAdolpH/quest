@@ -1,0 +1,702 @@
+var iNow = 0;
+var lsmResp = null;
+var lsm_success = false;// 手机注册和邮箱注册现在强制需要验证码
+var captchaSendAgain = false;// 判断是否要再次获取短信验证码
+
+function getLSMResponse(resp) {
+   lsmResp = resp;
+   $('input[name="lsm_resp"]').val(lsmResp);
+   $('.error').remove();
+   lsm_success = true;
+   // 手机注册验证通过后自动获取短信验证码
+   if(captchaSendAgain){
+       ajaxSubmit($("#get_mobile_validatecode_form"));
+   }
+}
+var isFetching = false;
+
+$(function() {
+    var $tabBtnWrap = $('.tab_btn_wrap');
+    var $tabBtn = $tabBtnWrap.find('li');
+    var $formWrap = $('.form_wrap');
+    var $formList = $formWrap.find('.form_list');
+    var $log_list = $formWrap.find('.log_list');
+    var $submit = $('.submit');
+    var $agreeChecked = $('.agree').find('span');
+    var $memberMe = $('.login_forget').find('span');
+    var $btnGetMobileCode = $('.btn_get_mobile_code');
+    var $logMobileCode = $('.login_mobile_code');
+    var $usermail = $('.usermail');
+    var $sub_email = $('.sub_email');
+    var $old_show_bt = $('.old_show_bt');
+    var $blue_line = $('.blue_line');
+    var $q_login = $('.q_login');
+    var agreeTrue = true;
+    var bt_status = true;
+
+    $(window).bind("resize",function(){
+        resizeCenter();
+    });
+    $(window).resize();
+    function resizeCenter (){
+        var $regMain = $('.reg_main');
+        var $meCopyright = $('.me_copyright');
+
+        var iRegMainNum = {w:$('.me_con_wrap').width()+50, h:$regMain.outerHeight(true)};
+        var iWinNum = {w:$(window).width(), h:$(window).height()};
+        if(iRegMainNum.h < iWinNum.h - 130){
+            // $regMain.css({'position':'fixed','top':(iWinNum.h-iRegMainNum.h-60)/2-50,'left':(iWinNum.w-iRegMainNum.w)/2});
+            $meCopyright.css({'width':'100%', 'position':'fixed', 'bottom':'0', left:'0'});
+        } else {
+            $regMain.css({'position':'static'});
+            $meCopyright.css({'position':'static'});
+        };
+    };
+
+    new MailAutoComplete({obj:$usermail});
+
+    $tabBtn.click(function(){
+        $(this).addClass('active').siblings('li').removeClass('active');
+        $('.error').remove();
+        var index = $(this).index();
+        if($(this).hasClass('is_log')){
+            if(index == 1){ // 显示快速登录
+                // $tabBtnWrap.css('backgroundPosition','0px -236px');
+                $blue_line.animate({
+                    'margin-left':'235px'
+                },500);
+            }else{  // 显示账号登录
+                $('.error,.log_error').remove();
+                // $tabBtnWrap.css('backgroundPosition','0px -155px');
+                $blue_line.animate({
+                    'margin-left':'56px'
+                },500);
+            }
+            iNow = index;
+            $log_list.eq(index).show().siblings().hide();
+        }else{
+            if(index == 1){ // 显示邮箱注册
+                $tabBtnWrap.css('backgroundPosition','0px -76px');
+                // 人机验证优化
+                $regCaptcha.removeClass('opt_captcha');
+                $blue_line.animate({
+                    'margin-left':'235px'
+                },500);
+            }else{  // 显示手机注册
+                $tabBtnWrap.css('backgroundPosition','0 0');
+                // 人机验证优化
+                // $regCaptcha.addClass('opt_captcha');
+                $blue_line.animate({
+                    'margin-left':'56px'
+                },500);
+            }
+            iNow = index;
+            $formList.eq(index).show().siblings().hide();
+        }
+    });
+
+    //登录注册上方的选项卡，鼠标移入时文字为黑色，移除恢复
+    // $tabBtn.hover(function(){
+    //     var index = $(this).index();
+    //     if($(this).hasClass('is_log')){
+    //         if(index == 1){ // 显示快速登录
+    //             $(this).addClass('active');
+    //         }else{  // 显示账号登录
+    //             $(this).addClass('active');
+    //         }
+    //         iNow = index;
+    //     }else{
+    //         if(index == 1){ // 显示邮箱注册
+    //             $(this).addClass('email_active');
+    //         }else{  // 显示手机注册
+    //             $(this).addClass('mobile_active');
+    //         }
+    //     }
+    // },function(){
+    //     $(this).removeClass();
+    //     if($('.tc_login_cq').css('display') == 'block'){
+    //         $(this).addClass('is_log');
+    //     }
+    // });
+
+    //同意协议
+    $agreeChecked.click(function(){
+        if($(this).attr('class') == 'checked'){
+            $(this).removeClass('checked');
+            agreeTrue = false;
+        } else {
+            $(this).addClass('checked');
+            agreeTrue = true;
+        };
+    });
+
+    //记住我
+    $memberMe.click(function(){
+        if($(this).attr('class') == 'checked'){
+            $(this).removeClass('checked');
+            $('.a_radio').attr('checked',false);
+        } else {
+            $(this).addClass('checked');
+            $('.a_radio').attr('checked',true);
+        };
+    });
+
+    //更换验证码图片
+    $('#vcode_img').click(function(){
+        var urlstr = $("#vcode_img").attr("src");
+        var imgsrc = urlstr.substr(urlstr.indexOf('/?action=account_vcode'),28)+'&'+Math.random();
+        $("#vcode_img").attr("src", imgsrc);
+    });
+
+    //提交事件
+    $('#account_info_form1 .required_r').focus(function(){
+        var $parent = $(this).parent();
+        $parent.find('.error').remove();
+    });
+
+    $('.log_list .required_r').focus(function(){
+        var $parent = $(this).parents('.log_list');
+        $parent.find('.error').remove();
+        $parent.find('.log_error').remove();
+    });
+
+    $('#account_info_form1 .required_r').blur(function(){
+        var $this = $(this);
+        var value = $this.val();
+        value = value.replace(/\s+/g,"");
+        $this.val(value);
+        var $parent = $this.parent();
+        // $('#account_info_form1 .error').not('.mobile_reg .error').remove();
+        $parent.find('.error').remove();
+
+        //验证手机号
+        if( $this.is('#mobile') ){
+            if(value == ''){
+                $parent.append('<div class="error">手机号不能为空</div>');
+            } else if(idyLoginValidate.mobile($(this).val())){
+                var text = '手机号格式有误，如非中国大陆用户<a target="_blank" class="loginHelpURL" href="' + idyLoginValidate.loginHelpURL + '">请点此<a>'
+                appendError($parent, text)
+            } else {
+                checkInfoCallback({"check_type" : "mobile", "mobile" : value,"_xsrf": getCookie("_xsrf")}, $parent);
+            }
+        }
+
+        //验证密码
+        if( $this.is('.password') ){
+            if(value == ''){
+                $parent.append('<div class="error">密码不能为空</div>');
+            } else if($(this).val().trim().length < 6 || $(this).val().trim().length > 20){
+                $parent.append('<div class="error">密码长度为6-20个字符</div>');
+            }
+        }
+
+        //验证码
+        if( $this.is('.mobile_code') ){
+            if(value == ''){
+                $parent.append('<div class="error">验证码不能为空</div>');
+            }
+        }
+    });
+
+    $btnGetMobileCode.live('click',function(){
+        // 出现人机验证且未完成时不再发送请求
+        if(!lsm_success && $regCaptcha.css('display') == 'block'){
+            loadMack({off:'on',Limg:0,text: '请完成下方人机验证',set:1000});
+            $('.l-captcha-div .input_label').css('color','rgb(255,0,0)');
+            window.setTimeout(function(){
+                $('.l-captcha-div .input_label').css('color','#616161');
+            },1000);
+            return
+        }
+        if (bState) {
+            var $mobile = $('#account_info_form1 #mobile');
+            if($mobile.val() == ''){
+                $('.error').remove();
+                $mobile.parent().append('<div class="error">手机号不能为空</div>');
+                return false;
+            } else if(idyLoginValidate.mobile($mobile.val())){
+                $('.error').remove();
+                var text = '手机号格式有误，如非中国大陆用户<a target="_blank" class="loginHelpURL" href="' + idyLoginValidate.loginHelpURL + '">请点此<a>'
+                appendError($mobile.parent(), text)
+                return false;
+            }
+            // 人机验证优化，注释掉这一段
+            // else if (!lsm_success && show_reg_vcode == '1') {
+            //     $('.error').remove();
+            //     $mobile.parent().append('<div class="error">请完成下方人机验证</div>');
+            //     return false;
+            // }
+             else {
+                // if(!isFetching) {
+                    // isFetching = true;
+                    // 隐藏isFetching这个变量后，每次点击都会有提示
+                    if(newArr.length == 0){
+                        // 直接点击获取验证码，没有输入手机号，传cookie
+                        $("#get_mobile_validatecode_form input[name='kcs']").val($captcha.get('captcha'));
+                    }else{
+                        // 到注册页面后又输入了内容，更新数据
+                        $("#get_mobile_validatecode_form input[name='kcs']").val(finalArr('captcha',newArr));
+                    }
+                    $loading.show();
+                    window.setTimeout(function(){
+                        if($loading.css('display') == 'block'){
+                            $loading.hide();
+                        }
+                    },10000);
+                    $("#get_mobile_validatecode_form input[name='mobile']").val($('#account_info_form1 #mobile').val());
+                    ajaxSubmit($("#get_mobile_validatecode_form"));
+                // };
+            }
+        }
+    });
+
+    // 快速登录获取验证码
+    $logMobileCode.live('click',function(){
+        iNow = 1
+        $('.error').remove();
+        if (eState) {
+            var $user = $('#log_emailorusername');
+            if($user.val() == ''){
+                $user.parent().append('<div class="error">手机号不能为空</div>');
+                return false;
+            } else if(idyLoginValidate.mobile($user.val())){
+                var text = '手机号格式有误，如非中国大陆用户<a target="_blank" class="loginHelpURL" href="' + idyLoginValidate.loginHelpURL + '">请点此<a>'
+                appendError($user.parent(), text)
+            }
+            // 暂不出现人机验证
+            // else if (!lsmResp && show_vcode == '1') {
+            //     $user.parent().append('<div class="error">请完成下方人机验证</div>');
+            //     return false;
+            // }
+            else {
+                // if(!isFetching) {
+                //     isFetching = true;
+                    $loading.show();
+                    window.setTimeout(function(){
+                        if($loading.css('display') == 'block'){
+                            $loading.hide();
+                        }
+                    },10000);
+                    $("#quick_vcode input[name='mobile']").val($('#log_emailorusername').val());
+                    ajaxSubmit($("#quick_vcode"));
+                // };
+            }
+        }
+    });
+
+    $('#account_info_form2 .required_r').focus(function(){
+        var $parent = $(this).parent();
+        $parent.find('.error').remove();
+    });
+
+    $('#account_info_form2 .required_r').blur(function(){
+        var $parent = $(this).parent();
+        $('#account_info_form2 .error').remove();
+        $parent.find('.tip').remove();
+
+        //验证邮箱
+        if( $(this).is('.usermail') ){
+            if($(this).val() == ''){
+                $parent.append('<div class="error">请填写邮箱地址</div>');
+            } else if(!/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test($(this).val())){
+                $parent.append('<div class="error">邮箱格式不正确，请重新填写</div>');
+            } else if(/^[\w._]+@(126|163|yeah)\.com(\r\n|\r|\n)?$/.test($(this).val())){
+                $parent.append('<div class="tip">126,163,yeah等网易邮箱可能无法收到邮件</div>');
+            } else {
+                checkInfoCallback({"check_type" : "email", "email" : $(this).val(),"_xsrf": getCookie("_xsrf")}, $parent);
+            }
+        }
+
+        //验证密码
+        if( $(this).is('.password') ){
+            if($(this).val() == ''){
+                $parent.append('<div class="error">密码不能为空</div>');
+            } else if($(this).val().trim().length < 6 || $(this).val().trim().length > 20){
+                $parent.append('<div class="error">密码长度为6-20个字符</div>');
+            }
+        }
+
+        //验证码
+        // if(!lsm_success && show_reg_vcode == "1"){ 人机验证优化，保留之前的逻辑
+        if(!lsm_success && $regCaptcha.css('display') == 'block'){
+            $('#account_info_form2 .password').parent('li').append('<div class="error">请完成下方人机验证</div>');
+        }
+    });
+
+    $('#log_emailorusername').blur(function(){
+        if($(this).val() == ''){
+            $(this).parent().append('<div class="error">手机号不能为空</div>');
+            return false;
+        }else if(idyLoginValidate.mobile($(this).val())){
+            var text = '手机号格式有误，如非中国大陆用户<a target="_blank" class="loginHelpURL" href="' + idyLoginValidate.loginHelpURL + '">请点此<a>'
+            appendError($(this).parent(), text)
+            return false;
+        }
+    });
+
+    //点击注册按钮
+    $submit.click(function(){
+        // 数据埋点
+        iNow == 1 ? _hawkeye.push(['buttonclick', 'rl_email_register_btn']) : _hawkeye.push(['buttonclick', 'rl_mobile_register_btn']);
+        $('#account_info_form1 .error').remove();
+        $('#account_info_form2 .error').remove();
+        //是否确认用户协议
+        if(!agreeTrue){
+            loadMack({off:'on',Limg:0,text:'请确认用户协议！',set:1000});
+            return false;
+        }
+
+        if(iNow === 0){ // 手机注册
+            //验证手机号
+            if($('#mobile').val() == ''){
+                $('#mobile').parent().append('<div class="error">手机号不能为空</div>');
+            } else if(idyLoginValidate.mobile($('#mobile').val())){
+                var text = '手机号格式有误，如非中国大陆用户<a target="_blank" class="loginHelpURL" href="' + idyLoginValidate.loginHelpURL + '">请点此<a>'
+                appendError($('#mobile').parent(), text)
+            }
+
+            //验证码
+            if($('#account_info_form1 .mobile_code').val() == ''){
+                $('#account_info_form1 .mobile_code').parent().append('<div class="error">验证码不能为空</div>');
+            }
+
+            //验证密码
+            if($('#account_info_form1 .password').val() == ''){
+                $('#account_info_form1 .password').parent().append('<div class="error">密码不能为空</div>');
+            } else if($('#account_info_form1 .password').val().trim().length < 6 || $('#account_info_form1 .password').val().trim().length > 20){
+                $('#account_info_form1 .mobile_code').parent().append('<div class="error">密码长度为6-20个字符</div>');
+            }
+
+            if($('#account_info_form1 .error').length > 0){
+                return false;
+            }
+            // if (bt_status && !lsmResp && show_reg_vcode == '1'){ 人机验证优化，保留之前的逻辑
+            if (bt_status && !lsmResp && $regCaptcha.css('display') == 'block'){
+                loadMack({off:'on',Limg:0,text:'请完成下方人机验证',set:1000});
+                return false;
+            }
+            bt_status = false;
+            // 百度统计 手机注册
+            if($(this).attr('data-sign') == 'register_account_info'){
+                _hmt.push(['_trackEvent', '/register/account_info', 'click', 'mobile_register']);
+            }
+            $(this).val("注册中...");
+            ajaxSubmit($("#account_info_form1"));
+        } else if(iNow == 1) { // 邮箱注册
+            //验证邮箱
+            if($('.usermail').val() == ''){
+                $('.usermail').parent().append('<div class="error">请填写邮箱地址</div>');
+            } else if(!/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test($('.usermail').val())){
+                $('.usermail').parent().append('<div class="error">邮箱格式不正确，请重新填写</div>');
+            } else if(/^[\w._]+@(126|163|yeah)\.com(\r\n|\r|\n)?$/.test($('.usermail').val())){
+                $('.usermail').parent().append('<div class="tip">126,163,yeah等网易邮箱可能无法收到邮件</div>');
+            }
+
+            //验证密码
+            if($('#account_info_form2 .password').val() == ''){
+                $('#account_info_form2 .password').parent().append('<div class="error">密码不能为空</div>');
+            } else if($('#account_info_form2 .password').val().trim().length < 6 || $('#account_info_form2 .password').val().trim().length > 20){
+                $('#account_info_form2 .password').parent().append('<div class="error">密码长度为6-20个字符</div>');
+            }
+            //验证码
+            // if(!lsm_success && show_reg_vcode == '1'){ 人机验证优化，保留之前的逻辑
+            if(!lsm_success && $regCaptcha.css('display') == 'block'){
+                $('#account_info_form2 .password').parent('li').append('<div class="error">请完成下方人机验证</div>');
+            }
+
+            if($('#account_info_form2 .error').length > 0){
+                return false;
+            }
+            // if (bt_status && !lsmResp && show_reg_vcode == '1'){ 人机验证优化，保留之前的逻辑
+            if (bt_status && !lsmResp && $regCaptcha.css('display') == 'block'){
+                loadMack({off:'on',Limg:0,text:'请完成下方人机验证',set:1000});
+                return false;
+            }
+            bt_status = false;
+            // 百度统计 邮箱注册
+            if($(this).attr('data-sign') == 'register_account_info'){
+                _hmt.push(['_trackEvent', '/register/account_info', 'click', 'email_register']);
+            }
+            $('.submit').val("注册中...");
+            ajaxSubmit($("#account_info_form2"));
+        }
+    });
+
+    $sub_email.click(function(){
+        var email = $usermail.val().split("@")[1];
+        // var hash = {
+        //     'qq.com': 'http://mail.qq.com',
+        //     'gmail.com': 'http://mail.google.com',
+        //     // 'sina.com': 'http://mail.sina.com.cn',
+        //     '163.com': 'http://mail.163.com',
+        //     '126.com': 'http://mail.126.com',
+        //     'yeah.net': 'http://www.yeah.net/',
+        //     'sohu.com': 'http://mail.sohu.com/',
+        //     'tom.com': 'http://mail.tom.com/',
+        //     'sogou.com': 'http://mail.sogou.com/',
+        //     '139.com': 'http://mail.10086.cn/',
+        //     'hotmail.com': 'http://www.hotmail.com',
+        //     'live.com': 'http://login.live.com/',
+        //     'live.cn': 'http://login.live.cn/',
+        //     'live.com.cn': 'http://login.live.com.cn',
+        //     '189.com': 'http://webmail16.189.cn/webmail/',
+        //     'yahoo.com.cn': 'http://mail.cn.yahoo.com/',
+        //     'yahoo.cn': 'http://mail.cn.yahoo.com/',
+        //     'eyou.com': 'http://www.eyou.com/',
+        //     '21cn.com': 'http://mail.21cn.com/',
+        //     '188.com': 'http://www.188.com/',
+        //     'foxmail.com': 'http://www.foxmail.com',
+        //     'outlook.com': 'http://www.outlook.com'
+        // };
+        window.open('http://mail.' + email);
+    });
+
+    $old_show_bt.click(function(){
+        bt_status = true;
+        $('.submit').val('立即注册');
+        if (timer){clearInterval(timer);$(".time_bt").text("59秒后重新发送");}
+        $(".r_info").fadeOut(100, function(){
+            $(".r_content").fadeIn(function(){
+                eState = true;
+            });
+        });
+    });
+
+    $(".time_bt").click(function(){
+        if (eState){
+            send_email();
+            $(".time_bt").text("59秒后重新发送");
+            getMobileCode($(this));
+        }
+    });
+
+    // 快速登录
+    $q_login.click(function(){
+        // $('.log_list:eq(1) .error').remove();
+        $('.error').remove();
+        if($('#log_emailorusername').val() == ''){
+            $('#log_emailorusername').parent().append('<div class="error">手机号不能为空</div>');
+        }else if(idyLoginValidate.mobile($('#log_emailorusername').val())){
+            var text = '手机号格式有误，如非中国大陆用户<a target="_blank" class="loginHelpURL" href="' + idyLoginValidate.loginHelpURL + '">请点此<a>'
+            appendError($('#log_emailorusername').parent(), text)
+        }else if($('.login_vcode .mobile_code').val() == ''){
+            $('.login_vcode .mobile_code').parent().append('<div class="error">验证码不能为空</div>');
+        }else if(!agreeTrue){//是否确认用户协议
+            $('.r_content .agree').parent().append('<div class="error">请确认用户协议！</div>');
+            return false;
+        }else{
+            $('.q_login').text('登录中');
+            $('#quick_form input.quick_mobile').val($('#log_emailorusername').val());
+            $('#quick_form input.quick_mobile_code').val($('.login_vcode .mobile_code').val());
+            ajaxSubmit($("#quick_form"));
+        }
+    });
+
+    // 展示所有第三方登录icon
+    $('.show_more').click(function(){
+        $('.log_list .show_more').css('display','none');
+        $('.log_list .OtherLogin').css('width','100%');
+        $('.log_list .OtherLogin .login_button_qq').css('margin-left','8px');
+        $('.log_list .OtherLogin a').not('.dingding').css('margin-right','22px');
+        $('.log_list .renren,.mingdao,.dingding').show(500);
+    });
+
+});
+
+function save_account_caback(info){
+    bt_status = true;
+    if(info.err_msg != ''){
+        $('.submit').val('立即注册');
+        if(info.err_msg == '验证码不正确'){
+            if(iNow == 0){
+                $('#account_info_form1 .mobile_code').parent().append('<div class="error">验证码不正确</div>');
+            } else if(iNow == 1) {
+                $('#geetest_captcha').append('<div class="error">请拖动完成验证</div>');
+            }
+        } else {
+            loadMack({off:'on',Limg:0,text:info.err_msg,set:1000});
+        };
+        return false;
+    }
+    else{
+        if (iNow === 0){
+            // window.location.replace("/register/membertype/?is_new=true");
+            if(info.is_mobile){
+                window.location.replace("/mmenu/mlist/?from=reg");
+            } else {
+                window.location.replace("/list/?from=reg");
+            }
+
+        }else{
+            $(".r_email").text($(".usermail").val());
+            $(".r_content").fadeOut(100, function(){
+                $(".r_info").fadeIn(function(){
+                    getMobileCode($(".time_bt"));
+                });
+            });
+        }
+    }
+}
+
+function checkInfoCallback(data, obj){
+    $.ajax({
+        url: "/register/check_info/",
+        type: 'POST',
+        data: data,
+        success: function(data){
+            var data = JSON.parse(data);
+            if(data.err_msg != ''){
+                if(data.err_msg = '该手机已被占用'){
+                    obj.append('<div class="error">账号已存在，请重新输入，或<span class="use_this">用此账号登录</span></div>');
+                }else{
+                    obj.append('<div class="error">' + data.err_msg + '</div>');
+                }
+            };
+        }
+    });
+};
+
+//注册模块
+function get_mobile_validatecode_callback(info){
+    $loading.hide();
+    if(info.result == 0 && info.show_vcode){
+        // 显示人机验证
+        console.log($regCaptcha);
+        $regCaptcha.removeClass('opt_captcha');
+        loadMack({off:'on',Limg:0,text: '请完成下方人机验证',set:1000});
+        $('.l-captcha-div .input_label').css('color','rgb(255,0,0)');
+        window.setTimeout(function(){
+            $('.l-captcha-div .input_label').css('color','#616161');
+        },1000);
+        captchaSendAgain = true;// 再次发送手机验证码
+        return false;
+    }
+    if(info.error_msg != ''){
+        // if (info.error_msg == "该手机号已被使用") info.error_msg = "该手机已注册，请点下方登录";
+        loadMack({off:'on',Limg:0,text: info.error_msg,set:1000});
+        return false;
+    } else {
+        getMobileCode($('.btn_get_mobile_code'));
+        // 百度统计 注册页面 获取验证码 有效点击次数
+        if($('.btn_get_mobile_code').attr('data-sign') == 'register_account_info'){
+            _hmt.push(['_trackEvent', '/register/account_info', 'click', 'send_mobile_code']);
+        }
+        loadMack({off:'on',Limg:0,text:'验证码已发送，请查收',set:1000});
+        $('#account_info_form1 .mobile_code').focus();
+    };
+    isFetching = false;
+};
+
+// 快速登录验证码回调
+function quick_vcode_callback(info){
+    $loading.hide();
+    if(info.err_msg != ''){
+        if (document.querySelector('.new-login-body') != null) {
+            $('#id-mobile-code-title').text(info.err_msg)
+            $('#id-mobile-code-title').toggleClass('none')
+            setTimeout(function () {
+                $('#id-mobile-code-title').toggleClass('none')
+            }, 1000)
+        } else {
+            loadMack({off:'on',Limg:0,text:info.err_msg,set:1000});
+        }
+        return false;
+    } else {
+        getMobileCode($('.login_mobile_code'));
+        // $(".mydiv").mask("Loading...");
+        // $(".grids").mask("Loading...", 500);
+        if (document.querySelector('.new-login-body') != null) {
+            $('#id-mobile-code-title').text('验证码已发送，请查收')
+            $('#id-mobile-code-title').toggleClass('none')
+            setTimeout(function () {
+                $('#id-mobile-code-title').toggleClass('none')
+            }, 1000)
+        } else {
+            loadMack({off:'on',Limg:0,text:'验证码已发送，请查收',set:1002});
+        }
+        $('.mobile_code').focus();
+        // 百度统计 注册页面 获取验证码 有效点击次数
+        // if($('.btn_get_mobile_code').attr('data-sign') == 'register_account_info'){
+        //     _hmt.push(['_trackEvent', '/register/account_info', 'click', 'quick_login']);
+        // }
+    };
+    isFetching = false;
+};
+
+// 快速登录回调
+function quick_form_callback(info){
+    if(info.status_code == '1'){
+        window.location.href = info.nexturl;
+    }else{
+        // 重置文案
+        $('.new-q_login,.q_login').text('登录');
+        $('.login_vcode').append('<div class="error">' + info.err_msg + '</div>');
+    }
+}
+
+function getLength(str) {
+    if (str == null) return 0;
+    if (typeof str != "string"){
+        str += "";
+    }
+    return str.replace(/[^\x00-\xff]/g,"01").length;
+}
+
+var bState = true;
+var eState = true;
+var timer = '';
+function getMobileCode(obj){
+    timer = null;
+    var iCountDownNum = 59;
+    if(bState && iNow == 0){
+        bState = false;
+        var changeNum = function () {
+            setTimeout(function () {
+                if(iCountDownNum <= 0){
+                    clearTimeout(timer);
+                    iCountDownNum = 59;
+                    obj.html('获取验证码');
+                    bState = true;
+                    lsmResp = null;
+                    LUOCAPTCHA.reset();
+                } else {
+                    iCountDownNum--;
+                    obj.html('重新发送' + iCountDownNum);
+                    changeNum()
+                }
+            }, 1000)
+        }
+        changeNum()
+    }else if (eState && iNow == 1){
+        eState = false;
+        var changeNum = function () {
+            setTimeout(function () {
+                if(iCountDownNum <= 1){
+                    clearTimeout(timer);
+                    iCountDownNum = 60;
+                    obj.html('重新发送');
+                    eState = true;
+                    lsmResp = null;
+                    LUOCAPTCHA.reset();
+                } else {
+                    iCountDownNum--;
+                    obj.html(iCountDownNum +'秒后重新发送');
+                    changeNum()
+                }
+            }, 1000)
+        }
+        changeNum()
+    }
+}
+
+function send_email(){
+    $.ajax({
+        url: '/checkmember/',
+        type: 'POST',
+        dataType: 'json',
+        data: {field: 'email', value: $(".usermail").val(), operate: 'validate_email'},
+        error: function () {
+            loadMack({off:'on',Limg:1,text:'网络繁忙，请稍后再试！',set:1});
+        }
+    });
+}

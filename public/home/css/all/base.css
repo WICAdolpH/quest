@@ -1,0 +1,204 @@
+/* CSS Document */
+
+*{margin:0;padding:0;font-family:"Microsoft YaHei";}
+html,body{height:100%;font-size:12px;}
+/* -webkit-text-size-adjust:none; 解决Chrome浏览器最小只能显示12px字体的问题 */
+body{-webkit-text-size-adjust:none;overflow:hidden;color:#333;}
+a{text-decoration:none;color: inherit;}
+img{border:0;}
+li{list-style:none;}
+input{border:0;color:#333;}
+.clear{display:block;width:0;height:0;margin:0;padding:0;clear:both;font-size:0;}
+
+/* 去除链接及表单焦点虚线边框 */
+a:focus,input[type=button],input[type=submit],input[type=image]{outline:none;cursor:pointer;}
+table{font-size: 12px;}
+/* 去除Chrome浏览器文本框选中后的黄色边框 */
+input,button,select,textarea{outline:none;font-size:12px;}
+textarea{resize:none;}
+
+/* 公用样式定义 */
+h1,h2,h3,h4,h5,h6,h7{font-size:12px;font-weight:normal;}
+.relative{width:100%;height:100%;position:relative;}
+.left{float:left;}
+.right{float:right;}
+
+
+
+
+
+
+.pagebox{
+	position:absolute;
+	top:70px;
+	left:100px;
+	right:100px;
+	bottom:0;
+	padding:20px 20px 0px 20px;
+	/*-o-transition: all 0.2s ease;
+    -ms-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    -webkit-transition: all 0.2s ease;*/
+	}
+
+
+/* 内容框架样式定义开始 */
+.pagebox font.red{
+	color:#f00;
+	font-weight:bold;
+	}
+
+.pagebox font.gray{
+	color:#aaa;
+	}
+
+.pagebox font.green{
+	color:#468c00;
+	font-weight:bold;
+	}
+
+.pagebox .title{
+	padding:20px;
+	}
+
+.pagebox .title .name{
+	padding-left:10px;
+	font-weight:bold;
+	border-left:#fff 3px solid;
+	}
+
+.pagebox .title .button{
+	margin-left:20px;
+	}
+
+.pagebox .title .button a{
+	padding:2px 6px;
+	margin:0 5px;
+	border:#fff 1px solid;
+	}
+
+.pagebox .title .button a span{
+	padding-left:28px;
+	}
+
+.pagebox .title .function{
+	margin-left:20px;
+	}
+
+.pagebox .title .function a:hover{
+	text-decoration:underline;
+	}
+
+.pagebox .area{
+	padding:5px 20px 20px 20px;
+	margin-bottom:20px;
+	}
+
+.pagebox .area input[type=button]{
+	margin:0 5px;
+	padding:2px 6px;
+	border:#fff 1px solid;
+	}
+
+.pagebox .area table.data{
+	width:100%;
+	}
+.pagebox .area table.data .text-right {
+    text-align: right;
+    position: relative;
+    padding: 0 10px;
+}
+.pagebox .area table.data i:not(.icon-down){display: inline-block; font-size: 14px;}
+.pagebox .area table.data .icon-schoolgirl{color: #FF7800;}
+.pagebox .area table.data .icon-schoolboy{color: #09c;}
+.pagebox .area table.data thead th{
+	line-height:50px;
+	border-bottom:#fff 2px solid;
+	}
+
+.pagebox .area table.data tbody td{
+	text-align:center;
+	line-height:40px;
+	border-bottom:#fff 1px dotted;
+	}
+
+.pagebox .area table.data tbody td a:hover{
+	text-decoration:underline;
+	}
+.pagebox .area table.data tbody tr:hover{background:#F9F9FA;}
+.pagebox .area table.data tbody tr:active{cursor: pointer;}
+.pagebox .area table.data .dataTabs-ctrol-down .dataTabs-ctrol-info{border: 1px dotted #fff; border-top: 0;}
+.pagebox .area table.data tbody tr:hover .dataTabs-ctrol-down .dataTabs-ctrol-info{background:#F9F9FA;}
+.pagebox .area table.data tfoot td{
+	padding-top:20px;
+	}
+.pagebox .area table.data tfoot td.page{
+	text-align:right;
+	}
+
+.pagebox .area table.data tfoot td.page span,.pagebox .area table.data tfoot td.page a{
+	padding:4px 6px;
+	margin:0 5px;
+	border-bottom:#fff 2px solid;
+	}
+
+.pagebox .area table.data tfoot td.page a:hover{
+	font-weight:bold;
+	}
+
+.pagebox .area table.data tfoot td.page a.active{
+	font-weight:bold;
+	}
+
+.pagebox .respond{
+	float:left;
+	margin:0 calc(15px*3/2) 20px 0;
+	padding:20px;
+	width:calc(100%/3 - 55px);
+	}
+
+.pagebox .respond:nth-child(3){
+	margin-right:0;
+	}
+
+.pagebox .respond h2{
+	padding-bottom:5px;
+	font-weight:bold;
+	border-bottom:#fff 2px solid;
+	}
+
+.pagebox .respond ul{
+	margin-top:10px;
+	}
+
+.pagebox .respond li{
+	height:30px;
+	line-height:30px;
+	border-bottom:#fff 1px dotted;
+	}
+
+.pagebox .respond li h3{
+	float:left;
+	}
+
+.pagebox .respond li span{
+	float:right;
+	}
+
+.pagebox .respond li font{
+	padding:0 5px;
+	}
+
+
+/* 统一模拟下拉菜单样式定义 */
+.dc_select{  display:inline-block; text-align:left;}
+.dc_select > .dropbox > .down {float: right;width: 28px;display: inline-block;height: 28px;text-align: center;background-position: center center;line-height:28px;margin-left:0;}
+.dc_down_list {border-left:1px solid #ccc;border-right:1px solid #ccc;border-bottom:1px solid #ccc;border-top:0px solid #ccc;position:absolute;z-index:10000;background-color:white;}
+.dc_down_list.up {border-bottom-width:0px;border-top-width:1px;}
+.dc_down_list li{margin-left:0; height:28px;line-height:28px;font-size:12px;border-top:1px solid #fff;border-bottom:1px solid #fff;cursor:pointer; overflow:hidden; word-break:keep-all;padding-left:10px; padding-right:10px;/*float:left;*/}
+.dc_down_list li.init{ float:none;}
+.dc_select > .dropbox{ height:28px;line-height:28px; border:1px solid #ccc; cursor:pointer;}
+.dc_select > .dropbox .down{ color: #ccc;}
+.dc_select > .dropbox > .text { color:black;padding-left: 10px;padding-right: 10px;overflow:hidden; word-break:keep-all;display:inline-block;line-height:28px;margin-left:0px; float:left;}
+.dc_select.disabled > .dropbox > .text { background-color:#eee;}
+.dc_select.disabled > .dropbox { cursor:default;}

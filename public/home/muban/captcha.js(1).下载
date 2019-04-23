@@ -1,0 +1,51 @@
+var $captcha = {
+    set:function(name,value,config){
+        $.cookie(name,value,{
+            expires:config.expires,
+            path:config.path
+        });
+    },
+    get:function(name){
+        return $.cookie(name)
+    }
+}
+
+// 记录首页和登录注册页面输入框中最近30次输入的内容
+var captchaArr = [];
+var newArr = [];
+// 先获取一下cookie中的数据，赋值给captchaArr
+function getHistoryArr(){
+    if($captcha.get('captcha')){
+        var historyArr = $captcha.get('captcha').split(',');
+        captchaArr = historyArr;
+    }
+}
+// 记录输入框中输入内容的keycode
+function getCaptchaArr(e){
+    if(captchaArr.length < 30){
+        captchaArr.push(e.keyCode);
+    }else{
+        captchaArr.shift();
+        captchaArr.push(e.keyCode);
+    }
+}
+
+// 在注册登录页面记录新输入的内容
+function getNewArr(e){
+    newArr.push(e.keyCode);
+}
+
+// 把首页和登录注册页面的输入内容组装成一个数组
+function finalArr(captchaArr,newArr){
+    var finalArr = [];
+    var arr1 = $captcha.get(captchaArr) || '';
+    var arr2 = newArr;
+    finalArr = (arr1.split(',')).concat(arr2);
+    if(finalArr.length > 30){
+        // 两个数组合并后，取最后30位数据
+        return (finalArr.slice(finalArr.length-30).join(','));
+    }else{
+        return finalArr.join(',');
+
+    }
+}

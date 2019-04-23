@@ -1,0 +1,63 @@
+var getCurrentPage = function() {
+    var currentLink = window.location.pathname
+    var data = localStorage.headerPath ? JSON.parse(localStorage.headerPath) : {}
+    var productLinks = ['/survey', '/vote', '/satisfaction', '/form', '/assess', '/edu', '/senior_user']
+    if (productLinks.includes(window.location.pathname) && data.indexUnderLine && data.backgroundId) {
+        document.querySelector(data.indexUnderLine).classList.add('showUnderLine')
+        document.querySelector(data.backgroundId).classList.add('choosed')
+        $(".showUnderLine").hover(function(){
+            $(".choosed").addClass('choosed-scene-bg')
+        });
+    }
+    var otherLinks = {
+        '/lib': '免费模板',
+        '/lib/': '免费模板',
+        '/plugin/index': '高级功能',
+        '/collect_post/': '样本收集',
+        '/helpcenter/': '帮助中心',
+        '/helpcenter': '帮助中心'
+    }
+
+    var libLinksPrefix = [
+        'classify',
+        'form_classify',
+        'assess_classify',
+
+        'topic_detail',
+        'form_topic_detail',
+        'assess_topic_detail',
+
+        'static_history',
+        'static_form_history',
+        'static_assess_history',
+    ]
+
+    for (var i = 0; i < Object.keys(otherLinks).length; i++) {
+        var link = Object.keys(otherLinks)[i]
+        if (link == window.location.pathname) {
+            document.body.innerHTML = document.body.innerHTML.replace(">" + otherLinks[link] + "</span>", " class=\"showUnderLine\">" + otherLinks[link] + "</span>");
+        }
+    }
+
+    var libLinks = [
+        '/lib',
+        '/lib/',
+        '/form_lib',
+        '/assess_lib',
+        '/survey_lib'
+    ]
+
+    for (var j = 0; j < libLinksPrefix.length; j++) {
+        var lp = libLinksPrefix[j]
+        if (currentLink.indexOf(lp) > 0) {
+            document.body.innerHTML = document.body.innerHTML.replace(">免费模板</span>", " class=\"showUnderLine\">免费模板</span>");
+        }
+    }
+
+    if (libLinks.includes(currentLink)) {
+        document.body.innerHTML = document.body.innerHTML.replace(">免费模板</span>", " class=\"showUnderLine\">免费模板</span>");
+    }
+}
+setCookie('header_v', 'index');
+
+getCurrentPage()
