@@ -42,7 +42,7 @@
                 <li ><a href="/home/usecheck">我的项目 <span class="sr-only">(current)</span></a></li>
                 {{--<li><a >我发起的投票</a></li>--}}
                 <li class="active"><a href="/home/participate">参与调查</a></li>
-                <li class="dropdown">
+                {{--<li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">企业帮助 <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="#">Action</a></li>
@@ -53,11 +53,11 @@
                         <li role="separator" class="divider"></li>
                         <li><a href="#">One more separated link</a></li>
                     </ul>
-                </li>
+                </li>--}}
             </ul>
             <form class="navbar-form navbar-left">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search">
+                    <input type="text" class="form-control" name="title" placeholder="Search">
                 </div>
                 <button type="submit" class="btn btn-default">搜索</button>
             </form>

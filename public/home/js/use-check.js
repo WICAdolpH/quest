@@ -13,6 +13,9 @@
 var count = 0;
 var list = [];
 var arr = new Array();
+/**
+ * 点击事件 静态添加
+ */
 //点击矩阵填空题
 $('#matrixGapFillQuest').click(function(){
     count = count + 1 ;
@@ -272,6 +275,8 @@ $('#scoreQuest').click(function(){
 $('#radioQuest').click(function(){
     count = count + 1 ;
     var div = $('.create-form').children('div').length;
+    console.log(div);
+    console.log(66);
     div = div - 1;
     var _html = document.getElementById('radio').innerHTML;
     var divSum = div + 1;
@@ -341,6 +346,7 @@ $('#gapFillMultiQuest').click(function(){
     $('.create-option:last').children('div:eq(0)').attr('name','gapMultiFill'+divSum);
     $('.create-option:last').children('div:eq(2) ').children('input:eq(0)').attr('name',"option1");
     $('.create-option:last').children('div:eq(3) ').children('input:eq(0)').attr('name',"option2");
+    console.log()
     //$('.create-option:last').children('div:eq(2) ').children('input:eq(1)').attr('name','gapMultiFill'+divSum+"-option1");
     //$('.create-option:last').children('div:eq(3) ').children('input:eq(1)').attr('name','gapMultiFill'+divSum+"-option2");
     $('.create-option:last').attr('name','gapMultiFill'+divSum);
@@ -357,7 +363,7 @@ function addGapFill(obj) {
     var _html =  document.getElementById('gapFill-option').innerHTML;
     $(id+" div:last-child").before(_html);
     //统计选项个数
-    var sum = $(id+" div").length - 3;
+    var sum = $(id+" div").length - 4;
     //统计多项填空个数
     //标准 eg:gapMultiFill1-option-title
     $(id+" div:last-child").prev().children('input:eq(0)').attr('value',"选项"+sum);
@@ -530,6 +536,7 @@ function addMulti(obj) {
     });
 
 }
+// 对选项参加
 function add(obj) {
 
     //获取id
@@ -580,7 +587,10 @@ function add(obj) {
     });
 }
 
-//共同事件
+/**
+ * 共同事件 漂浮显现 删除
+ * @param obj
+ */
 function mOver(obj) {               
     var id = $(obj).attr('name');          
     id = "#"+id;
@@ -625,6 +635,11 @@ function mBlur(obj) {
     //$(id).css('height',length+'px');
     $(id).find('span').addClass('hide');
 }
+
+/**
+ * 矩阵操作
+ * @param obj
+ */
 // 矩阵填空表格行添加
 function gapFillTableAddCol(obj) {
     var str =   "<td align='center'>"
@@ -809,6 +824,7 @@ function scoreTableAddRow(obj) {
     });
 }
 //矩阵单选表格竖向添加
+
 function radioTableAddCol(obj) {
     var str =   "<td align='center'>"
         str +=  '<li class="icon_radio" ></li>'
@@ -1020,7 +1036,7 @@ function toEdit(obj) {
     var typeNum = $(obj).parents('.create').index("."+type);
     var questType = $(obj).attr('id');
     var title = $(obj).val();
-    console.log(title);
+    console.log(title,typeNum,type);
     if(type != "matrixGapFill" && type != "matrixRadio" && type != "matrixScore") {
         var direction = $(obj).attr("direction") ? $(obj).attr("direction") : null;
         var questTypeNum = $(obj).parent().index() - 3;
@@ -1059,50 +1075,68 @@ function toEdit(obj) {
 
 }
 
+/**
+ * 对新增加的题进行入库
+ * @type {boolean}
+ */
 //  对新增的题进行入库
+var flag = true;
 $(".quest").click(function(){
-    var name = $('.create-form').children('div:last-child').attr('name');
-    var obj  = $('.create-form').children('div:last-child');
-    var nameStr = name.replace(/[^a-z]+/ig,"");
-    switch(nameStr) {
-        case 'radio' : newData += radio(obj)+","; break;
-        case 'radioMulti' : newData += radioMulti(obj)+","; break;
-        case 'gapFill' : newData += gapFill(obj)+","; break;
-        case 'gapMultiFill' : newData += gapMultiFill(obj)+",";break;
-        case 'score' : newData += score(obj)+","; break;
-        case 'descr' : newData += descr(obj)+","; break;
-        case 'page' :   newData += page(obj)+","; break;
-        case 'hr' : newData += hr(obj)+","; break;
-        case 'name' : newData += nameFrom(obj)+","; break;
-        case 'phone' : newData += phone(obj)+",";break;
-        case 'email': newData += email(obj)+",";break;
-        case 'sex' : newData += sex(obj)+","; break;
-        case 'date' : newData += date(obj)+",";break;
-        case 'time' : newData += time(obj)+",";break;
-        case 'city' : newData += city(obj)+",";break;
-        case 'address' : newData += address(obj)+",";break;
-        case 'matrixRadio' : newData += matrixRadio(obj)+",";break;
-        case 'matrixScore' : newData += matrixScore(obj)+","; break;
-        case 'matrixGapFill' : newData += matrixGapFill(obj)+","; break;
-    }
-    //  利用Ajax提交新的数据
-    $.ajax({
-        type: 'POST',
-        url: '/home/addchecksave',
-        dataType: "json",
-        data:{
-            'list' : newData,
-            '_token' : $('input[name=_token]').val(),
-        },
-        complete : function(data) {
-
-        },
-        success : function(data) {
-            save = 1;
-            isClick = 0;
-            newData = "";
+    if (flag == true) {
+        layer.msg('添加中');
+        flag=false;
+        var name = $('.create-form').children('div:last-child').attr('name');
+        var obj  = $('.create-form').children('div:last-child');
+        var nameStr = name.replace(/[^a-z]+/ig,"");
+        var newData = "";
+        switch(nameStr) {
+            case 'radio' : newData += radio(obj)+","; break;
+            case 'radioMulti' : newData += radioMulti(obj)+","; break;
+            case 'gapFill' : newData += gapFill(obj)+","; break;
+            case 'gapMultiFill' : newData += gapMultiFill(obj)+",";break;
+            case 'score' : newData += score(obj)+","; break;
+            case 'descr' : newData += descr(obj)+","; break;
+            case 'page' :   newData += page(obj)+","; break;
+            case 'hr' : newData += hr(obj)+","; break;
+            case 'name' : newData += nameFrom(obj)+","; break;
+            case 'phone' : newData += phone(obj)+",";break;
+            case 'email': newData += email(obj)+",";break;
+            case 'sex' : newData += sex(obj)+","; break;
+            case 'date' : newData += date(obj)+",";break;
+            case 'time' : newData += time(obj)+",";break;
+            case 'city' : newData += city(obj)+",";break;
+            case 'address' : newData += address(obj)+",";break;
+            case 'matrixRadio' : newData += matrixRadio(obj)+",";break;
+            case 'matrixScore' : newData += matrixScore(obj)+","; break;
+            case 'matrixGapFill' : newData += matrixGapFill(obj)+","; break;
         }
-    });
+        console.log(newData)
+
+        //  利用Ajax提交新的数据
+        $.ajax({
+            type: 'POST',
+            url: '/home/addchecksave',
+            dataType: "json",
+            data:{
+                'list' : newData,
+                '_token' : $('input[name=_token]').val(),
+            },
+            complete : function(data) {
+              //  console.log(data.responseText);
+
+            },
+            success : function(data) {
+                save = 1;
+                isClick = 0;
+                newData = "";
+            }
+        });
+
+        flag = true;
+    } else{
+        layer.msg('添加中');
+    }
+
 
 
 
@@ -1283,6 +1317,7 @@ function radioMulti(obj) {
 }
 //radio处理
 function radio(obj) {
+
     var str = "";
     str += "title"+":"+ $(obj).children('div:eq(1)').children('input').val()+"|";
     str += "type"+":"+'radio'+"|";

@@ -54,7 +54,11 @@ a.cotrlBtn.active {
 
 /*在线考试*/
 .create-questions-content{width:1025px; padding-left:125px; padding-right:0px; position: relative;}
-.exam-nav{width:122px; background: #fff; position:absolute; left: 0;z-index:8;}
+.exam-nav{
+    width:122px; background: #fff; position:absolute; left: 0;z-index:8;
+    position: fixed;
+    margin-left: 8%;
+}
 .exam-item-title{line-height: 30px;height:30px;padding: 5px 0 5px 0; text-align: center; font-size: 16px;border-bottom: 1px solid #eaedf1; color:#666; cursor: pointer;}
 .exam-item-title i{margin-left:5px;}
 .exam-nav-list>li:not(.ui-module){line-height: 30px;height:30px;font-size: 12px;padding: 2px 0;background: #fff;border-bottom: 1px solid #eaedf1;}

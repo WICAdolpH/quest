@@ -73,14 +73,15 @@
 <aside class="Hui-aside">
     <div class="menu_dropdown bk_2">
         <dl id="menu-article">
-            <dt><i class="Hui-iconfont">&#xe616;</i> 资讯管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dt><i class="Hui-iconfont">&#xe616;</i> 问卷管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
-                    <li><a data-href="article-list.html" data-title="资讯管理" href="javascript:void(0)">资讯管理</a></li>
+                    <li><a data-href="/admin/quest/show" data-title="问卷管理" href="javascript:void(0)">问卷管理</a></li>
+                    <li><a data-href="/admin/quest/analysis" data-title="问卷排行" href="javascript:void(0)">问卷排行</a></li>
                 </ul>
             </dd>
         </dl>
-        <dl id="menu-picture">
+        {{--<dl id="menu-picture">
             <dt><i class="Hui-iconfont">&#xe613;</i> 图片管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
@@ -106,22 +107,22 @@
                     <li><a data-href="feedback-list.html" data-title="意见反馈" href="javascript:void(0)">意见反馈</a></li>
                 </ul>
             </dd>
-        </dl>
+        </dl>--}}
         <dl id="menu-member">
             <dt><i class="Hui-iconfont">&#xe60d;</i> 用户管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
                     <li><a data-href="/admin/user/index" data-title="会员列表" href="javascript:;">用户列表</a></li>
-                    <li><a data-href="member-del.html" data-title="删除的会员" href="javascript:;">删除的用户</a></li>
+                    {{--<li><a data-href="member-del.html" data-title="删除的会员" href="javascript:;">删除的用户</a></li>
                     <li><a data-href="member-level.html" data-title="等级管理" href="javascript:;">等级管理</a></li>
                     <li><a data-href="member-scoreoperation.html" data-title="积分管理" href="javascript:;">积分管理</a></li>
                     <li><a data-href="member-record-browse.html" data-title="浏览记录" href="javascript:void(0)">浏览记录</a></li>
                     <li><a data-href="member-record-download.html" data-title="下载记录" href="javascript:void(0)">下载记录</a></li>
-                    <li><a data-href="member-record-share.html" data-title="分享记录" href="javascript:void(0)">分享记录</a></li>
+                    <li><a data-href="member-record-share.html" data-title="分享记录" href="javascript:void(0)">分享记录</a></li>--}}
                 </ul>
             </dd>
         </dl>
-        <dl id="menu-admin">
+        {{--<dl id="menu-admin">
             <dt><i class="Hui-iconfont">&#xe62d;</i> 管理员管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
@@ -130,22 +131,22 @@
                     <li><a data-href="admin-list.html" data-title="管理员列表" href="javascript:void(0)">管理员列表</a></li>
                 </ul>
             </dd>
-        </dl>
-        <dl id="menu-tongji">
-            <dt><i class="Hui-iconfont">&#xe61a;</i> 系统统计<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+        </dl>--}}
+        {{--<dl id="menu-tongji">
+            <dt><i class="Hui-iconfont">&#xe61a;</i> 数据库管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
-                    <li><a data-href="charts-1.html" data-title="折线图" href="javascript:void(0)">折线图</a></li>
-                    <li><a data-href="charts-2.html" data-title="时间轴折线图" href="javascript:void(0)">时间轴折线图</a></li>
+                    <li><a data-href="charts-1.html" data-title="数据库备份" href="javascript:void(0)">折线图</a></li>
+                   --}}{{-- <li><a data-href="charts-2.html" data-title="时间轴折线图" href="javascript:void(0)">时间轴折线图</a></li>
                     <li><a data-href="charts-3.html" data-title="区域图" href="javascript:void(0)">区域图</a></li>
                     <li><a data-href="charts-4.html" data-title="柱状图" href="javascript:void(0)">柱状图</a></li>
                     <li><a data-href="charts-5.html" data-title="饼状图" href="javascript:void(0)">饼状图</a></li>
                     <li><a data-href="charts-6.html" data-title="3D柱状图" href="javascript:void(0)">3D柱状图</a></li>
-                    <li><a data-href="charts-7.html" data-title="3D饼状图" href="javascript:void(0)">3D饼状图</a></li>
+                    <li><a data-href="charts-7.html" data-title="3D饼状图" href="javascript:void(0)">3D饼状图</a></li>--}}{{--
                 </ul>
             </dd>
-        </dl>
-        <dl id="menu-system">
+        </dl>--}}
+        {{--<dl id="menu-system">
             <dt><i class="Hui-iconfont">&#xe62e;</i> 系统管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
@@ -156,7 +157,7 @@
                     <li><a data-href="system-log.html" data-title="系统日志" href="javascript:void(0)">系统日志</a></li>
                 </ul>
             </dd>
-        </dl>
+        </dl>--}}
     </div>
 </aside>
 <div class="dislpayArrow hidden-xs"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>

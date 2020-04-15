@@ -12,9 +12,12 @@ class LoginController extends Controller
     //前台登陆页面
     public function login() {
         //dd(\Session::get("userInfo"));
-        if (\Session::get('userInfo')) {
-            return view('home.index.index');
+        $info = \Session::get('userInfo') ?? 0;
+
+        if ($info) {
+            return redirect("/home/index");
         } else {
+            //dd($info);
             //展示登陆页面
             return view('home.login.index');
         }
@@ -23,7 +26,7 @@ class LoginController extends Controller
 
     //验证数据
     public function check(Request $request){
-
+        //dd(1);
         // 开始自动认证
         $this -> validate($request,[
             // 验证规则语法   需要验证的字段名 => '验证规则1|验证规则2|验证规则3:20|...'
@@ -66,25 +69,33 @@ class LoginController extends Controller
             $this -> validate($request,[
                 // 验证规则语法   需要验证的字段名 => '验证规则1|验证规则2|验证规则3:20|...'
                 // 用户账号，必填，长度介于2-20
-                'username' => 'required|min:2|max:20|unique:username',
+                'username' => 'required|min:2|max:20',
                 //用户姓名,必填,长度介于2-20
-                'name'  => 'required|min:2|max:20|unique:name',
+                'name'  => 'required|min:2|max:20',
                 // 密码，必填，长度至少是6
-                'password' => 'required|min:6|same:repassword|max:20',
+                'password' => 'required|min:6|same:password2|max:20',
             ]);
             $userInfo = array(
                 'name' => $name,
                 'username' => $username,
-                'password' => $password,
+                'password' => bcrypt($password),
             );
-            $result = User::insert($userInfo);
-            if($result) {
-                return "注册成功! ";
+            //  判断username是否出现过
+            $db_username = \DB::table('user') -> where('username',$username) -> get();
+
+            if (count($db_username) == 0) {
+                $result = User::insert($userInfo);
+                if($result) {
+                    return 1;
+                } else {
+                    return redirect('/home/register') -> withErrors([
+                        'registerError' => '有错误'
+                    ]);
+                }
             } else {
-                return redirect('/admin/register') -> withErrors([
-                    'registerError' => '有错误'
-                ]);
+                return response()->json(['msg'=>"用户名已存在","status"=>422]);
             }
+
         }
 
     }
@@ -94,8 +105,9 @@ class LoginController extends Controller
     public function logout(Request $request) {
         // 退出
         Auth::guard('user')->logout();
+        \Session::flush();
         // 跳转到登陆页面
-        return view('home.login.index');
+        return redirect("/home/login");
     }
 
 

@@ -180,19 +180,19 @@ class UserController extends Controller
             $newPass = $request -> get('newPass');
             $reNewPass = $request -> get('reNewPass');
             $userPass = User::where('id',$id) -> value('password');
-            if(\Hash::check($oldPass, $userPass)) {
+//            if(\Hash::check($oldPass, $userPass)) {
                 //判断两次密码是否相同
-                if($newPass == $reNewPass) {
-                    //密码更新
-                    $result = User::where('id',$id) -> update(['password' => bcrypt($newPass)]);
-                    return $result ? 1 : 0;
-                } else {
-                    return "两次密码不同";
-                }
-
+            if($newPass == $reNewPass) {
+                //密码更新
+                $result = User::where('id',$id) -> update(['password' => bcrypt($newPass)]);
+                return $result ? 1 : 0;
             } else {
-                return "密码错误";
+                return "两次密码不同";
             }
+
+                /*} else {
+                    return "密码错误";
+                }*/
         }
 
     }

@@ -19,6 +19,7 @@
     <!-- JQuery插件JS引入 -->
     <script src="/home/js/jquery-1.11.0.min.js"></script>
     <script src="/home/js/jquery.easy_slides.js"></script>
+    <script type="text/javascript" src="/admin/lib/layer/2.4/layer.js"></script>
 
 </head>
 <body>
@@ -41,7 +42,7 @@
                 <li class="active"><a href="/home/usecheck">我的项目 <span class="sr-only">(current)</span></a></li>
                 {{--<li ><a >创建模板</a></li>--}}
                 <li><a href="/home/participate">参与投票</a></li>
-                <li class="dropdown">
+                {{--<li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">企业帮助 <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="#">Action</a></li>
@@ -52,13 +53,14 @@
                         <li role="separator" class="divider"></li>
                         <li><a href="#">One more separated link</a></li>
                     </ul>
-                </li>
+                </li>--}}
             </ul>
-            <form class="navbar-form navbar-left">
+            <form class="navbar-form navbar-left" method="post" >
+                {{ csrf_field() }}
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search">
+                    <input type="text" class="form-control" placeholder="Search" name="title">
                 </div>
-                <button type="submit" class="btn btn-default">搜索</button>
+                <button type="submit"   class="btn btn-default">搜索</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
                 @if( !\Session::get('userInfo') )
@@ -88,11 +90,17 @@
     </li>
     @foreach($checkInfo as $value)
         <li class="list"><input type="hidden" name="id" value="{{ $value->id }}">{{ csrf_field() }}
-        <a href="/home/editcheck?id={{ $value -> id }}" class="survey-name" style="text-decoration: none" target="_blank" onclick="editCheck(this)"></span>{{ $value -> title }}</a><br/>
-        <span><span color='3B7CB9'>已审核</span>&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><br/>
+        <a href="javascript:;" class="survey-name" style="text-decoration: none" target="_blank" onclick="editCheck(this ,'{{ $value->id }}')">{{ $value -> title }}</a><br/>
+        <span><span color='3B7CB9'>
+                @if($value->statue == 1)
+                <button class="btn btn-default" onclick="publish(this,{{ $value->id }})" status="1">未发布</button>
+                @elseif($value->statue == 0)
+                <button class="btn btn-default" onclick="publish(this,{{ $value->id }})" status="0">发布中</button>
+                @endif
+            </span>&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><br/>
         <span><button type='button' class='btn btn-primary glyphicon glyphicon-trash' onclick="dellAll(this)"></button></span>
-        <span><button type='button' class='btn btn-primary' >导出</button></span>
-        <span><button type='button' class='btn btn-primary' onclick="analysis(this)">analysis</button></span>
+        <span><button type='button' class='btn btn-primary' onclick="export_quest(this,{{ $value->id }}) ">导出</button></span>
+        <span><button type='button' class='btn btn-primary' onclick="analysis(this,{{ $value -> id }})">analysis</button></span>
         <div class="time">日期</div>
         </li>
     @endforeach
@@ -116,29 +124,148 @@
         {{--<div class="time">日期</div>--}}
     {{--</li>--}}
     <script>
-        //  删除某一个调查问卷
-        function dellAll(obj) {
-            //  获取ID
-            var id = $(obj).parents("li").find('input').attr('value');
+
+        //  搜索
+        function search(obj) {
+            var title = $(obj).prev().find('input').val();
             $.ajax({
                 type: 'POST',
-                url: '/home/delall',
+                url: '/home/usecheck',
                 dataType: "json",
                 data:{
-                    'id' : id,
+                    'title' : title,
                     '_token':$('input[name=_token]').val(),
                 },
                 complete : function(msg) {
 
                 },
                 success : function(data) {
-                    $(obj).parents('li').remove();
+
                 }
             });
         }
-        //  试卷分析
-        function analysis(obj) {
 
+        //  发布中无法点击
+        function editCheck(obj,id) {
+            var statue = $(obj).parents("li").find("button:first-child").attr('status');
+            if (statue == 0) {
+                layer.msg('统计中，无法编辑');
+            }
+            if(statue == 1) {
+                window.location.href = "/home/editcheck?id="+id;
+            }
+        }
+
+        //  删除某一个调查问卷
+        function dellAll(obj) {
+            layer.confirm('您确定要删除吗？', {
+                btn: ['是','否'] //按钮
+            },function(){
+                //  获取ID
+                var id = $(obj).parents("li").find('input').attr('value');
+                $.ajax({
+                    type: 'POST',
+                    url: '/home/delall',
+                    dataType: "json",
+                    data:{
+                        'id' : id,
+                        '_token':$('input[name=_token]').val(),
+                    },
+                    complete : function(msg) {
+
+                    },
+                    success : function(data) {
+                        $(obj).parents('li').remove();
+                    }
+                });
+                layer.msg('删除成功', {icon: 1});
+            });
+
+        }
+
+        //  试卷导出
+        function export_quest (obj,questId) {
+            //  提示层
+            layer.msg('正在导出');
+            window.location.href = "/home/export_quest?id="+questId;
+        }
+        //  试卷分析
+        function analysis(obj,id) {
+            window.location.href = "/home/checkdata?id="+id
+        }
+
+        //  试卷发布与未发布
+        function publish(obj,id) {
+            var status = $(obj).attr('status');
+//询问框
+
+            if (status == 1 ) {
+                //询问框
+                layer.confirm('您确定要发布吗？', {
+                    btn: ['是','否'] //按钮
+                }, function(){
+                    $.ajax({
+                        type: 'POST',
+                        url: '/home/pub_status',
+                        dataType: "json",
+                        data:{
+                            'id' : id,
+                            'pub_status' : status,
+                            '_token':$('input[name=_token]').val(),
+                        },
+                        complete : function(msg) {
+
+                        },
+                        success : function(data) {
+                            if (data == 1) {
+                                var new_status = 1 - status;
+                                $(obj).attr('status',new_status);
+                                $(obj).html("已发布");
+                                layer.msg('发布成功', {icon: 1});
+                            }
+
+                        }
+                    });
+                }, function(){
+                    /*layer.msg('也可以这样', {
+                        time: 20000, //20s后自动关闭
+                        btn: ['明白了', '知道了']
+                    });*/
+                });
+            }
+            if (status == 0 ) {
+                //询问框
+                layer.confirm('您确定要取消发布吗？数据也将删除', {
+                    btn: ['是','否'] //按钮
+                }, function(){
+                    $.ajax({
+                        type: 'POST',
+                        url: '/home/pub_status',
+                        dataType: "json",
+                        data:{
+                            'id' : id,
+                            'pub_status' : status,
+                            '_token':$('input[name=_token]').val(),
+                        },
+                        complete : function(msg) {
+
+                        },
+                        success : function(data) {
+                            if (data.status != 422) {
+                                var new_status = 1 - status;
+                                $(obj).attr('status',new_status);
+                                $(obj).html("未发布");
+                                layer.msg('已取消发布', {icon: 1});
+                            }
+                        }
+                    });
+                }, function(){
+                    /*layer.msg('也可以这样', {
+                        time: 20000, //20s后自动关闭
+                        btn: ['明白了', '知道了']
+                    });*/
+                });
+            }
         }
 
     </script>

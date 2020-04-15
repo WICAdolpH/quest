@@ -4,6 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>小猪首页</title>
     <!-- css引入 -->
     <link rel="stylesheet" href="/home/css/bootstrap.min.css">
@@ -40,25 +41,25 @@
                 <li class="active"><a href="#">首页 <span class="sr-only">(current)</span></a></li>
                 <li><a href="/home/usecheck">创建模板</a></li>
                 <li><a href="/home/participate">参与调查</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">企业帮助 <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">One more separated link</a></li>
-                    </ul>
-                </li>
+                {{--<li class="dropdown">--}}
+                    {{--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">企业帮助 <span class="caret"></span></a>--}}
+                    {{--<ul class="dropdown-menu">--}}
+                        {{--<li><a href="#">Action</a></li>--}}
+                        {{--<li><a href="#">Another action</a></li>--}}
+                        {{--<li><a href="#">Something else here</a></li>--}}
+                        {{--<li role="separator" class="divider"></li>--}}
+                        {{--<li><a href="#">Separated link</a></li>--}}
+                        {{--<li role="separator" class="divider"></li>--}}
+                        {{--<li><a href="#">One more separated link</a></li>--}}
+                    {{--</ul>--}}
+                {{--</li>--}}
             </ul>
-            <form class="navbar-form navbar-left">
+            {{--<form class="navbar-form navbar-left">
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="Search">
                 </div>
                 <button type="submit" class="btn btn-default">搜索</button>
-            </form>
+            </form>--}}
             <ul class="nav navbar-nav navbar-right">
                 @if( !\Session::get('userInfo') )
                 <li><a href="/home/login">登陆</a></li>
@@ -223,7 +224,7 @@
         </div> -->
         <div class="section-2">
             <div class="right col-lg-6 col-md-4 col-xs-12"  ><img src="/home/image/section1.png"  alt=""/></div>
-            <div class="left section-text col-lg-3  col-md-2 col-xs-12" style="margin-left: 20em;">
+            <div class="left section-text col-lg-3  col-md-2 col-xs-12" style="margin-left: 15em;">
                 <h3>快速轻松创建问卷</h3>
                 <ul>
                     <li>27种题型涵盖各种问卷设计需求</li>
@@ -240,7 +241,7 @@
             <div class="left col-lg-6 col-md-4 col-xs-12">
                 <img src="/home/image/section2.png "  alt=""/>
             </div>
-            <div class="right section-text col-lg-3  col-md-2 col-xs-12 " style="margin-right: 20em">
+            <div class="right section-text col-lg-3  col-md-2 col-xs-12 " style="margin-right: 25em">
                 <h3>多种渠道分享</h3>
                 <ul>
                     <li>不限答卷收集数量</li>
@@ -254,7 +255,7 @@
         </div>
         <div class="section-4">
             <div class="right col-lg-6 col-md-4 col-xs-12"><img src="/home/image/section3.png"  alt=""/></div>
-            <div class="left section-text col-lg-3  col-md-2 col-xs-12" style="margin-left: 300px">
+            <div class="left section-text col-lg-3  col-md-2 col-xs-12" style="margin-left: 15em">
                 <h3>实时的分析图表</h3>
                 <ul>
                     <li>直接生成各种精美报表</li>

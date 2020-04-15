@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use DB;
 use Illuminate\Support\Facades\Session;
 use function MongoDB\BSON\toJSON;
+use Auth;
 
 class ParticipateCheckController extends Controller
 {
@@ -14,18 +15,32 @@ class ParticipateCheckController extends Controller
     public function index(Request $request) {
         //  开启闪存
         $request->flash();
-        //  从数据取数据，加载页面
-        $quest = DB::table("quest") -> paginate(6);
-        foreach ($quest as $key => $value) {
-            $userId = $value -> user_id;
-            $name = DB::table('user') -> where('id',$userId) -> value('name');
-            $quest[$key] -> name = $name;
+        if (!$request -> get('title')) {
+            //  从数据取数据，加载页面
+            $quest = DB::table("quest") -> where('statue',0)-> paginate(6);
+            foreach ($quest as $key => $value) {
+                $userId = $value -> user_id;
+                $name = DB::table('user') -> where('id',$userId) -> value('name');
+                $quest[$key] -> name = $name;
+            }
+            return view('home.participate.index',compact('quest'));
+        } else {
+            //  从数据取数据，加载页面
+            $quest = DB::table("quest") -> where('statue',0)-> paginate(6);
+            foreach ($quest as $key => $value) {
+                $userId = $value -> user_id;
+                $name = DB::table('user') -> where('id',$userId) -> where('title',"like",'%'.$request->get('title')."%") -> value('name');
+                $quest[$key] -> name = $name;
+            }
+            return view('home.participate.index',compact('quest'));
         }
-        return view('home.participate.index',compact('quest'));
+
     }
 
     //  参与调查
     public function toParticipate(Request $request) {
+        $username = \Session::get("userInfo");
+        $userId = DB::table('user') -> where('username',$username) -> value('id');
         //  展现调查页面
         $questionnaire = "";
         $result = 1;
@@ -45,8 +60,9 @@ class ParticipateCheckController extends Controller
         //$quest_title = json_encode($quest_title);
         //dd($quest_title);
         //dd($questArr);
+        $typeNum = 0;
         if(count($questArr)==0) {
-            return view("home.participate.toParticipate",compact(["quest","questionnaire",'quest_title','quest_title1','questId']));
+            return view("home.participate.toParticipate",compact(["quest","questionnaire",'quest_title','quest_title1','questId','userId']));
         } else {
             foreach ($questArr as $key => $value) {
                 $type = DB::table('type') -> where('id',$value) -> value('title');
@@ -58,8 +74,8 @@ class ParticipateCheckController extends Controller
                 }
                 switch ( $type ) {
                     case 'radio' :
-                        $typeId = DB::table('radio') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                        $title = DB::table('radio') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                        $typeId = DB::table('radio') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                        $title = DB::table('radio') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                         $option = DB::table('radio_res') -> where('f_id',$typeId) -> pluck('content');
                         $arr = "type:radio|title:{$title}";
                         foreach ($option as $key => $value) {
@@ -68,8 +84,8 @@ class ParticipateCheckController extends Controller
                         $questionnaire = $questionnaire.$arr.",";
                         break;
                     case 'radio_multi' :
-                        $typeId = DB::table('radio_multi') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                        $title = DB::table('radio_multi') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                        $typeId = DB::table('radio_multi') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                        $title = DB::table('radio_multi') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                         $option = DB::table('radio_multi_res') -> where('f_id',$typeId) -> pluck('content');
                         $arr = "type:radioMulti|title:{$title}";
                         foreach ($option as $key => $value) {
@@ -78,8 +94,8 @@ class ParticipateCheckController extends Controller
                         $questionnaire = $questionnaire.$arr.",";
                         break;
                     case 'gapfill' :
-                        $typeId = DB::table('gapfill') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                        $title = DB::table('gapfill') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                        $typeId = DB::table('gapfill') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                        $title = DB::table('gapfill') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                         $option = DB::table('gapfill_res') -> where('f_id',$typeId) -> pluck('content');
                         $arr = "type:gapFill|title:{$title}";
                         foreach ($option as $key => $value) {
@@ -88,8 +104,8 @@ class ParticipateCheckController extends Controller
                         $questionnaire = $questionnaire.$arr.",";
                         break;
                     case 'gapfill_multi' :
-                        $typeId = DB::table('gapfill_multi') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                        $title = DB::table('gapfill_multi') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                        $typeId = DB::table('gapfill_multi') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                        $title = DB::table('gapfill_multi') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                         $option = DB::table('gapfill_multi_res') -> where('f_id',$typeId) -> pluck('content');
                         $arr = "type:gapMultiFill|title:{$title}";
                         foreach ($option as $key => $value) {
@@ -98,19 +114,19 @@ class ParticipateCheckController extends Controller
                         $questionnaire = $questionnaire.$arr.",";
                         break;
                     case 'score' :
-                        $typeId = DB::table('score') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                        $title = DB::table('score') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                        $typeId = DB::table('score') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                        $title = DB::table('score') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                         $arr = "type:score|title:{$title}";
                         $questionnaire = $questionnaire.$arr.",";
                         break;
                     case 'descr' :
-                        $typeId = DB::table('descr') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                        $title = DB::table('descr') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                        $typeId = DB::table('descr') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                        $title = DB::table('descr') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                         $arr = "type:descr|title:{$title}";
                         $questionnaire = $questionnaire.$arr.",";
                         break;
                     case 'page' :
-                        $typeId = DB::table('page') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
+                        $typeId = DB::table('page') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('id');
                         //  统计分页总数
                         $quest = DB::table('quest') -> where('id',$questId) -> value('quest');
                         $quest = ltrim($quest,",");
@@ -126,61 +142,61 @@ class ParticipateCheckController extends Controller
                         $questionnaire = $questionnaire.$arr.",";
                         break;
                     case 'hr' :
-                        $typeId = DB::table('hr') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
+                        $typeId = DB::table('hr') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('id');
                         $arr = "type:hr";
                         $questionnaire = $questionnaire.$arr.",";
                         break;
                     case 'name' :
-                        $typeId = DB::table('name') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                        $title = DB::table('name') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                        $typeId = DB::table('name') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                        $title = DB::table('name') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                         $arr = "type:name|title:{$title}";
                         $questionnaire = $questionnaire.$arr.",";
                         break;
                     case 'phone' :
-                        $typeId = DB::table('phone') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                        $title = DB::table('phone') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                        $typeId = DB::table('phone') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                        $title = DB::table('phone') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                         $arr = "type:phone|title:{$title}";
                         $questionnaire = $questionnaire.$arr.",";
                         break;
                     case 'email' :
-                        $typeId = DB::table('email') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                        $title = DB::table('email') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                        $typeId = DB::table('email') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                        $title = DB::table('email') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                         $arr = "type:email|title:{$title}";
                         $questionnaire = $questionnaire.$arr.",";
                         break;
                     case 'sex' :
-                        $typeId = DB::table('sex') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                        $title = DB::table('sex') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                        $typeId = DB::table('sex') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                        $title = DB::table('sex') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                         $arr = "type:sex|title:{$title}";
                         $questionnaire = $questionnaire.$arr.",";
                         break;
                     case 'date' :
-                        $typeId = DB::table('date') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                        $title = DB::table('date') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                        $typeId = DB::table('date') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                        $title = DB::table('date') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                         $arr = "type:date|title:{$title}";
                         $questionnaire = $questionnaire.$arr.",";
                         break;
                     case 'time' :
-                        $typeId = DB::table('time') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                        $title = DB::table('time') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                        $typeId = DB::table('time') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                        $title = DB::table('time') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                         $arr = "type:time|title:{$title}";
                         $questionnaire = $questionnaire.$arr.",";
                         break;
                     case 'city' :
-                        $typeId = DB::table('city') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                        $title = DB::table('city') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                        $typeId = DB::table('city') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                        $title = DB::table('city') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                         $arr = "type:city|title:{$title}";
                         $questionnaire = $questionnaire.$arr.",";
                         break;
                     case 'address' :
-                        $typeId = DB::table('address') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                        $title = DB::table('address') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                        $typeId = DB::table('address') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                        $title = DB::table('address') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                         $arr = "type:address|title:{$title}";
                         $questionnaire = $questionnaire.$arr.",";
                         break;
                     case  'matrix_radio' :
-                        $typeId = DB::table('matrix_radio') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                        $title = DB::table('matrix_radio') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                        $typeId = DB::table('matrix_radio') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                        $title = DB::table('matrix_radio') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                         $row = DB::table('matrix_radio_row') -> where('f_id',$typeId) -> pluck('content');
                         $col = DB::table('matrix_radio_col') -> where('f_id',$typeId) -> pluck('content');
                         $arr = "type:matrixRadio|title:{$title}";
@@ -193,8 +209,8 @@ class ParticipateCheckController extends Controller
                         $questionnaire = $questionnaire.$arr.",";
                         break;
                     case  'matrix_score' :
-                        $typeId = DB::table('matrix_score') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                        $title = DB::table('matrix_score') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                        $typeId = DB::table('matrix_score') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                        $title = DB::table('matrix_score') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                         $row = DB::table('matrix_score_row') -> where('f_id',$typeId) -> pluck('content');
                         $col = DB::table('matrix_score_col') -> where('f_id',$typeId) -> pluck('content');
                         $arr = "type:matrixScore|title:{$title}";
@@ -207,8 +223,8 @@ class ParticipateCheckController extends Controller
                         $questionnaire = $questionnaire.$arr.",";
                         break;
                     case  'matrix_gapfill' :
-                        $typeId = DB::table('matrix_gapfill') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                        $title = DB::table('matrix_gapfill') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                        $typeId = DB::table('matrix_gapfill') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                        $title = DB::table('matrix_gapfill') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                         $row = DB::table('matrix_gapfill_row') -> where('f_id',$typeId) -> pluck('content');
                         $col = DB::table('matrix_gapfill_col') -> where('f_id',$typeId) -> pluck('content');
                         $arr = "type:matrixGapFill|title:{$title}";
@@ -223,7 +239,10 @@ class ParticipateCheckController extends Controller
                 }
             }
         }
-        return view("home.participate.toParticipate",compact(["quest","questionnaire",'quest_title','quest_title1']));
+        $typeNum = $typeNum==0 ? 1 : $typeNum;
+
+        //dd($typeNum);
+        return view("home.participate.toParticipate",compact(["quest","questionnaire",'quest_title','quest_title1','userId','typeNum']));
     }
 
     public function outPutJson($data, $code = 200, $message = NULL) {
@@ -253,6 +272,7 @@ class ParticipateCheckController extends Controller
             "checkInfo" => old('checkInfo'),
             'questId' => $questId
         ];
+        //dd($oldArr1);
         //var_dump($page);
         foreach ($oldArr as $key => &$value) {
             if(isset($value['page'])) {
@@ -276,12 +296,13 @@ class ParticipateCheckController extends Controller
         //  用户信息
         $userName = \Session::get("userInfo");
         $userId = DB::table("user") -> where("username",$userName) -> value('id');
-
+        $userId = Auth::user()->id;
         //  对数据进行整理
         $checkInfo = ltrim($checkInfo,",");
         $checkInfoArr = explode(",",$checkInfo);
         $checkInfoArr1 = $checkInfoArr;
         $result = 1;
+        //dd($checkInfoArr1);
         if($checkInfo) {
             foreach ($checkInfoArr1 as $num1 => $value) {
                 $arrType = [];
@@ -312,7 +333,7 @@ class ParticipateCheckController extends Controller
                         }
                         $num = $num+$arrType['sum'];
                         //  获取radioId
-                        $radioId = DB::table("radio") -> where("quest_id",$questId) -> offset($num) -> limit(1) -> value("id");
+                        $radioId = DB::table("radio") -> where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> value("id");
 
                         //  清楚用户现有的投票
                         $idSet = DB::table("radio_res") -> where("f_id",$radioId) -> pluck("id");
@@ -332,8 +353,8 @@ class ParticipateCheckController extends Controller
                                 $val |= (int)$optionVal;
 
                                 if($optionVal == 1) {
-                                    $resultId = DB::table("radio_res") -> where('f_id',$radioId) -> offset($optionNum) -> limit(1) -> value("id");
-                                    $voter = DB::table("radio_res") -> where('f_id',$radioId) -> offset($optionNum) -> limit(1) -> value("voter_id");
+                                    $resultId = DB::table("radio_res") -> where('f_id',$radioId)->orderBy('f_id') -> offset($optionNum) -> limit(1) -> value("id");
+                                    $voter = DB::table("radio_res") -> where('f_id',$radioId)->orderBy('f_id') -> offset($optionNum) -> limit(1) -> value("voter_id");
                                     $voter = $voter.",".$userId;
                                     $result &= DB::table("radio_res") -> where('id',$resultId) -> update(["voter_id"=>$voter]);
                                 }
@@ -377,7 +398,7 @@ class ParticipateCheckController extends Controller
                         }
                         $num = $num+$arrType['sum'];
                         //  获取radioId
-                        $radioId = DB::table("radio_multi") -> where("quest_id",$questId) -> offset($num) -> limit(1) -> value("id");
+                        $radioId = DB::table("radio_multi") -> where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> value("id");
 
                         //  清楚用户现有的投票
                         $idSet = DB::table("radio_multi_res") -> where("f_id",$radioId) -> pluck("id");
@@ -387,17 +408,19 @@ class ParticipateCheckController extends Controller
                             $result &= DB::table("radio_multi_res") -> where('id',$val) -> update(["voter_id"=>$voter]);
                         }
                         $val = 0;
+
                         foreach ($arrType as $options => $optionVal) {
                             preg_match_all("/(option)/",$options,$option1);
                             $option1 = implode("",$option1[0]);
-                            $val |= (int)$optionVal;
+
+                            $val = $val|(int)$optionVal;
                             if($option1 == "option") {
                                 preg_match("/\d+/",$options,$optionNum);
                                 //$optionNum = implode("",$optionNum[0]);
                                 $optionNum = $optionNum[0] - 1;
                                 if($optionVal == 1) {
-                                    $resultId = DB::table("radio_multi_res") -> where('f_id',$radioId) -> offset($optionNum) -> limit(1) -> value("id");
-                                    $voter = DB::table("radio_multi_res") -> where('f_id',$radioId) -> offset($optionNum) -> limit(1) -> value("voter_id");
+                                    $resultId = DB::table("radio_multi_res") -> where('f_id',$radioId)->orderBy('id') -> offset($optionNum) -> limit(1) -> value("id");
+                                    $voter = DB::table("radio_multi_res") -> where('f_id',$radioId)->orderBy('id') -> offset($optionNum) -> limit(1) -> value("voter_id");
                                     $voter = $voter.",".$userId;
                                     $result &= DB::table("radio_multi_res") -> where('id',$resultId) -> update(["voter_id"=>$voter]);
                                 }
@@ -407,8 +430,9 @@ class ParticipateCheckController extends Controller
                         $arr = [
                             'val' => $val
                         ];
+
                         $rules = [
-                            'val' => "regex:/1/"
+                            'val' => 'min:1'
                         ];
                         $num2 = $num1 + 1;
                         $message = [
@@ -422,6 +446,7 @@ class ParticipateCheckController extends Controller
                         } else {
                             $validatorErrs = $validator->errors()->all();
                             $errMessages = ['status' => 422, 'msg' => $validatorErrs];
+                            return $val;
                             return response()->json([ 'status'=>'422', 'msg' => $validator->errors()->first() ]);
                         }
                         break;
@@ -440,31 +465,37 @@ class ParticipateCheckController extends Controller
                             }
                         }
                         $num = $num+$arrType['sum'];
-                        $num = $num -1 ;
+                        //$num = $num -1 ;
                         //  数据判断
                         $num2 = $num1 +1;
                         if($arrType['option'] == null) {
                             return response()->json([ 'status'=>'422', 'msg' => "请完成第{$num2}道题"]);
                         }
                         //  获取radioId
-                        $radioId = DB::table("gapfill") -> where("quest_id",$questId) -> offset($num) -> limit(1) -> value("id");
-                        $voterId = DB::table("gapfill") ->  where("quest_id",$questId) -> offset($num) -> limit(1) -> value("voter_id");
-                        $bool = strpos($voterId,",".$userId);
+                        $radioId = DB::table("gapfill") -> where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> value("id");
+                        $voterId = DB::table("gapfill") ->  where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> value("voter_id");
 
+                        $bool = strpos($voterId,(string)$userId);
+                        //if ($num1 == 1) dd($num1,$bool);
+
+                        //dd($arrType);
+                        //dd($bool);
                         if($bool !== false) {
                             //  如果投票用户存在则直接修改数据
                             $result &= DB::table("gapfill_res") -> where('f_id',$radioId) -> update(['content'=>$arrType['option']]);
-                        } else if($bool === false){
+                        } else if($bool === false) {
                             //  如果投票用户不存在创建数据
                             $arr = [
                                 'content' => $arrType['option'],
                                 "f_id" => $radioId,
                                 "voter_id" => $userId
                             ];
-                            $result &= DB::table("gapfill_res") -> insertGetId($arr);
+                            $result &=  $curId = DB::table("gapfill_res") -> insertGetId($arr);
                             $voterId .= ",".$userId;
-                            $result &= DB::table("gapfill") -> where("quest_id",$questId) -> offset($num) -> limit(1) -> update(["voter_id"=>$voterId]);
+                            $result &= DB::table("gapfill") -> where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> update(["voter_id"=>$voterId]);
                         }
+
+                        var_dump($curId,$num1);
 
                         break;
                     case "gapMultiFill" :
@@ -482,7 +513,7 @@ class ParticipateCheckController extends Controller
                         }
                         $num = $num+$arrType['sum'];
                         //  获取radioId
-                        $radioId = DB::table("gapfill_multi") -> where("quest_id",$questId) -> offset($num) -> limit(1) -> value("id");
+                        $radioId = DB::table("gapfill_multi") -> where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> value("id");
                         $num2 = $num1 +1;
                         foreach ($arrType as $options => $optionVal) {
                             if($optionVal == null) {
@@ -494,9 +525,10 @@ class ParticipateCheckController extends Controller
                                 preg_match("/\d+/",$options,$optionNum);
                                 //$optionNum = implode("",$optionNum[0]);
                                 $optionNum = $optionNum[0] - 1;
-                                $resultId = DB::table("gapfill_multi_res") -> where("f_id",$radioId) -> offset($optionNum) -> limit(1) -> value('id');
+                                //var_dump($radioId);
+                                $resultId = DB::table("gapfill_multi_res") -> where("f_id",$radioId)->orderBy('id') -> offset($optionNum) -> limit(1) -> value('id');
                                 // 接受voter 看是否投过票 没有则创建 否则修改
-                                $voterId = DB::table("gapfill_multi_res") -> where("f_id",$radioId) -> offset($optionNum) -> limit(1) -> value('voter_id');
+                                $voterId = DB::table("gapfill_multi_res") -> where("f_id",$radioId)->orderBy('id') -> offset($optionNum) -> limit(1) -> value('voter_id');
                                 $bool = strpos($voterId,",".$userId);
                                 if($bool === false) {
                                     //  创建
@@ -528,31 +560,34 @@ class ParticipateCheckController extends Controller
                                 }
                             }
                         }
-                        $num = $num+$arrType['sum'];
-                        $num = $num -1 ;
+                        $num = $arrType['sum'];
+                        //$num = $num -1 ;
                         //  数据判断
-                        $num2 = $num1 +1;
+                        $num2 = $num +1;
                         if($arrType['option'] == null) {
                             return response()->json([ 'status'=>'422', 'msg' => "请完成第{$num2}道题"]);
                         }
                         //  获取radioId
-                        $radioId = DB::table("score") -> where("quest_id",$questId) -> offset($num) -> limit(1) -> value("id");
-                        $voterId = DB::table("score") ->  where("quest_id",$questId) -> offset($num) -> limit(1) -> value("voter_id");
-                        $bool = strpos($voterId,",".$userId);
-
+                        $radioId = DB::table("score") -> where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> value("id");
+                        $voterId = DB::table("score") ->  where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> value("voter_id");
+                        $bool = strpos($voterId,(string)$userId);
+                        var_dump($radioId,$bool);
                         if($bool !== false) {
                             //  如果投票用户存在则直接修改数据
-                            $result &= DB::table("score_res") -> where('f_id',$radioId) -> update(['content'=>$arrType['option']]);
-                        } else if($bool === false){
+                            var_dump("***");
+
+                            $result &= DB::table("score_res") -> where('f_id',$radioId) ->limit(1)-> update(['content'=>$arrType['option']]);
+                        } else{
                             //  如果投票用户不存在创建数据
                             $arr = [
                                 'content' => $arrType['option'],
                                 "f_id" => $radioId,
                                 "voter_id" => $userId
                             ];
-                            $result &= DB::table("score_res") -> insertGetId($arr);
+                            $result &= DB::table("score_res") -> insert($arr);
                             $voterId .= ",".$userId;
-                            $result &= DB::table("score") -> where("quest_id",$questId) -> offset($num) -> limit(1) -> update(["voter_id"=>$voterId]);
+                            $curId = DB::table("score") -> where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1)->value('id');
+                            $result &= DB::table("score") -> where("id",$curId)->update(["voter_id"=>$voterId]);
                         }
 
                         break;
@@ -572,8 +607,8 @@ class ParticipateCheckController extends Controller
                         $num = $num+$arrType['sum'];
                         $num = $num - 1;
                         //  获取radioId
-                        $radioId = DB::table("name") -> where("quest_id",$questId) -> offset($num) -> limit(1) -> value("id");
-                        $voterId = DB::table("name") ->  where("quest_id",$questId) -> offset($num) -> limit(1) -> value("voter_id");
+                        $radioId = DB::table("name") -> where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> value("id");
+                        $voterId = DB::table("name") ->  where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> value("voter_id");
                         $bool = strpos($voterId,",".$userId);
                         $num2 = $num1 +1;
                         if($arrType['option'] == null) {
@@ -591,7 +626,7 @@ class ParticipateCheckController extends Controller
                             ];
                             $result &= DB::table("name_res") -> insertGetId($arr);
                             $voterId .= ",".$userId;
-                            $result &= DB::table("name") -> where("quest_id",$questId) -> offset($num) -> limit(1) -> update(["voter_id"=>$voterId]);
+                            $result &= DB::table("name") -> where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> update(["voter_id"=>$voterId]);
                         }
                         break;
                     case 'date' :
@@ -616,8 +651,8 @@ class ParticipateCheckController extends Controller
                             return response()->json([ 'status'=>'422', 'msg' => "请完成第{$num2}道题"]);
                         }
                         //  获取radioId
-                        $radioId = DB::table("date") -> where("quest_id",$questId) -> offset($num) -> limit(1) -> value("id");
-                        $voterId = DB::table("date") ->  where("quest_id",$questId) -> offset($num) -> limit(1) -> value("voter_id");
+                        $radioId = DB::table("date") -> where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> value("id");
+                        $voterId = DB::table("date") ->  where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> value("voter_id");
                         $bool = strpos($voterId,",".$userId);
 
                         if($bool !== false) {
@@ -632,7 +667,7 @@ class ParticipateCheckController extends Controller
                             ];
                             $result &= DB::table("date_res") -> insertGetId($arr);
                             $voterId .= ",".$userId;
-                            $result &= DB::table("date") -> where("quest_id",$questId) -> offset($num) -> limit(1) -> update(["voter_id"=>$voterId]);
+                            $result &= DB::table("date") -> where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> update(["voter_id"=>$voterId]);
                         }
 
                         break;
@@ -640,9 +675,9 @@ class ParticipateCheckController extends Controller
                         //  判断第几个
                         $num = -1;
                         $val = 0;
-                        $val1 = 0;
                         $val2=0;
                         $typeArr = $this->typeNum($questId);
+
                         foreach ($typeArr as $key => $value) {
                             if($key < $page) {
                                 foreach ($value as $val) {
@@ -653,9 +688,11 @@ class ParticipateCheckController extends Controller
                             }
                         }
                         $num = $num+$arrType['sum'];
+                        $num = $num + 1;
+
                         //  获取radioId
-                        $radioId = DB::table("matrix_radio") -> where("quest_id",$questId) -> offset($num) -> limit(1) -> value("id");
-                        $voterId =  DB::table("matrix_radio") -> where("quest_id",$questId) -> offset($num) -> limit(1) -> value("voter_id");
+                        $radioId = DB::table("matrix_radio") -> where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> value("id");
+                        $voterId =  DB::table("matrix_radio") -> where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> value("voter_id");
                         $bool = strpos($voterId,",".$userId);
                         if($bool === false) {
                             $voterId .= ",".$userId;
@@ -666,21 +703,40 @@ class ParticipateCheckController extends Controller
                         $result &= DB::table('matrix_radio_content') -> where('f_id',$radioId) -> where('voter_id',$userId) -> delete();
                         $maxRow = 0;
                         $maxCol = 0;
+                        $countCol = 0;
+                        //var_dump($arrType);
                         foreach ($arrType as $optionKey => $optionVal) {
                             preg_match_all("/\d+\.\d+/",$optionKey,$arr);
                             preg_match_all("/0\.\d+/",$optionKey,$val1);
                             $val1 = implode("",$val1[0]);
                             $arr = implode("",$arr[0]);
                             $arrCor = explode('.',$arr);
-                            foreach ($arrCor as $k => $val) {
-                                if($maxRow <= $k) {
-                                    $maxRow = $k;
+
+                            //var_dump($arr);
+
+
+                            if(count($arrCor) == 2) {
+                                if($maxRow <= $arrCor[0]) {
+                                    $maxRow = $arrCor[0];
                                 }
-                                if($maxCol <= $val) {
-                                    $maxCol = $val;
+                                if($maxCol <= $arrCor[1]) {
+                                    $maxCol = $arrCor[1];
                                 }
                             }
+
+
+
+                            /* if (count($val) == 2) {
+
+                                    if($maxRow <= $val[0]) {
+                                        $maxRow = $k;
+                                    }
+                                    if($maxCol <= $val[1]) {
+                                        $maxCol = $val;
+                                    }
+                                }*/
                             //  开始存值
+
                             if(isset($arrType[$arr])) {
                                 $val2++;
                                 $content = [
@@ -689,15 +745,19 @@ class ParticipateCheckController extends Controller
                                     'f_id' => $radioId,
                                     'voter_id' => $userId
                                 ];
-                                if($arrType[$arr] != "undefined" && $arrType[$arr] != null) {
-                                    $val++;
+                                //var_dump($arrType[$arr]);
+                                if($arrType[$arr] == "1") {
+                                    $countCol++;
+                                    //var_dump("val1:".$countCol);
                                     $resultId = DB::table("matrix_radio_content") -> insert($content);
                                 }
+
                             }
                         }
                         $num2 = $num1 +1;
-                        var_dump($maxCol.":".$val);
-                        if($maxCol != $val) {
+                        //var_dump($maxCol.":".$countCol);
+                        $maxCol1 = $maxCol + 1;
+                        if($maxCol1 != $countCol) {
                             return response()->json([ 'status'=>'422', 'msg' => "请完成第{$num2}道题"]);
                         }
                         break;
@@ -718,22 +778,23 @@ class ParticipateCheckController extends Controller
                             }
                         }
                         $num = $num+$arrType['sum'];
+                        $num = $num + 1;
                         //  获取radioId
-                        $radioId = DB::table("matrix_gapfill") -> where("quest_id",$questId) -> offset($num) -> limit(1) -> value("id");
-                        $voterId =  DB::table("matrix_gapfill") -> where("quest_id",$questId) -> offset($num) -> limit(1) -> value("voter_id");
+                        $radioId = DB::table("matrix_gapfill") -> where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> value("id");
+                        $voterId =  DB::table("matrix_gapfill") -> where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> value("voter_id");
                         $bool = strpos($voterId,",".$userId);
                         if($bool === false) {
                             $voterId .= ",".$userId;
-                            $result = DB::table('matrix_gapfill') -> where('id',$radioId)->where('voter_id',$userId) -> update(['voter_id'=>$voterId]);
+                            $result &= DB::table('matrix_gapfill') -> where('id',$radioId) -> update(['voter_id'=>$voterId]);
                         }
                         //  清除数据
-                        $result &= DB::table('matrix_gapfill_content') -> where('f_id',$radioId) -> delete();
+                        $result &= DB::table('matrix_gapfill_content') -> where('f_id',$radioId) -> where('voter_id',$userId) -> delete();
                         foreach ($arrType as $optionKey => $optionVal) {
                             preg_match_all("/\d+\.\d+/",$optionKey,$arr);
 
 
                             $arr = implode("",$arr[0]);
-                            var_dump($arrType);
+                            //var_dump($arrType);
                             //  开始存值
                             if(isset($arrType[$arr])) {
                                 $val2++;
@@ -772,16 +833,17 @@ class ParticipateCheckController extends Controller
                             }
                         }
                         $num = $num+$arrType['sum'];
+                        $num = $num + 1;
                         //  获取radioId
-                        $radioId = DB::table("matrix_score") -> where("quest_id",$questId) -> offset($num) -> limit(1) -> value("id");
-                        $voterId =  DB::table("matrix_score") -> where("quest_id",$questId) -> offset($num) -> limit(1) -> value("voter_id");
+                        $radioId = DB::table("matrix_score") -> where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> value("id");
+                        $voterId =  DB::table("matrix_score") -> where("quest_id",$questId)->orderBy('id') -> offset($num) -> limit(1) -> value("voter_id");
                         $bool = strpos($voterId,",".$userId);
                         if($bool === false) {
                             $voterId .= ",".$userId;
                             $result &= DB::table('matrix_score') -> where('id',$radioId)  -> update(['voter_id'=>$voterId]);
                         }
                         //  清除数据
-                        $result &= DB::table('matrix_score_content') -> where('f_id',$radioId) -> delete();
+                        $result &= DB::table('matrix_score_content') -> where('f_id',$radioId) ->  where('voter_id',$userId) -> delete();
                         foreach ($arrType as $optionKey => $optionVal) {
                             preg_match_all("/\d+\.\d+/",$optionKey,$arr);
                             $arr = implode("",$arr[0]);

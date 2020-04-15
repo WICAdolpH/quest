@@ -15,13 +15,9 @@ class TestController extends Controller
 
     public function test(Request $request) {
 
-        $option = DB::table('matrix_radio_content')-> select(DB::raw('count(*) as count, coordinates')) -> where('f_id',99) -> groupBy('coordinates') -> get() -> toArray();
-
-//                    var_dump($option[0] -> content);
-        //var_dump($num);
-        var_dump("<pre>");
-        var_dump($option);
-        var_dump("</pre>");
+        //$res = 0;
+        $res = DB::table('matrix_gapfill_content') -> select("coordinates","content")  -> where('f_id',21) -> where('voter_id',506) -> get();
+        var_dump($res);
     }
 
     public function typeNum() {

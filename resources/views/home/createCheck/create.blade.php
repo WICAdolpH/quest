@@ -44,11 +44,11 @@
                 </div>
                 <ul class="nav navbar-nav" style="float: right;margin-right: 30px">
                     <li>
-                        <a href="create.php" style="font-size: 18px;">首页</a>
+                        <a href="/home/index" style="font-size: 18px;">首页</a>
 
                     </li>
                     <li>
-                        <a href="./user.php" style="font-size: 18px;">我的问卷</a>
+                        <a href="/home/usecheck" style="font-size: 18px;">我的问卷</a>
                     </li>
                     <li>
                         <a href="#" style="font-size: 18px;">帮助中心</a>
@@ -116,19 +116,19 @@
                                     <div class="link"><span>个人信息</span><i class="fa fa-chevron-down"></i></div>
                                     <ul class="submenu">
                                         <li id="nameQuest" class="quest"><a>姓名</a></li>
-                                        <li id="phoneQuest" class="quest"><a>手机</a></li>
+                                        {{--<li id="phoneQuest" class="quest"><a>手机</a></li>
                                         <li id="emailQuest" class="quest"><a>邮箱</a></li>
-                                        <li id="sexQuest" class="quest"><a>性别</a></li>
+                                        <li id="sexQuest" class="quest"><a>性别</a></li>--}}
                                         <li id="dateQuest" class="quest"><a>日期</a></li>
-                                        <li id="timeQuest" class="quest"><a>时间</a></li>
+                                        {{--<li id="timeQuest" class="quest"><a>时间</a></li>
                                         <li id="cityQuest" class="quest"><a>城市/地址</a></li>
-                                        <li id="addressQuest" class="quest"><a>地理位置</a></li>
+                                        <li id="addressQuest" class="quest"><a>地理位置</a></li>--}}
                                     </ul>
                                 </li>
                                 <li>
                                     <div class="link"><span>其他题型</span><i class="fa fa-chevron-down"></i></div>
                                     <ul class="submenu">
-                                        <li id="usercomments" class="quest"><a>上传题</a></li>
+                                        {{--<li id="usercomments" class="quest"><a>上传题</a></li>--}}
                                         <li id="matrixRadioQuest" class="quest"><a>矩阵选择</a></li>
                                         <li id="matrixScoreQuest" class="quest"><a>矩阵打分</a></li>
                                         <li id="matrixGapFillQuest" class="quest"><a>矩阵填空</a></li>
@@ -144,6 +144,7 @@
                 </div>
             </div>
             <form action="/home/checksave" class="create-form " id="create-form" >
+                {{ csrf_field() }}
                 <a type="submit" class="btn btn-primary" value="保存" style="text-decoration: none;float:right;position: relative;margin-top: -45px;" id="sub" href="/home/usecheck">保存</a>
                 <div  class="create-title right " style="background: white; display: inline; margin-bottom: 20px;">
                     <input type="text" name="title" value="问卷标题" onchange="Edit(this)">
@@ -153,7 +154,7 @@
                            style="font-size: 20px; margin-top: -15px;"   onchange="Edit(this)">
 
                 </div>
-                {{ csrf_field() }}
+
             </form>
             <script src="/home/js/area/getArea.js"></script>
             <!-- 选择题单选选项 -->
@@ -257,7 +258,7 @@
                         {{--</span>--}}
                     </div>
                     <div style="display:inline;"><span class="glyphicon glyphicon-trash hide" style="width: 30px; height: 30px; margin-left: 80px;cursor: pointer;" onclick="delAll(this)"></span></div>
-                    <div class="allFormate gapMultiFill options">
+                    <div class="allFormate  options">
                         <input class="gapInput-title"  type="text" value="选项1" placeholder="选项1" name=""  onchange="toEdit(this)" id="option">
                         <br>
                         <input type="text " class="gapInput" name=""  class="allFormate-input" readonly="true" >
@@ -1065,7 +1066,7 @@
                 }
             },
             success : function(data) {
-                alert(111);
+                //alert(111);
             }
         });
     }
@@ -1073,6 +1074,7 @@
     //  判断数据来源  如果是1就是刷新来的页面 是0就是新创建的
     @if ($statue == 1)
         var quest = "{{ $questionnaire }}";
+        console.log(quest);
         //  开始拆分字符串 重新组合
         var questType = quest.trim();
         questType = questType.split(",");

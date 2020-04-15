@@ -239,10 +239,10 @@
 {{-- 矩阵分数提 --}}
 <script type="text/html" id="matrixScore">
     <!-- 矩阵分数题题 -->
-    <div class="divStyle fill gapFill">
+    <div class="divStyle fill score">
         <div class="anshed">
                 <span class="spanlh fL" title="请选择一个选项">
-                Q3:请填空(矩阵题)
+                Q3:请填空(矩阵分数题)
                 </span>
         </div>
         <div class="show">
@@ -268,6 +268,21 @@
         </div>
     </div>
 </script>
+{{-- 矩阵填空提 --}}
+<script type="text/html" id="matrixGapFill">
+    <!-- 矩阵分数题题 -->
+    <div class="divStyle fill matrixGapFill">
+        <div class="anshed">
+                <span class="spanlh fL" title="请选择一个选项">
+                Q3:请填空(矩阵题)
+                </span>
+        </div>
+        <div class="show">
+
+        </div>
+
+    </div>
+</script>
 {{-- 填空题 --}}
 <script type="text/html" id="gapFill">
     <div class="divStyle fill gapFill">
@@ -290,11 +305,7 @@
                 </tbody>
 
             </table>
-            <div id="pageBox" class="pageBox">
-                <span id="prev" class="prev">上一页</span>
-                <ul id="pageNav" class="pageNav"></ul>
-                <span id="next" class="next">下一页</span>
-            </div>
+
         </div>
 
     </div>
@@ -302,6 +313,7 @@
 <script>
     var radioScript = 0;
     var checkdata = "{{ $checkData }}";
+    var participants = "{{ $count }}";
     console.log(checkdata);
     checkdata = checkdata.split(",");
     checkdata.shift();
@@ -309,9 +321,10 @@
         var arrType = [];
         var data = item.split("|");
         data.forEach(function(data1,dataKey){
-            data1 = data1.split(":");
+            var data1 = data1.split(":");
             arrType[data1[0]] = data1[1];
         });
+
         switch (arrType['type']) {
             case "radio" :
                 var _html = document.getElementById('radio').innerHTML;
@@ -406,6 +419,7 @@
                         sum1 = Number(sum1) + Number(arrType[k]);
                     }
                 }
+
                 for (k in arrType) {
                     if (k.replace(/[^a-z]+/ig,"") === "option" && k.replace(/[^a-z]+/ig,"") !== "optionNum") {
                         //  图修改
@@ -418,6 +432,7 @@
                             "                    <td class=\"lbn\">&nbsp;</td>\n" +
                             "                </tr>";
                         obj.find(".table ").append(trHtml);
+
                         obj.find(".table").find("tr:last-child").find("td:eq(0)").html(arrType[k]);
                     }
                     if (k.replace(/[^a-z]+/ig,"") === "optionNum") {
@@ -425,7 +440,9 @@
                         sum = Number(sum) + Number(arrType[k]);
                         obj.find("#radioTable"+num).find("tbody").find("tr").append("<td>"+arrType[k]+"</td>");
                         //  表格修改
-                        var percent = (Number(arrType[k])*1.00)/Number(sum1);
+
+                        var percent = (Number(arrType[k])*1.00)/Number(participants);
+                        //console.log(arrType)
                         percent = percent.toFixed(2) * 100;
                         if (percent) {
                             percent = percent + "%";
@@ -463,12 +480,18 @@
                 var num1 = num + 1;
                 obj.children("div:eq(0)").find("span").html("Q"+num1+":"+arrType['title']+"(填空题)");
                 obj.find("thead").find("th").html(arrType['title']);
+                var pageHtml = "<div id=\"pageBox\" class=\"pageBox\">\n" +
+                    "            <span id=\"prev\" class=\"prev\">上一页</span>\n" +
+                    "            <ul id=\"pageNav\" class=\"pageNav\"></ul>\n" +
+                    "            <span id=\"next\" class=\"next\">下一页</span>\n" +
+                    "        </div>";
+                $(obj).append(pageHtml);
                 //  分页处理
                 obj.find("tbody").attr("id","pageMain"+num);
-                obj.find(".show").find("div:eq(0)").attr("id","pageBox"+num);
-                obj.find(".show").find("div:eq(0)").find("span:eq(0)").attr('id',"prev"+num);
-                obj.find(".show").find("div:eq(0)").find("span:eq(1)").attr('id',"next"+num);
-                obj.find(".show").find("div:eq(0)").find("ul").attr("id","pageNav"+num);
+                obj.find(".pageBox").attr("id","pageBox"+num);
+                obj.find(".pageBox").find("span:eq(0)").attr('id',"prev"+num);
+                obj.find(".pageBox").find("span:eq(1)").attr('id',"next"+num);
+                obj.find(".pageBox").find("ul").attr("id","pageNav"+num);
                 var sum = 0;
                 for (var k in arrType) {
                     if (k.replace(/[^a-z]+/ig,"") === "option") {
@@ -480,6 +503,7 @@
                         obj.find("tbody").find("tr:last-child").find("th").html(arrType[k]);
                     }
                 }
+
                 /*分页数据*/
                 $(function () {
                     tabPage({
@@ -596,11 +620,18 @@
                 var num1 = num + 1;
                 obj.children("div:eq(0)").find("span").html("Q"+num1+":"+arrType['title']+"(多项填空题)");
                 //  分页处理
+                var pageHtml = "<div id=\"pageBox\" class=\"pageBox\">\n" +
+                    "            <span id=\"prev\" class=\"prev\">上一页</span>\n" +
+                    "            <ul id=\"pageNav\" class=\"pageNav\"></ul>\n" +
+                    "            <span id=\"next\" class=\"next\">下一页</span>\n" +
+                    "        </div>";
+                $(obj).append(pageHtml);
+                //  分页处理
                 obj.find("tbody").attr("id","pageMain"+num);
-                obj.find(".show").find("div").attr("id","pageBox"+num);
-                obj.find(".show").find("div").find("span:eq(0)").attr('id',"prev"+num);
-                obj.find(".show").find("div").find("span:eq(1)").attr('id',"next"+num);
-                obj.find(".show").find("div").find("ul").attr("id","pageNav"+num);
+                obj.find(".pageBox").attr("id","pageBox"+num);
+                obj.find(".pageBox").find("span:eq(0)").attr('id',"prev"+num);
+                obj.find(".pageBox").find("span:eq(1)").attr('id',"next"+num);
+                obj.find(".pageBox").find("ul").attr("id","pageNav"+num);
                 var trSign = 0;
                 for (var k in arrType) {
                     if (k.replace(/[^a-z]+/ig,"") === "title" ) {
@@ -728,6 +759,172 @@
 
                 });
                 break;
+            case "score" :
+                var _html = document.getElementById('radio').innerHTML;
+                $(".question_content").append(_html);
+                var obj =  $(".divStyle:last-child");
+                var num = obj.index(".divStyle");
+                obj.children("div:eq(0)").find("input").attr('value',num);
+                obj.attr("id","score"+num);
+                obj.find(".radio").attr("id","scoreTable"+num);
+                var spanTitle = arrType['title'];
+                var num1 = num + 1;
+                obj.children("div:eq(1)").find("span").html("Q"+num1+":"+arrType['title']+"(打分题)");
+
+                //  数据整理
+                // obj.find("#radioTable"+num).find("thead").find("th:gt(0)").delete();
+                // obj.find("#radioTable"+num).find("thead").find("tr").append("<td></td>");
+
+                var sum = 0;
+                var sum1 = 0;
+                var chartData = []
+                var curScore = []
+                curScore[0] = 0
+                curScore[1] = 0
+                curScore[2] = 0
+                curScore[3] = 0
+                curScore[4] = 0
+                curScore[5] = 0
+                curScore[6] = 0
+                curScore[7] = 0
+                curScore[8] = 0
+                curScore[9] = 0
+                curScore[10] = 0
+                for (k in arrType) {
+                    if (k.replace(/[^a-z]+/ig,"") === "optionNum") {
+                        //  图修改
+                        sum1 = Number(sum1) + Number(arrType[k]);
+                    }
+                    if (k.replace(/[^a-z]+/ig,"") === "option") {
+                        sum += Number(arrType[k])
+                        curScore[Number(arrType[k])]++
+                    }
+                }
+                for (k in curScore) {
+                    //chartData.push({"name":k,"y":(curScore[k]/participants).toFixed(1)*100})
+                    if (curScore[k]!=0) {
+                        var curData = parseFloat((curScore[k]/participants*100).toFixed(2));
+                        chartData.push({"name":k,"y":curData})
+                    }
+
+                }
+                //chartData = [{name: "9", y: 61.41},{name: "10", y: 11.84}]
+
+                console.log(chartData,"***",[{
+                    name: 'Chrome',
+                    y: 61.41
+                }, {
+                    name: 'Internet Explorer',
+                    y: 11.84
+                }])
+                var avgSum = sum/participants
+                console.log(sum)
+                console.log(arrType)
+
+                //  图修改
+                obj.find("#scoreTable"+num).find("thead").find("tr").append("<th>"+arrType[k]+"</th>");
+                //  表格修改
+                var trHtml = "<tr>\n" +
+                    "                    <td style=\"width:60px\">均值</td>\n" +
+                    "                    <td class=\"lbn\">&nbsp;</td>\n" +
+                    "                    <td style=\"width:80px\">"+avgSum+"%</td>\n" +
+                    "                    <td class=\"lbn\">&nbsp;</td>\n" +
+                    "                </tr>";
+                obj.find(".table ").append(trHtml);
+                //obj.find(".table").find("tr:last-child").find("td:eq(0)").html(avgSum);
+                //sum = sum+Number(arrType[k])
+
+                /*for (k in arrType) {
+                    if (k.replace(/[^a-z]+/ig,"") === "option" && k.replace(/[^a-z]+/ig,"") !== "optionNum") {
+                        //  图修改
+                        obj.find("#radioTable"+num).find("thead").find("tr").append("<th>"+arrType[k]+"</th>");
+                        //  表格修改
+                        var trHtml = "<tr>\n" +
+                            "                    <td style=\"width:60px\">选项1</td>\n" +
+                            "                    <td class=\"lbn\">&nbsp;</td>\n" +
+                            "                    <td style=\"width:80px\">100.00%</td>\n" +
+                            "                    <td class=\"lbn\">&nbsp;</td>\n" +
+                            "                </tr>";
+                        obj.find(".table ").append(trHtml);
+                        obj.find(".table").find("tr:last-child").find("td:eq(0)").html(arrType[k]);
+                        //sum = sum+Number(arrType[k])
+
+                    }
+                    if (k.replace(/[^a-z]+/ig,"") === "optionNum") {
+                        //  图修改
+                        //sum = Number(sum) + Number(arrType[k]);
+
+                        obj.find("#radioTable"+num).find("tbody").find("tr").append("<td>"+arrType[k]+"</td>");
+                        //  表格修改
+
+                        var percent = (Number(arrType[k])*1.00)/Number(participants);
+
+                        percent = percent.toFixed(2) * 100;
+                        if (percent) {
+                            percent = percent + "%";
+                        } else {
+                            percent = "0";
+                        }
+
+                        obj.find(".table").find("tr:last-child").find("td:eq(2)").html(percent);
+                    }
+                }*/
+
+                console.log(sum,11)
+                obj.find("#scoreTable"+num).find("tbody").find("th:eq(0)").html(sum);
+                Highcharts.chart("scoreTable"+num, {
+                    chart: {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: false,
+                        type: 'pie'
+                    },
+                    title: {
+                        text: '',
+
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                style: {
+                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                }
+                            }
+                        }
+                    },
+                    series: [{
+                        name: 'Brands',
+                        colorByPoint: true,
+                        data: chartData/*[{
+                            name: 'Chrome',
+                            y: 61.41
+                        }, {
+                            name: 'Internet Explorer',
+                            y: 11.84
+                        }]*/
+                    }]
+                });
+                /*if(radioScript === 0) {
+                    gvChartInit();
+                }
+                $('#scoreTable'+num).gvChart({
+                    chartType: 'PieChart',
+                    gvSettings: {
+                        vAxis: {title: 'No of players'},
+                        hAxis: {title: 'Month'},
+                        width: 600,
+                        height: 350
+                    }
+                });
+                radioScript = 1;*/
+                break;
             case "name" :
                 var _html = document.getElementById('gapFill').innerHTML;
                 $(".question_content").append(_html);
@@ -741,11 +938,18 @@
                 obj.children("div:eq(0)").find("span").html("Q"+num1+":"+arrType['title']+"(姓名)");
                 obj.find("thead").find("th").html(arrType['title']);
                 //  分页处理
+                var pageHtml = "<div id=\"pageBox\" class=\"pageBox\">\n" +
+                    "            <span id=\"prev\" class=\"prev\">上一页</span>\n" +
+                    "            <ul id=\"pageNav\" class=\"pageNav\"></ul>\n" +
+                    "            <span id=\"next\" class=\"next\">下一页</span>\n" +
+                    "        </div>";
+                $(obj).append(pageHtml);
+                //  分页处理
                 obj.find("tbody").attr("id","pageMain"+num);
-                obj.find(".show").find("div:eq(0)").attr("id","pageBox"+num);
-                obj.find(".show").find("div:eq(0)").find("span:eq(0)").attr('id',"prev"+num);
-                obj.find(".show").find("div:eq(0)").find("span:eq(1)").attr('id',"next"+num);
-                obj.find(".show").find("div:eq(0)").find("ul").attr("id","pageNav"+num);
+                obj.find(".pageBox").attr("id","pageBox"+num);
+                obj.find(".pageBox").find("span:eq(0)").attr('id',"prev"+num);
+                obj.find(".pageBox").find("span:eq(1)").attr('id',"next"+num);
+                obj.find(".pageBox").find("ul").attr("id","pageNav"+num);
                 var sum = 0;
                 for (var k in arrType) {
                     if (k.replace(/[^a-z]+/ig,"") === "option") {
@@ -874,11 +1078,18 @@
             obj.children("div:eq(0)").find("span").html("Q"+num1+":"+arrType['title']+"(日期)");
             obj.find("thead").find("th").html(arrType['title']);
             //  分页处理
-            obj.find("tbody").attr("id","pageMain"+num);
-            obj.find(".show").find("div:eq(0)").attr("id","pageBox"+num);
-            obj.find(".show").find("div:eq(0)").find("span:eq(0)").attr('id',"prev"+num);
-            obj.find(".show").find("div:eq(0)").find("span:eq(1)").attr('id',"next"+num);
-            obj.find(".show").find("div:eq(0)").find("ul").attr("id","pageNav"+num);
+                var pageHtml = "<div id=\"pageBox\" class=\"pageBox\">\n" +
+                    "            <span id=\"prev\" class=\"prev\">上一页</span>\n" +
+                    "            <ul id=\"pageNav\" class=\"pageNav\"></ul>\n" +
+                    "            <span id=\"next\" class=\"next\">下一页</span>\n" +
+                    "        </div>";
+                $(obj).append(pageHtml);
+                //  分页处理
+                obj.find("tbody").attr("id","pageMain"+num);
+                obj.find(".pageBox").attr("id","pageBox"+num);
+                obj.find(".pageBox").find("span:eq(0)").attr('id',"prev"+num);
+                obj.find(".pageBox").find("span:eq(1)").attr('id',"next"+num);
+                obj.find(".pageBox").find("ul").attr("id","pageNav"+num);
             var sum = 0;
             for (var k in arrType) {
                 if (k.replace(/[^a-z]+/ig,"") === "option") {
@@ -1004,7 +1215,7 @@
                 obj.find(".radio").attr("id","radioTable"+num);
                 var spanTitle = arrType['title'];
                 var num1 = num + 1;
-                obj.children("div:eq(1)").find("span").html("Q"+num1+":"+arrType['title']+"(矩阵单选题)");
+                obj.children("div:eq(0)").find("span").html("Q"+num1+":"+arrType['title']+"(矩阵单选题)");
                 var rowNum = -1;
                 var colData = [];
                 var rowData = [];
@@ -1074,7 +1285,7 @@
                     yAxis: {
                         min: 0,
                         title: {
-                            text: '水果消费总量'
+                            text: arrType['title']
                         }
                     },
                     legend: {
@@ -1095,7 +1306,7 @@
                 var chart = Highcharts.chart("container"+num,options);
                 obj.find(".show").append(tableHtml);
                 break;
-            case 'matrixSCore':
+            case 'matrixScore':
                 var _html = document.getElementById('matrixScore').innerHTML;
                 $(".question_content").append(_html);
                 var obj =  $(".divStyle:last-child");
@@ -1105,7 +1316,7 @@
                 obj.find(".radio").attr("id","radioTable"+num);
                 var spanTitle = arrType['title'];
                 var num1 = num + 1;
-                obj.children("div:eq(1)").find("span").html("Q"+num1+":"+arrType['title']+"(矩阵单选题)");
+                obj.children("div:eq(0)").find("span").html("Q"+num1+":"+arrType['title']+"(矩阵单选题)");
                 var rowNum = -1;
                 var colData = [];
                 var rowData = [];
@@ -1147,6 +1358,25 @@
                 }
                 break;
             case 'matrixGapFill':
+                var tableHtml = "<table class=\"table table-bordered\" >\n" +
+                    "                <thead>\n" +
+                    "                <tr>\n" +
+                    "                    <th></th>\n" +
+                    "                    {{--<th>First Name</th>\n"+
+"                    <th>Last Name</th>\n"+
+"                    <th>Username</th>--}}\n" +
+                    "                </tr>\n" +
+                    "                </thead>\n" +
+                    "                <tbody>\n" +
+                    "                {{--<tr>\n"+
+"                    <th scope=\"row\">1</th>\n"+
+"                    <td>Mark</td>\n"+
+"                    <td>Otto</td>\n"+
+"                    <td>@mdo</td>\n"+
+"                </tr>--}}\n" +
+                    "\n" +
+                    "                </tbody>\n" +
+                    "            </table>";
                 var _html = document.getElementById('matrixGapFill').innerHTML;
                 $(".question_content").append(_html);
                 var obj =  $(".divStyle:last-child");
@@ -1156,11 +1386,19 @@
                 obj.find(".radio").attr("id","radioTable"+num);
                 var spanTitle = arrType['title'];
                 var num1 = num + 1;
-                obj.children("div:eq(1)").find("span").html("Q"+num1+":"+arrType['title']+"(矩阵单选题)");
+                obj.children("div:eq(0)").find("span").html("Q"+num1+":"+arrType['title']+"(矩阵填空题)");
+                console.log("65"+num1);
                 var rowNum = -1;
                 var colData = [];
                 var rowData = [];
                 var dataArr = [];
+                var voterNum = arrType['voter'];
+                voterNum = voterNum.split("+");
+                voterNum.shift();
+                obj.find(".show").attr('id',"pageMain"+num);
+                for (var i=0; i< voterNum.length;i++) {
+                    obj.find('.show').append(tableHtml);
+                }
                 for (var k  in arrType) {
                     if ( k.replace(/[^a-z]+/ig,"") === "col" ) {
                         var serialCol = k.match(/[0-9]+/g);
@@ -1173,8 +1411,6 @@
                     if ( k.replace(/[^a-z]+/ig,"") === "row" ) {
                         rowNum++;
                         obj.find("thead").find("tr").append("<th>"+arrType[k]+"</th>");
-
-
                     }
                 }
                 var rowSign = 0;
@@ -1186,22 +1422,34 @@
                             }
                             rowSign = 1;
                         });
-                    } else {
-                        var matrixData = k.match(/[0-9].[0-9]/);
-                        if (matrixData) {
-                            var matrixDataArr = matrixData[0].split(".");
-                            obj.find("tbody").find("tr").eq(matrixDataArr[1]).find("td").eq(matrixDataArr[0]).html(arrType[matrixData]);
-                        }
-
                     }
 
                 }
+                //console.log(arrType);
+                obj.find(".show").find("table").each(function(tableIndex,tableItem) {
+                    var tableData = arrType[voterNum[tableIndex]];
+                    tableData = tableData.split("+");
+                    tableData.shift();
+                    console.log(tableData);
+                    tableData.forEach(function(dataItem,dataIndex){
+                        var options = dataItem.split("-");
+                        var optionVal = options[1];
+                        var optionCor = options[0].split(".");
+                        $(tableItem).find("tbody").find("tr").eq(optionCor[1]).find("td").eq(optionCor[0]).html(optionVal);
+                    });
+                });
+                var pageHtml = "<div id=\"pageBox\" class=\"pageBox\">\n" +
+                    "            <span id=\"prev\" class=\"prev\">上一页</span>\n" +
+                    "            <ul id=\"pageNav\" class=\"pageNav\"></ul>\n" +
+                    "            <span id=\"next\" class=\"next\">下一页</span>\n" +
+                    "        </div>";
+                $(obj).append(pageHtml);
                 //  分页处理
-                obj.find("tbody").attr("id","pageMain"+num);
-                obj.find(".show").find("div").attr("id","pageBox"+num);
-                obj.find(".show").find("div").find("span:eq(0)").attr('id',"prev"+num);
-                obj.find(".show").find("div").find("span:eq(1)").attr('id',"next"+num);
-                obj.find(".show").find("div").find("ul").attr("id","pageNav"+num);
+                //obj.find("tbody").attr("id","pageMain"+num);
+                obj.find(".pageBox").attr("id","pageBox"+num);
+                obj.find(".pageBox").find("span:eq(0)").attr('id',"prev"+num);
+                obj.find(".pageBox").find("span:eq(1)").attr('id',"next"+num);
+                obj.find(".pageBox").find("ul").attr("id","pageNav"+num);
                 $(function () {
                     tabPage({
                         pageMain: '#pageMain'+num,
@@ -1225,7 +1473,7 @@
 
                         var curNum = tabPage.curNum;
                         /*每页显示数*/
-                        var len = Math.ceil(pageMain.find("tr").length / curNum);
+                        var len = Math.ceil(pageMain.find("table").length / curNum);
                         /*计算总页数*/
                         console.log(len);
                         var pageList = '';
@@ -1246,29 +1494,29 @@
                                 pageNav.find("a").removeClass(tabPage.activeClass);
                                 $(this).addClass(tabPage.activeClass);
                                 iNum = $(this).index();
-                                $(pageMain).find("tr").hide();
+                                $(pageMain).find("table").hide();
                                 for (var i = ($(this).html() - 1) * curNum; i < ($(this).html()) * curNum; i++) {
-                                    $(pageMain).find("tr").eq(i).show()
+                                    $(pageMain).find("table").eq(i).show()
                                 }
 
                             });
                         })
 
 
-                        $(pageMain).find("tr").hide();
+                        $(pageMain).find("table").hide();
                         /************首页的显示*********/
                         for (var i = 0; i < curNum; i++) {
-                            $(pageMain).find("tr").eq(i).show()
+                            $(pageMain).find("table").eq(i).show()
                         }
 
 
                         /*下一页*/
                         pageNext.click(function () {
-                            $(pageMain).find("tr").hide();
+                            $(pageMain).find("table").hide();
                             if (iNum == len - 1) {
                                 //alert('已经是最后一页');
                                 for (var i = (len - 1) * curNum; i < len * curNum; i++) {
-                                    $(pageMain).find("tr").eq(i).show()
+                                    $(pageMain).find("table").eq(i).show()
                                 }
                                 return false;
                             } else {
@@ -1278,16 +1526,16 @@
 //                    ini(iNum);
                             }
                             for (var i = iNum * curNum; i < (iNum + 1) * curNum; i++) {
-                                $(pageMain).find("tr").eq(i).show()
+                                $(pageMain).find("table").eq(i).show()
                             }
                         });
                         /*上一页*/
                         pagePrev.click(function () {
-                            $(pageMain).find("tr").hide();
+                            $(pageMain).find("table").hide();
                             if (iNum == 0) {
                                 //alert('当前是第一页');
                                 for (var i = 0; i < curNum; i++) {
-                                    $(pageMain).find("tr").eq(i).show()
+                                    $(pageMain).find("table").eq(i).show()
                                 }
                                 return false;
                             } else {
@@ -1296,7 +1544,7 @@
                                 pageNav.find("a").eq(iNum).addClass(tabPage.activeClass);
                             }
                             for (var i = iNum * curNum; i < (iNum + 1) * curNum; i++) {
-                                $(pageMain).find("tr").eq(i).show()
+                                $(pageMain).find("table").eq(i).show()
                             }
                         })
 

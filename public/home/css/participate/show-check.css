@@ -75,6 +75,7 @@
     font-size: 18px;
 }
 
+
 /*id公共样式*/
 .idStyle {
 	margin-left: 30px;
@@ -84,9 +85,11 @@
     display: inline;
 }
 
+
+
 /*div格局整体样式*/
 .allFormate {
-	margin-left: 80px;
+	margin-left: 40px;
 }
 /*公共格式*/
 .create {
@@ -139,7 +142,7 @@
 	clear: both;
 	display: block;
 	margin-top: 15px;
-	margin-left: 105px;
+	margin-left: 45px;
 }
 .radio-title {	
 	margin-left: 20px;
@@ -184,11 +187,44 @@
     margin-top: 10px;
     margin-bottom: 20px;
 }
-.descrContent {
-	padding: 6px 10px;
-    font-size: 24px;
-    padding-top: -10px;
-    margin-bottom: 10px;
+@media (min-width: 320px){
+    /*>=768的设备 */
+    .descrContent {
+        padding: 6px 10px;
+        font-size: 15px;
+        padding-top: -10px;
+        margin-bottom: 10px;
+    }
+}
+
+@media (min-width: 768px){
+    /*>=768的设备 */
+    .descrContent {
+        padding: 6px 10px;
+        font-size: 15px;
+        padding-top: -10px;
+        margin-bottom: 10px;
+    }
+}
+
+@media (min-width: 992px){
+    /*>=992的设备 */
+    .descrContent {
+        padding: 6px 10px;
+        font-size: 15px;
+        padding-top: -10px;
+        margin-bottom: 10px;
+    }
+}
+
+@media (min-width: 1200px){
+    /*>=1200的设备 */
+    .descrContent {
+        padding: 6px 10px;
+        font-size: 30px;
+        padding-top: -10px;
+        margin-bottom: 10px;
+    }
 }
 .hrId {
 	float: left;
@@ -216,10 +252,14 @@
 	margin-top: 15px;
 }
 .table_title {
-	margin-left: 15px;
+	margin-left: 0px;
 	padding: 15px 20px;
 	position: relative;
 	text-align: center;
+}
+ .table   td {
+    text-align: center;
+    padding-left: 15px;
 }
 .matrixRadio {
 	width: 60%;

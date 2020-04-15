@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Home;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
+use Auth;
+
 class CreateCheckController extends Controller
 {
     //创建页面
@@ -32,8 +34,8 @@ class CreateCheckController extends Controller
                     }
                     switch ( $type ) {
                         case 'radio' :
-                            $typeId = DB::table('radio') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                            $title = DB::table('radio') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                            $typeId = DB::table('radio') -> where('quest_id',$questId) -> orderBy('id')  -> offset($num) -> limit(1) -> value('id');
+                            $title = DB::table('radio') -> where('quest_id',$questId)-> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                             $option = DB::table('radio_res') -> where('f_id',$typeId) -> pluck('content');
                             $arr = "type:radio|title:{$title}";
                             foreach ($option as $key => $value) {
@@ -42,8 +44,8 @@ class CreateCheckController extends Controller
                             $questionnaire = $questionnaire.$arr.",";
                             break;
                         case 'radio_multi' :
-                            $typeId = DB::table('radio_multi') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                            $title = DB::table('radio_multi') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                            $typeId = DB::table('radio_multi') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                            $title = DB::table('radio_multi') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                             $option = DB::table('radio_multi_res') -> where('f_id',$typeId) -> pluck('content');
                             $arr = "type:radioMulti|title:{$title}";
                             foreach ($option as $key => $value) {
@@ -52,8 +54,8 @@ class CreateCheckController extends Controller
                             $questionnaire = $questionnaire.$arr.",";
                             break;
                         case 'gapfill' :
-                            $typeId = DB::table('gapfill') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                            $title = DB::table('gapfill') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                            $typeId = DB::table('gapfill') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                            $title = DB::table('gapfill') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                             $option = DB::table('gapfill_res') -> where('f_id',$typeId) -> pluck('content');
                             $arr = "type:gapFill|title:{$title}";
                             foreach ($option as $key => $value) {
@@ -62,29 +64,30 @@ class CreateCheckController extends Controller
                             $questionnaire = $questionnaire.$arr.",";
                             break;
                         case 'gapfill_multi' :
-                            $typeId = DB::table('gapfill_multi') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                            $title = DB::table('gapfill_multi') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                            $typeId = DB::table('gapfill_multi') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                            $title = DB::table('gapfill_multi') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                             $option = DB::table('gapfill_multi_res') -> where('f_id',$typeId) -> pluck('content');
                             $arr = "type:gapMultiFill|title:{$title}";
                             foreach ($option as $key => $value) {
                                 $arr = $arr."|option".$key.":{$value}";
                             }
                             $questionnaire = $questionnaire.$arr.",";
+                           // dd($questionnaire);
                             break;
                         case 'score' :
-                            $typeId = DB::table('score') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                            $title = DB::table('score') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                            $typeId = DB::table('score') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                            $title = DB::table('score') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                             $arr = "type:score|title:{$title}";
                             $questionnaire = $questionnaire.$arr.",";
                             break;
                         case 'descr' :
-                            $typeId = DB::table('descr') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                            $title = DB::table('descr') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                            $typeId = DB::table('descr') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                            $title = DB::table('descr') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                             $arr = "type:descr|title:{$title}";
                             $questionnaire = $questionnaire.$arr.",";
                             break;
                         case 'page' :
-                            $typeId = DB::table('page') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
+                            $typeId = DB::table('page') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('id');
                             //  统计分页总数
                             $quest = DB::table('quest') -> where('id',$questId) -> value('quest');
                             $quest = ltrim($quest,",");
@@ -100,62 +103,62 @@ class CreateCheckController extends Controller
                             $questionnaire = $questionnaire.$arr.",";
                             break;
                         case 'hr' :
-                            $typeId = DB::table('hr') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
+                            $typeId = DB::table('hr') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('id');
                             $arr = "type:hr";
                             $questionnaire = $questionnaire.$arr.",";
                             break;
                         case 'name' :
-                            $typeId = DB::table('name') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                            $title = DB::table('name') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                            $typeId = DB::table('name') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                            $title = DB::table('name') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                             $arr = "type:name|title:{$title}";
                             $questionnaire = $questionnaire.$arr.",";
                             break;
                         case 'phone' :
-                            $typeId = DB::table('phone') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                            $title = DB::table('phone') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                            $typeId = DB::table('phone') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                            $title = DB::table('phone') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                             $arr = "type:phone|title:{$title}";
                             $questionnaire = $questionnaire.$arr.",";
                             break;
                         case 'email' :
-                            $typeId = DB::table('email') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                            $title = DB::table('email') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                            $typeId = DB::table('email') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                            $title = DB::table('email') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                             $arr = "type:email|title:{$title}";
                             $questionnaire = $questionnaire.$arr.",";
                             break;
                         case 'sex' :
-                            $typeId = DB::table('sex') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                            $title = DB::table('sex') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                            $typeId = DB::table('sex') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                            $title = DB::table('sex') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                             $arr = "type:sex|title:{$title}";
                             var_dump($title);
                             $questionnaire = $questionnaire.$arr.",";
                             break;
                         case 'date' :
-                            $typeId = DB::table('date') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                            $title = DB::table('date') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                            $typeId = DB::table('date') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                            $title = DB::table('date') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                             $arr = "type:date|title:{$title}";
                             $questionnaire = $questionnaire.$arr.",";
                             break;
                         case 'time' :
-                            $typeId = DB::table('time') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                            $title = DB::table('time') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                            $typeId = DB::table('time') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                            $title = DB::table('time') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                             $arr = "type:time|title:{$title}";
                             $questionnaire = $questionnaire.$arr.",";
                             break;
                         case 'city' :
-                            $typeId = DB::table('city') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                            $title = DB::table('city') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                            $typeId = DB::table('city') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                            $title = DB::table('city') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                             $arr = "type:city|title:{$title}";
                             $questionnaire = $questionnaire.$arr.",";
                             break;
                         case 'address' :
-                            $typeId = DB::table('address') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                            $title = DB::table('address') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                            $typeId = DB::table('address') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                            $title = DB::table('address') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                             $arr = "type:address|title:{$title}";
                             $questionnaire = $questionnaire.$arr.",";
                             break;
                         case  'matrix_radio' :
-                            $typeId = DB::table('matrix_radio') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                            $title = DB::table('matrix_radio') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                            $typeId = DB::table('matrix_radio') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                            $title = DB::table('matrix_radio') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                             $row = DB::table('matrix_radio_row') -> where('f_id',$typeId) -> pluck('content');
                             $col = DB::table('matrix_radio_col') -> where('f_id',$typeId) -> pluck('content');
                             $arr = "type:matrixRadio|title:{$title}";
@@ -168,8 +171,8 @@ class CreateCheckController extends Controller
                             $questionnaire = $questionnaire.$arr.",";
                             break;
                         case  'matrix_score' :
-                            $typeId = DB::table('matrix_score') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                            $title = DB::table('matrix_score') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                            $typeId = DB::table('matrix_score') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                            $title = DB::table('matrix_score') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                             $row = DB::table('matrix_score_row') -> where('f_id',$typeId) -> pluck('content');
                             $col = DB::table('matrix_score_col') -> where('f_id',$typeId) -> pluck('content');
                             $arr = "type:matrixScore|title:{$title}";
@@ -182,8 +185,8 @@ class CreateCheckController extends Controller
                             $questionnaire = $questionnaire.$arr.",";
                             break;
                         case  'matrix_gapfill' :
-                            $typeId = DB::table('matrix_gapfill') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('id');
-                            $title = DB::table('matrix_gapfill') -> where('quest_id',$questId) -> offset($num) -> limit(1) -> value('title');
+                            $typeId = DB::table('matrix_gapfill') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('id');
+                            $title = DB::table('matrix_gapfill') -> where('quest_id',$questId) -> orderBy('id') -> offset($num) -> limit(1) -> value('title');
                             $row = DB::table('matrix_gapfill_row') -> where('f_id',$typeId) -> pluck('content');
                             $col = DB::table('matrix_gapfill_col') -> where('f_id',$typeId) -> pluck('content');
                             $arr = "type:matrixGapFill|title:{$title}";
@@ -202,7 +205,7 @@ class CreateCheckController extends Controller
             } else  {
                 //获取userId
                 $userName = \Session::get('userInfo');
-                $userId= DB::table('user') -> where('username','test') -> value('id');
+                $userId= DB::table('user') -> where('username',$userName) -> value('id');
                 //创建新问卷
                 $check = array(
                     'statue' => 1,
@@ -230,11 +233,13 @@ class CreateCheckController extends Controller
         //var_dump($request->all());
         //判断是否是原来的问卷 不是则重新创建
         //接受数据
+        $questId = \Session::get('questId');
         $arr = [];
         $result = 1;
         $list = $request -> get('list');
         $list = rtrim($list,",");
         $list = explode(',',$list);
+       // dd($list);
         if($list != null) {
             foreach ($list as $key => $value) {
                 $arrType = [];
@@ -267,6 +272,8 @@ class CreateCheckController extends Controller
                 }
                 $arr[$key] = $arrType;
             }
+            $time = date("Ymd");
+           // $rDB::table('quest')->where('id', $questId)->update(['created_at'=>$time]);
             return $result;
         }
 
@@ -283,6 +290,7 @@ class CreateCheckController extends Controller
         $list = $request -> get('list');
         $list = rtrim($list,",");
         $list = explode(',',$list);
+
         if($list != null) {
             foreach ($list as $key => $value) {
                 $arrType = [];
@@ -338,21 +346,21 @@ class CreateCheckController extends Controller
         switch($type) {
             case 'radio' :
                 // 获取要操作的id
-                $typeId = DB::table('radio') -> where('quest_id',$questId) -> offset($operate) -> limit(1) -> value('id');
-                $result &= DB::table('radio_res') -> where('f_id', $typeId) -> offset($delOption) -> limit(1) -> delete();
+                $typeId = DB::table('radio') -> where('quest_id',$questId)->orderBy('id') -> offset($operate) -> limit(1) -> value('id');
+                $result &= DB::table('radio_res') -> where('f_id', $typeId)->orderBy('id') -> offset($delOption) -> limit(1) -> delete();
                 break;
             case 'radioMulti' :
                 // 获取要操作的id
-                $typeId = DB::table('radio_multi') -> where('quest_id',$questId) -> offset($operate) -> limit(1) -> value('id');
-                $result &= DB::table('radio_multi_res') -> where('f_id', $typeId) -> offset($delOption) -> limit(1) -> delete();
+                $typeId = DB::table('radio_multi') -> where('quest_id',$questId)->orderBy('id') -> offset($operate) -> limit(1) -> value('id');
+                $result &= DB::table('radio_multi_res') -> where('f_id', $typeId)->orderBy('id') -> offset($delOption) -> limit(1) -> delete();
                 break;
             case 'gapFill' :
-                $typeId = DB::table('gapfill') -> where('quest_id',$questId) -> offset($operate) -> limit(1) -> value('id');
-                $result &= DB::table('gaofill_res') -> where('f_id', $typeId) -> offset($delOption) -> limit(1) -> delete();
+                $typeId = DB::table('gapfill') -> where('quest_id',$questId)->orderBy('id') -> offset($operate) -> limit(1) -> value('id');
+                $result &= DB::table('gaofill_res') -> where('f_id', $typeId)->orderBy('id') -> offset($delOption) -> limit(1) -> delete();
                 break;
             case 'gapMultiFill' :
-                $typeId = DB::table('gapfill_multi') -> where('quest_id',$questId) -> offset($operate) -> limit(1) -> value('id');
-                $result &= DB::table('gapfill_multi_res') -> where('f_id', $typeId) -> offset($delOption) -> limit(1) -> delete();
+                $typeId = DB::table('gapfill_multi') -> where('quest_id',$questId)->orderBy('id') -> offset($operate) -> limit(1) -> value('id');
+                $result &= DB::table('gapfill_multi_res') -> where('f_id', $typeId)->orderBy('id') -> offset($delOption) -> limit(1) -> delete();
                 break;
         }
         return $result;
@@ -378,40 +386,40 @@ class CreateCheckController extends Controller
         switch ($type) {
             case 'matrixRadio' :
                 if($direction == "row") {
-                    $matrixId = DB::table('matrix_radio') -> where('quest_id', $questId) -> offset($operate) -> limit(1) -> value('id');
+                    $matrixId = DB::table('matrix_radio') -> where('quest_id', $questId)->orderBy('id') -> offset($operate) -> limit(1) -> value('id');
                     var_dump($matrixId);
-                    $delId = DB::table('matrix_radio_row') -> where('f_id',$matrixId)  ->  offset($delOption) -> limit(1) -> value('id');
+                    $delId = DB::table('matrix_radio_row') -> where('f_id',$matrixId)->orderBy('id')  ->  offset($delOption) -> limit(1) -> value('id');
                     $result &= DB::table('matrix_radio_row') -> where('id',$delId)  -> delete();
                     break;
                 }
                 if($direction == "col") {
-                    $matrixId = DB::table('matrix_radio') -> where('quest_id', $questId) -> offset($operate) -> limit(1) -> value('id');
-                    $delId = DB::table('matrix_radio_col') -> where('f_id',$matrixId)  ->  offset($delOption) -> limit(1) -> value('id');
+                    $matrixId = DB::table('matrix_radio') -> where('quest_id', $questId)->orderBy('id') -> offset($operate) -> limit(1) -> value('id');
+                    $delId = DB::table('matrix_radio_col') -> where('f_id',$matrixId)->orderBy('id')  ->  offset($delOption) -> limit(1) -> value('id');
                     $result &= DB::table('matrix_radio_col') -> where('id',$delId)  -> delete();
                     break;
                 }
                 break;
             case 'matrixGapFill' :
                 if($direction == "row") {
-                    $matrixId = DB::table('matrix_gapfill') -> where('quest_id', $questId) -> offset($operate) -> limit(1) -> value('id');
-                    $result &= DB::table('matrix_gapfill_row') -> where('f_id',$matrixId) -> offset($delOption) -> limit(1) -> delete();
+                    $matrixId = DB::table('matrix_gapfill') -> where('quest_id', $questId)->orderBy('id') -> offset($operate) -> limit(1) -> value('id');
+                    $result &= DB::table('matrix_gapfill_row') -> where('f_id',$matrixId)->orderBy('id') -> offset($delOption) -> limit(1) -> delete();
                     break;
                 }
                 if($direction == "col") {
-                    $matrixId = DB::table('matrix_gapfill') -> where('quest_id', $questId) -> offset($operate) -> limit(1) -> value('id');
-                    $result &= DB::table('matrix_gapfill_col') -> where('f_id',$matrixId) -> offset($delOption) -> limit(1) -> delete();
+                    $matrixId = DB::table('matrix_gapfill') -> where('quest_id', $questId)->orderBy('id') -> offset($operate) -> limit(1) -> value('id');
+                    $result &= DB::table('matrix_gapfill_col') -> where('f_id',$matrixId)->orderBy('id') -> offset($delOption) -> limit(1) -> delete();
                     break;
                 }
                 break;
             case 'matrixScore' :
                 if($direction == "row") {
-                    $matrixId = DB::table('matrix_score') -> where('quest_id', $questId) -> offset($operate) -> limit(1) -> value('id');
-                    $result &= DB::table('matrix_score_row') -> where('f_id',$matrixId) -> offset($delOption) -> limit(1) -> delete();
+                    $matrixId = DB::table('matrix_score') -> where('quest_id', $questId)->orderBy('id') -> offset($operate) -> limit(1) -> value('id');
+                    $result &= DB::table('matrix_score_row') -> where('f_id',$matrixId)->orderBy('id') -> offset($delOption) -> limit(1) -> delete();
                     break;
                 }
                 if($direction == "col") {
-                    $matrixId = DB::table('matrix_score') -> where('quest_id', $questId) -> offset($operate) -> limit(1) -> value('id');
-                    $result &= DB::table('matrix_score_col') -> where('f_id',$matrixId) -> offset($delOption) -> limit(1) -> delete();
+                    $matrixId = DB::table('matrix_score') -> where('quest_id', $questId)->orderBy('id') -> offset($operate) -> limit(1) -> value('id');
+                    $result &= DB::table('matrix_score_col') -> where('f_id',$matrixId)->orderBy('id') -> offset($delOption) -> limit(1) -> delete();
                     break;
                 }
                 break;
@@ -431,8 +439,8 @@ class CreateCheckController extends Controller
         $result = 1;
         switch ($type) {
             case 'radio' :
-                $f_id = DB::table('radio') -> where("quest_id",$questId) -> offset($delId) -> limit(1) -> value('id');
-                $result &= DB::table('radio') -> where('quest_id', $questId) -> offset($delId) -> limit(1) -> delete();
+                $f_id = DB::table('radio') -> where("quest_id",$questId)->orderBy('id') -> offset($delId) -> limit(1) -> value('id');
+                $result &= DB::table('radio') -> where('quest_id', $questId)->orderBy('id') -> offset($delId) -> limit(1) -> delete();
                 $result &= DB::table('radio_res') -> where('f_id',$f_id) -> delete();
                 //  对quest里面的字符串进行删除整理
                 $quest = DB::table('quest') -> where('id',$questId) -> value('quest');
@@ -446,8 +454,8 @@ class CreateCheckController extends Controller
                 $result &= DB::table('quest') -> where('id',$questId) -> update(['quest'=>$quest]);
                 break;
             case 'radioMulti' :
-                $f_id = DB::table('radio_multi') -> where("quest_id",$questId) -> offset($delId) -> limit(1) -> value('id');
-                $result &= DB::table('radio_multi') -> where('quest_id', $questId) -> offset($delId) -> limit(1) -> delete();
+                $f_id = DB::table('radio_multi') -> where("quest_id",$questId)->orderBy('id') -> offset($delId) -> limit(1) -> value('id');
+                $result &= DB::table('radio_multi') -> where('quest_id', $questId)->orderBy('id') -> offset($delId) -> limit(1) -> delete();
                 $result &= DB::table('radio_multi_res') -> where('f_id',$f_id) -> delete();
                 //  对quest里面的字符串进行删除整理
                 $quest = DB::table('quest') -> where('id',$questId) -> value('quest');
@@ -461,7 +469,7 @@ class CreateCheckController extends Controller
                 $result &= DB::table('quest') -> where('id',$questId) -> update(['quest'=>$quest]);
                 break;
             case 'gapFill' :
-                $result &= DB::table('gapfill') -> where('quest_id', $questId) -> offset($delId) -> limit(1) -> delete();
+                $result &= DB::table('gapfill') -> where('quest_id', $questId)->orderBy('id') -> offset($delId) -> limit(1) -> delete();
                 //  对quest里面的字符串进行删除整理
                 $quest = DB::table('quest') -> where('id',$questId) -> value('quest');
                 $quest = ltrim($quest,",");
@@ -474,8 +482,8 @@ class CreateCheckController extends Controller
                 $result &= DB::table('quest') -> where('id',$questId) -> update(['quest'=>$quest]);
                 break;
             case 'gapMultiFill' :
-                $f_id = DB::table('gapfill_multi') -> where("quest_id",$questId) -> offset($delId) -> limit(1) -> value('id');
-                $result &= DB::table('gapfill_multi') -> where('quest_id', $questId) -> offset($delId) -> limit(1) -> delete();
+                $f_id = DB::table('gapfill_multi') -> where("quest_id",$questId)->orderBy('id') -> offset($delId) -> limit(1) -> value('id');
+                $result &= DB::table('gapfill_multi') -> where('quest_id', $questId)->orderBy('id') -> offset($delId) -> limit(1) -> delete();
                 $result &= DB::table('gapfill_multi_res') -> where('f_id',$f_id) -> delete();
                 //  对quest里面的字符串进行删除整理
                 $quest = DB::table('quest') -> where('id',$questId) -> value('quest');
@@ -489,7 +497,7 @@ class CreateCheckController extends Controller
                 $result &= DB::table('quest') -> where('id',$questId) -> update(['quest'=>$quest]);
                 break;
             case 'score' :
-                $result &= DB::table('score') -> where('quest_id', $questId) -> offset($delId) -> limit(1) -> delete();
+                $result &= DB::table('score') -> where('quest_id', $questId)->orderBy('id') -> offset($delId) -> limit(1) -> delete();
                 //  对quest里面的字符串进行删除整理
                 $quest = DB::table('quest') -> where('id',$questId) -> value('quest');
                 $quest = ltrim($quest,",");
@@ -502,7 +510,7 @@ class CreateCheckController extends Controller
                 $result &= DB::table('quest') -> where('id',$questId) -> update(['quest'=>$quest]);
                 break;
             case 'descr' :
-                $result &= DB::table('descr') -> where('quest_id', $questId) -> offset($delId) -> limit(1) -> delete();
+                $result &= DB::table('descr') -> where('quest_id', $questId)->orderBy('id') -> offset($delId) -> limit(1) -> delete();
                 //  对quest里面的字符串进行删除整理
                 $quest = DB::table('quest') -> where('id',$questId) -> value('quest');
                 $quest = ltrim($quest,",");
@@ -515,7 +523,7 @@ class CreateCheckController extends Controller
                 $result &= DB::table('quest') -> where('id',$questId) -> update(['quest'=>$quest]);
                 break;
             case 'page' :
-                $result &= DB::table('page') -> where('quest_id', $questId) -> offset($delId) -> limit(1) -> delete();
+                $result &= DB::table('page') -> where('quest_id', $questId)->orderBy('id') -> offset($delId) -> limit(1) -> delete();
                 //  对quest里面的字符串进行删除整理
                 $quest = DB::table('quest') -> where('id',$questId) -> value('quest');
                 $quest = ltrim($quest,",");
@@ -528,7 +536,7 @@ class CreateCheckController extends Controller
                 $result &= DB::table('quest') -> where('id',$questId) -> update(['quest'=>$quest]);
                 break;
             case 'hr' :
-                $result &= DB::table('hr') -> where('quest_id', $questId) -> offset($delId) -> limit(1) -> delete();
+                $result &= DB::table('hr') -> where('quest_id', $questId)->orderBy('id') -> offset($delId) -> limit(1) -> delete();
                 //  对quest里面的字符串进行删除整理
                 $quest = DB::table('quest') -> where('id',$questId) -> value('quest');
                 $quest = ltrim($quest,",");
@@ -541,7 +549,7 @@ class CreateCheckController extends Controller
                 $result &= DB::table('quest') -> where('id',$questId) -> update(['quest'=>$quest]);
                 break;
             case 'name' :
-                $result &= DB::table('name') -> where('quest_id', $questId) -> offset($delId) -> limit(1) -> delete();
+                $result &= DB::table('name') -> where('quest_id', $questId)->orderBy('id') -> offset($delId) -> limit(1) -> delete();
                 //  对quest里面的字符串进行删除整理
                 $quest = DB::table('quest') -> where('id',$questId) -> value('quest');
                 $quest = ltrim($quest,",");
@@ -554,7 +562,7 @@ class CreateCheckController extends Controller
                 $result &= DB::table('quest') -> where('id',$questId) -> update(['quest'=>$quest]);
                 break;
             case 'phone' :
-                $result &= DB::table('phone') -> where('quest_id', $questId) -> offset($delId) -> limit(1) -> delete();
+                $result &= DB::table('phone') -> where('quest_id', $questId)->orderBy('id') -> offset($delId) -> limit(1) -> delete();
                 //  对quest里面的字符串进行删除整理
                 $quest = DB::table('quest') -> where('id',$questId) -> value('quest');
                 $quest = ltrim($quest,",");
@@ -567,7 +575,7 @@ class CreateCheckController extends Controller
                 $result &= DB::table('quest') -> where('id',$questId) -> update(['quest'=>$quest]);
                 break;
             case 'email' :
-                $result &= DB::table('email') -> where('quest_id', $questId) -> offset($delId) -> limit(1) -> delete();
+                $result &= DB::table('email') -> where('quest_id', $questId)->orderBy('id') -> offset($delId) -> limit(1) -> delete();
                 //  对quest里面的字符串进行删除整理
                 $quest = DB::table('quest') -> where('id',$questId) -> value('quest');
                 $quest = ltrim($quest,",");
@@ -580,7 +588,7 @@ class CreateCheckController extends Controller
                 $result &= DB::table('quest') -> where('id',$questId) -> update(['quest'=>$quest]);
                 break;
             case 'sex' :
-                $result &= DB::table('sex') -> where('quest_id', $questId) -> offset($delId) -> limit(1) -> delete();
+                $result &= DB::table('sex') -> where('quest_id', $questId)->orderBy('id') -> offset($delId) -> limit(1) -> delete();
                 //  对quest里面的字符串进行删除整理
                 $quest = DB::table('quest') -> where('id',$questId) -> value('quest');
                 $quest = ltrim($quest,",");
@@ -593,7 +601,7 @@ class CreateCheckController extends Controller
                 $result &= DB::table('quest') -> where('id',$questId) -> update(['quest'=>$quest]);
                 break;
             case 'date' :
-                $result &= DB::table('date') -> where('quest_id', $questId) -> offset($delId) -> limit(1) -> delete();
+                $result &= DB::table('date') -> where('quest_id', $questId)->orderBy('id') -> offset($delId) -> limit(1) -> delete();
                 //  对quest里面的字符串进行删除整理
                 $quest = DB::table('quest') -> where('id',$questId) -> value('quest');
                 $quest = ltrim($quest,",");
@@ -606,7 +614,7 @@ class CreateCheckController extends Controller
                 $result &= DB::table('quest') -> where('id',$questId) -> update(['quest'=>$quest]);
                 break;
             case 'time' :
-                $result &= DB::table('time') -> where('quest_id', $questId) -> offset($delId) -> limit(1) -> delete();
+                $result &= DB::table('time') -> where('quest_id', $questId)->orderBy('id') -> offset($delId) -> limit(1) -> delete();
                 //  对quest里面的字符串进行删除整理
                 $quest = DB::table('quest') -> where('id',$questId) -> value('quest');
                 $quest = ltrim($quest,",");
@@ -619,7 +627,7 @@ class CreateCheckController extends Controller
                 $result &= DB::table('quest') -> where('id',$questId) -> update(['quest'=>$quest]);
                 break;
             case 'city' :
-                $result &= DB::table('city') -> where('quest_id', $questId) -> offset($delId) -> limit(1) -> delete();
+                $result &= DB::table('city') -> where('quest_id', $questId)->orderBy('id') -> offset($delId) -> limit(1) -> delete();
                 //  对quest里面的字符串进行删除整理
                 $quest = DB::table('quest') -> where('id',$questId) -> value('quest');
                 $quest = ltrim($quest,",");
@@ -632,7 +640,7 @@ class CreateCheckController extends Controller
                 $result &= DB::table('quest') -> where('id',$questId) -> update(['quest'=>$quest]);
                 break;
             case 'address' :
-                $result &= DB::table('address') -> where('quest_id', $questId) -> offset($delId) -> limit(1) -> delete();
+                $result &= DB::table('address') -> where('quest_id', $questId)->orderBy('id') -> offset($delId) -> limit(1) -> delete();
                 //  对quest里面的字符串进行删除整理
                 $quest = DB::table('quest') -> where('id',$questId) -> value('quest');
                 $quest = ltrim($quest,",");
@@ -645,8 +653,8 @@ class CreateCheckController extends Controller
                 $result &= DB::table('quest') -> where('id',$questId) -> update(['quest'=>$quest]);
                 break;
             case 'matrixRadio' :
-                $f_id = DB::table('matrix_radio') -> where("quest_id",$questId) -> offset($delId) -> limit(1) -> value('id');
-                $result &= DB::table('matrix_radio') -> where('quest_id', $questId) -> offset($delId) -> limit(1) -> delete();
+                $f_id = DB::table('matrix_radio') -> where("quest_id",$questId)->orderBy('id') -> offset($delId) -> limit(1) -> value('id');
+                $result &= DB::table('matrix_radio') -> where('quest_id', $questId)->orderBy('id') -> offset($delId) -> limit(1) -> delete();
                 $result &= DB::table('matrix_radio_col') -> where('f_id',$f_id) -> delete();
                 $result &= DB::table('matrix_radio_row') -> where('f_id',$f_id) -> delete();
                 //  对quest里面的字符串进行删除整理
@@ -661,8 +669,8 @@ class CreateCheckController extends Controller
                 $result &= DB::table('quest') -> where('id',$questId) -> update(['quest'=>$quest]);
                 break;
             case 'matrixScore' :
-                $f_id = DB::table('matrix_score') -> where("quest_id",$questId) -> offset($delId) -> limit(1) -> value('id');
-                $result &= DB::table('matrix_score') -> where('quest_id', $questId) -> offset($delId) -> limit(1) -> delete();
+                $f_id = DB::table('matrix_score') -> where("quest_id",$questId)->orderBy('id') -> offset($delId) -> limit(1) -> value('id');
+                $result &= DB::table('matrix_score') -> where('quest_id', $questId)->orderBy('id') -> offset($delId) -> limit(1) -> delete();
                 $result &= DB::table('matrix_score_col') -> where('f_id',$f_id) -> delete();
                 $result &= DB::table('matrix_score_row') -> where('f_id',$f_id) -> delete();
                 //  对quest里面的字符串进行删除整理
@@ -677,8 +685,8 @@ class CreateCheckController extends Controller
                 $result &= DB::table('quest') -> where('id',$questId) -> update(['quest'=>$quest]);
                 break;
             case 'matrixGapFill' :
-                $f_id = DB::table('matrix_gapfill') -> where("quest_id",$questId) -> offset($delId) -> limit(1) -> value('id');
-                $result &= DB::table('matrix_gapfill') -> where('quest_id', $questId) -> offset($delId) -> limit(1) -> delete();
+                $f_id = DB::table('matrix_gapfill') -> where("quest_id",$questId)->orderBy('id') -> offset($delId) -> limit(1) -> value('id');
+                $result &= DB::table('matrix_gapfill') -> where('quest_id', $questId)->orderBy('id') -> offset($delId) -> limit(1) -> delete();
                 $result &= DB::table('matrix_gapfill_col') -> where('f_id',$f_id) -> delete();
                 $result &= DB::table('matrix_gapfill_row') -> where('f_id',$f_id) -> delete();
                 //  对quest里面的字符串进行删除整理
@@ -707,7 +715,7 @@ class CreateCheckController extends Controller
         $result = 1;
         switch ($type) {
             case 'radio' :
-                $radioId = DB::table('radio') -> where('quest_id',$questId) -> offset($operate) -> limit(1) -> value('id');
+                $radioId = DB::table('radio') -> where('quest_id',$questId)->orderBy('id') -> offset($operate) -> limit(1) -> value('id');
                 $arr = array(
                     'f_id' => $radioId,
                     'content' => $title,
@@ -715,7 +723,7 @@ class CreateCheckController extends Controller
                 $result &= DB::table('radio_res') -> insert($arr);
                 break;
             case 'radioMulti' :
-                $radioId = DB::table('radio_multi') -> where('quest_id',$questId) -> offset($operate) -> limit(1) -> value('id');
+                $radioId = DB::table('radio_multi') -> where('quest_id',$questId)->orderBy('id') -> offset($operate) -> limit(1) -> value('id');
                 var_dump($radioId);
                 $arr = array(
                     'f_id' => $radioId,
@@ -724,7 +732,7 @@ class CreateCheckController extends Controller
                 $result &= DB::table('radio_multi_res') -> insert($arr);
                 break;
             case 'gapMultiFill' :
-                $radioId = DB::table('gapfill_multi') -> where('quest_id',$questId) -> offset($operate) -> limit(1) -> value('id');
+                $radioId = DB::table('gapfill_multi') -> where('quest_id',$questId)->orderBy('id') -> offset($operate) -> limit(1) -> value('id');
                 var_dump($radioId);
                 $arr = array(
                     'f_id' => $radioId,
@@ -736,7 +744,7 @@ class CreateCheckController extends Controller
                 //  接受方向
                 $direction = $request -> get('direction');
                 if($direction == "row") {
-                    $typeId = DB::table('matrix_radio') -> where('quest_id',$questId) -> offset($operate) -> limit(1) -> value('id');
+                    $typeId = DB::table('matrix_radio') -> where('quest_id',$questId)->orderBy('id') -> offset($operate) -> limit(1) -> value('id');
                     var_dump($typeId);
                     $arr = array(
                         'f_id' => $typeId,
@@ -745,7 +753,7 @@ class CreateCheckController extends Controller
                     $result &= DB::table('matrix_radio_row') -> insert($arr);
                 }
                 if($direction == "col") {
-                    $typeId = DB::table('matrix_radio') -> where('quest_id',$questId) -> offset($operate) -> limit(1) -> value('id');
+                    $typeId = DB::table('matrix_radio') -> where('quest_id',$questId)->orderBy('id') -> offset($operate) -> limit(1) -> value('id');
                     var_dump($typeId);
                     $arr = array(
                         'f_id' => $typeId,
@@ -758,7 +766,7 @@ class CreateCheckController extends Controller
                 //  接受方向
                 $direction = $request -> get('direction');
                 if($direction == "row") {
-                    $typeId = DB::table('matrix_gapfill') -> where('quest_id',$questId) -> offset($operate) -> limit(1) -> value('id');
+                    $typeId = DB::table('matrix_gapfill') -> where('quest_id',$questId)->orderBy('id') -> offset($operate) -> limit(1) -> value('id');
                     var_dump($typeId);
                     $arr = array(
                         'f_id' => $typeId,
@@ -767,7 +775,7 @@ class CreateCheckController extends Controller
                     $result &= DB::table('matrix_gapfill_row') -> insert($arr);
                 }
                 if($direction == "col") {
-                    $typeId = DB::table('matrix_gapfill') -> where('quest_id',$questId) -> offset($operate) -> limit(1) -> value('id');
+                    $typeId = DB::table('matrix_gapfill') -> where('quest_id',$questId)->orderBy('id') -> offset($operate) -> limit(1) -> value('id');
                     var_dump($typeId);
                     $arr = array(
                         'f_id' => $typeId,
@@ -780,7 +788,7 @@ class CreateCheckController extends Controller
                 //  接受方向
                 $direction = $request -> get('direction');
                 if($direction == "row") {
-                    $typeId = DB::table('matrix_score') -> where('quest_id',$questId) -> offset($operate) -> limit(1) -> value('id');
+                    $typeId = DB::table('matrix_score') -> where('quest_id',$questId)->orderBy('id') -> offset($operate) -> limit(1) -> value('id');
                     var_dump($typeId);
                     $arr = array(
                         'f_id' => $typeId,
@@ -789,7 +797,7 @@ class CreateCheckController extends Controller
                     $result &= DB::table('matrix_score_row') -> insert($arr);
                 }
                 if($direction == "col") {
-                    $typeId = DB::table('matrix_score') -> where('quest_id',$questId) -> offset($operate) -> limit(1) -> value('id');
+                    $typeId = DB::table('matrix_score') -> where('quest_id',$questId)->orderBy('id') -> offset($operate) -> limit(1) -> value('id');
                     var_dump($typeId);
                     $arr = array(
                         'f_id' => $typeId,
@@ -817,7 +825,7 @@ class CreateCheckController extends Controller
 
         //  获取用户信息
         $userName = \Session::get('userInfo');
-        $userId= DB::table('user') -> where('username','test') -> value('id');
+        $userId= DB::table('user') -> where('username',$userName) -> value('id');
 
         //  开始入库
         $title = $arrType['title'];
@@ -853,7 +861,7 @@ class CreateCheckController extends Controller
 
         $result = DB::table('quest')->where('id',$questId) -> update(['quest'=>$quest]);
         $userName = \Session::get('userInfo');
-        $userId= DB::table('user') -> where('username','test') -> value('id');
+        $userId= DB::table('user') -> where('username',$userName) -> value('id');
         $title = $arrType['title'];
         $radio = array(
             'title' => $title,
@@ -886,7 +894,8 @@ class CreateCheckController extends Controller
         $quest = $quest.",".$typeId;
         $result = DB::table('quest')->where('id',$questId) -> update(['quest'=>$quest]);
         $userName = \Session::get('userInfo');
-        $userId= DB::table('user') -> where('username','test') -> value('id');
+        $userId= DB::table('user') -> where('username',$userName) -> value('id');
+        $userId = Auth::user()->id;
         $title = $arrType['title'];
         $gapFill = array(
             'title' => $title,
@@ -898,6 +907,7 @@ class CreateCheckController extends Controller
     }
     //  多项填空题入库
     public function gapMultiFill($arrType) {
+
         //  获取问卷Id
         $questId = \Session::get('questId');
         //  查询radio编号 重新组合编号入库
@@ -907,14 +917,14 @@ class CreateCheckController extends Controller
         $quest = $quest.",".$typeId;
         $result = DB::table('quest')->where('id',$questId) -> update(['quest'=>$quest]);
         $userName = \Session::get('userInfo');
-        $userId= DB::table('user') -> where('username','test') -> value('id');
+        $userId= DB::table('user') -> where('username',$userName) -> value('id');
         $title = $arrType['title'];
         $gapMultiFill = array(
             'title' => $title,
             'user_id' => $userId,
             'quest_id' => $questId,
         );
-        $gapMultiFillId = DB::table('gapfill_multi') -> insertGetId($gapMultiFill);
+        $gapMultiFillId = DB::table('gapfill_multi') ->insertGetId($gapMultiFill);
         //遍历每个选项结果
         foreach ($arrType as $key => $value) {
             $condition = preg_match("/^[A-Za-z]+$/", $key);
@@ -926,6 +936,7 @@ class CreateCheckController extends Controller
                 $result &= DB::table('gapfill_multi_res') -> insert($option);
             }
         }
+
         return $result;
     }
     //  打分题入库
@@ -938,7 +949,7 @@ class CreateCheckController extends Controller
         $quest = $quest.",".$typeId;
         $result = DB::table('quest')->where('id',$questId) -> update(['quest'=>$quest]);
         $userName = \Session::get('userInfo');
-        $userId= DB::table('user') -> where('username','test') -> value('id');
+        $userId= DB::table('user') -> where('username',$userName) -> value('id');
         $title = $arrType['title'];
         var_dump($arrType);
         $radio = array(
@@ -959,7 +970,7 @@ class CreateCheckController extends Controller
         $quest = $quest.",".$typeId;
         $result = DB::table('quest')->where('id',$questId) -> update(['quest'=>$quest]);
         $userName = \Session::get('userInfo');
-        $userId= DB::table('user') -> where('username','test') -> value('id');
+        $userId= DB::table('user') -> where('username',$userName) -> value('id');
         $title = $arrType['title'];
         $radio = array(
             'title' => $title,
@@ -982,7 +993,7 @@ class CreateCheckController extends Controller
 
         //获取用户信息
         $userName = \Session::get('userInfo');
-        $userId= DB::table('user') -> where('username','test') -> value('id');
+        $userId= DB::table('user') -> where('username',$userName) -> value('id');
 
         //开始入库
         $radio = array(
@@ -1004,7 +1015,7 @@ class CreateCheckController extends Controller
 
         //获取用户信息
         $userName = \Session::get('userInfo');
-        $userId= DB::table('user') -> where('username','test') -> value('id');
+        $userId= DB::table('user') -> where('username',$userName) -> value('id');
 
         //开始入库
         $hr = array(
@@ -1025,7 +1036,7 @@ class CreateCheckController extends Controller
         $quest = $quest.",".$typeId;
         $result = DB::table('quest')->where('id',$questId) -> update(['quest'=>$quest]);
         $userName = \Session::get('userInfo');
-        $userId= DB::table('user') -> where('username','test') -> value('id');
+        $userId= DB::table('user') -> where('username',$userName) -> value('id');
         $title = $arrType['title'];
         $gapFill = array(
             'title' => $title,
@@ -1046,7 +1057,7 @@ class CreateCheckController extends Controller
         $quest = $quest.",".$typeId;
         $result = DB::table('quest')->where('id',$questId) -> update(['quest'=>$quest]);
         $userName = \Session::get('userInfo');
-        $userId= DB::table('user') -> where('username','test') -> value('id');
+        $userId= DB::table('user') -> where('username',$userName) -> value('id');
         $title = $arrType['title'];
         $phone = array(
             'title' => $title,
@@ -1067,7 +1078,7 @@ class CreateCheckController extends Controller
         $quest = $quest.",".$typeId;
         $result = DB::table('quest')->where('id',$questId) -> update(['quest'=>$quest]);
         $userName = \Session::get('userInfo');
-        $userId= DB::table('user') -> where('username','test') -> value('id');
+        $userId= DB::table('user') -> where('username',$userName) -> value('id');
         $title = $arrType['title'];
         $email = array(
             'title' => $title,
@@ -1088,7 +1099,7 @@ class CreateCheckController extends Controller
         $quest = $quest.",".$typeId;
         $result = DB::table('quest')->where('id',$questId) -> update(['quest'=>$quest]);
         $userName = \Session::get('userInfo');
-        $userId= DB::table('user') -> where('username','test') -> value('id');
+        $userId= DB::table('user') -> where('username',$userName) -> value('id');
         $title = $arrType['title'];
         $sex = array(
             'title' => $title,
@@ -1109,7 +1120,7 @@ class CreateCheckController extends Controller
         $quest = $quest.",".$typeId;
         $result = DB::table('quest')->where('id',$questId) -> update(['quest'=>$quest]);
         $userName = \Session::get('userInfo');
-        $userId= DB::table('user') -> where('username','test') -> value('id');
+        $userId= DB::table('user') -> where('username',$userName) -> value('id');
         $title = $arrType['title'];
         $date = array(
             'title' => $title,
@@ -1130,7 +1141,7 @@ class CreateCheckController extends Controller
         $quest = $quest.",".$typeId;
         $result = DB::table('quest')->where('id',$questId) -> update(['quest'=>$quest]);
         $userName = \Session::get('userInfo');
-        $userId= DB::table('user') -> where('username','test') -> value('id');
+        $userId= DB::table('user') -> where('username',$userName) -> value('id');
         $title = $arrType['title'];
         $time = array(
             'title' => $title,
@@ -1151,7 +1162,7 @@ class CreateCheckController extends Controller
         $quest = $quest.",".$typeId;
         $result = DB::table('quest')->where('id',$questId) -> update(['quest'=>$quest]);
         $userName = \Session::get('userInfo');
-        $userId= DB::table('user') -> where('username','test') -> value('id');
+        $userId= DB::table('user') -> where('username',$userName) -> value('id');
         $title = $arrType['title'];
         $city = array(
             'title' => $title,
@@ -1173,7 +1184,7 @@ class CreateCheckController extends Controller
         $quest = $quest.",".$typeId;
         $result = DB::table('quest')->where('id',$questId) -> update(['quest'=>$quest]);
         $userName = \Session::get('userInfo');
-        $userId= DB::table('user') -> where('username','test') -> value('id');
+        $userId= DB::table('user') -> where('username',$userName) -> value('id');
         $title = $arrType['title'];
         $address = array(
             'title' => $title,
@@ -1197,7 +1208,7 @@ class CreateCheckController extends Controller
 
         //  获取用户信息
         $userName = \Session::get('userInfo');
-        $userId= DB::table('user') -> where('username','test') -> value('id');
+        $userId= DB::table('user') -> where('username',$userName) -> value('id');
 
         //  开始入库
         $title = $arrType['title'];
@@ -1242,7 +1253,7 @@ class CreateCheckController extends Controller
 
         //  获取用户信息
         $userName = \Session::get('userInfo');
-        $userId= DB::table('user') -> where('username','test') -> value('id');
+        $userId= DB::table('user') -> where('username',$userName) -> value('id');
 
         //  开始入库
         $title = $arrType['title'];
@@ -1287,7 +1298,7 @@ class CreateCheckController extends Controller
 
         //  获取用户信息
         $userName = \Session::get('userInfo');
-        $userId= DB::table('user') -> where('username','test') -> value('id');
+        $userId= DB::table('user') -> where('username',$userName) -> value('id');
 
         //  开始入库
         $title = $arrType['title'];
@@ -1343,124 +1354,128 @@ class CreateCheckController extends Controller
         switch ( $type ) {
             case "radio":
                 //  获取要修改的Id
-                $typeId = DB::table('radio') -> where('quest_id',$questId) -> offset($typeNum) -> limit(1) ->  value('id');
+                var_dump("typenum:".$typeNum);
+                $typeId = DB::table('radio') -> where('quest_id',$questId) -> orderBy('id') -> offset($typeNum) -> limit(1) ->  value('id');
+                var_dump("id:".$typeId);
                 if($questType == "title") {
                     $result &= DB::table('radio') -> where('quest_id',$questId) -> where('id',$typeId) ->  update(["title" => $title]);
                 } elseif ($questType == "option") {
                     //查询要更新ID
-                    $optionId =  DB::table('radio_res') -> where('f_id',$typeId) -> offset($questTypeNum) -> limit(1) -> value('id');
+                    $optionId =  DB::table('radio_res') -> where('f_id',$typeId)->orderBy('id') -> offset($questTypeNum) -> limit(1) -> value('id');
                     $result &= DB::table('radio_res') ->  where('id',$optionId) -> update(["content" => $title]);
                 }
                 break;
             case "radioMulti":
                 //  获取要修改的Id
-                $typeId = DB::table('radio_multi') -> where('quest_id',$questId) -> offset($typeNum) -> limit(1) ->  value('id');
+                $typeId = DB::table('radio_multi') -> where('quest_id',$questId) -> orderBy('id')  -> offset($typeNum) -> limit(1) ->  value('id');
                 if($questType == "title") {
                     $result &= DB::table('radio_multi') -> where('quest_id',$questId) -> where('id',$typeId) ->  update(["title" => $title]);
                 } elseif ($questType == "option") {
                     //查询要更新ID
-                    $optionId =  DB::table('radio_multi_res') -> where('f_id',$typeId) -> offset($questTypeNum) -> limit(1) -> value('id');
+                    $optionId =  DB::table('radio_multi_res') -> where('f_id',$typeId)->orderBy('id') -> offset($questTypeNum) -> limit(1) -> value('id');
                     $result &= DB::table('radio_multi_res') ->  where('id',$optionId) -> update(["content" => $title]);
                 }
                 break;
             case "gapFill":
-                $typeId = DB::table('gapfill') -> where('quest_id',$questId) -> offset($typeNum) -> limit(1) ->  value('id');
+                $typeId = DB::table('gapfill') -> where('quest_id',$questId) -> orderBy('id') -> offset($typeNum) -> limit(1) ->  value('id');
                 $result &= DB::table('gapfill') -> where('quest_id',$questId) -> where('id',$typeId) ->  update(["title" => $title]);
                 break;
             case "gapMultiFill":
-                $typeId = DB::table('gapfill_multi') -> where('quest_id',$questId) -> offset($typeNum) -> limit(1) ->  value('id');
+                $typeId = DB::table('gapfill_multi') -> where('quest_id',$questId) -> orderBy('id') -> offset($typeNum) -> limit(1) ->  value('id');
                 if($questType == "title") {
-                    $result &= DB::table('gapfill_multi') -> where('quest_id',$questId) -> offset($typeNum) -> limit(1) ->  update(["title" => $title]);
+                    $curId = DB::table('gapfill_multi') -> where('quest_id',$questId)->orderBy('id') -> offset($typeNum) -> limit(1) -> value('id');
+                    //dd($questId, $typeNum);
+                    $result &= DB::table('gapfill_multi') -> where('id',$curId)->orderBy('id') -> offset($typeNum) -> limit(1) ->  update(["title" => $title]);
                 } elseif ($questType == "option") {
-                    var_dump($questTypeNum);
-                    $optionId =  DB::table('gapfill_multi_res') -> where('f_id',$typeId) -> offset($questTypeNum) -> limit(1) -> value('id');
+                    //var_dump($questTypeNum);
+                    $optionId =  DB::table('gapfill_multi_res') -> where('f_id',$typeId)->orderBy('id') -> offset($questTypeNum) -> limit(1) -> value('id');
                     $result &= DB::table('gapfill_multi_res') -> where('id',$optionId) ->  update(["content" => $title]);
                 }
                 break;
             case "score":
-                $typeId = DB::table('score') -> where('quest_id',$questId) -> offset($typeNum) -> limit(1) ->  value('id');
+                $typeId = DB::table('score') -> where('quest_id',$questId) -> orderBy('id')->orderBy('id') -> offset($typeNum) -> limit(1) ->  value('id');
                 $result &= DB::table('score') -> where('quest_id',$questId) -> where('id',$typeId) ->  update(["title" => $title]);
                 break;
             case "descr":
-                $typeId = DB::table('descr') -> where('quest_id',$questId) -> offset($typeNum) -> limit(1) ->  value('id');
+                $typeId = DB::table('descr') -> where('quest_id',$questId) -> orderBy('id')->orderBy('id') -> offset($typeNum) -> limit(1) ->  value('id');
                 $result &= DB::table('descr') -> where('quest_id',$questId) -> where('id',$typeId) ->  update(["title" => $title]);
                 break;
             case "name":
                 $num = $typeNum - 1;
-                $typeId = DB::table('name') -> where('quest_id',$questId) -> offset($num) -> limit(1) ->  value('id');
+                $typeId = DB::table('name') -> where('quest_id',$questId) -> orderBy('id')->orderBy('id') -> offset($num) -> limit(1) ->  value('id');
                 var_dump("test:".$typeId);
                 var_dump("test1:".$typeNum);
                 $result &= DB::table('name') -> where('quest_id',$questId) -> where('id',$typeId) -> update(["title" => $title]);
                 break;
             case "phone":
-                $typeId = DB::table('phone') -> where('quest_id',$questId) -> offset($typeNum) -> limit(1) ->  value('id');
+                $typeId = DB::table('phone') -> where('quest_id',$questId) -> orderBy('id')->orderBy('id') -> offset($typeNum) -> limit(1) ->  value('id');
                 $result &= DB::table('phone') -> where('quest_id',$questId) -> where('id',$typeId) ->  update(["title" => $title]);
                 break;
             case "email":
-                $typeId = DB::table('email') -> where('quest_id',$questId) -> offset($typeNum) -> limit(1) ->  value('id');
+                $typeId = DB::table('email') -> where('quest_id',$questId) -> orderBy('id')->orderBy('id') -> offset($typeNum) -> limit(1) ->  value('id');
                 $result &= DB::table('email') -> where('quest_id',$questId) -> where('id',$typeId) ->  update(["title" => $title]);
                 break;
             case "sex":
-                $typeId = DB::table('sex') -> where('quest_id',$questId) -> offset($typeNum) -> limit(1) ->  value('id');
+                $typeId = DB::table('sex') -> where('quest_id',$questId) -> orderBy('id')->orderBy('id') -> offset($typeNum) -> limit(1) ->  value('id');
                 $result &= DB::table('sex') -> where('quest_id',$questId) -> where('id',$typeId) ->  update(["title" => $title]);
                 break;
             case "date":
-                $typeId = DB::table('date') -> where('quest_id',$questId) -> offset($typeNum) -> limit(1) ->  value('id');
+                $typeId = DB::table('date') -> where('quest_id',$questId) -> orderBy('id')->orderBy('id') -> offset($typeNum) -> limit(1) ->  value('id');
                 $result &= DB::table('date') -> where('quest_id',$questId) -> where('id',$typeId) ->  update(["title" => $title]);
                 break;
             case "time":
-                $typeId = DB::table('time') -> where('quest_id',$questId) -> offset($typeNum) -> limit(1) ->  value('id');
+                $typeId = DB::table('time') -> where('quest_id',$questId) -> orderBy('id')->orderBy('id') -> offset($typeNum) -> limit(1) ->  value('id');
                 $result &= DB::table('time') -> where('quest_id',$questId) -> where('id',$typeId) ->  update(["title" => $title]);
                 break;
             case "city":
-                $typeId = DB::table('city') -> where('quest_id',$questId) -> offset($typeNum) -> limit(1) ->  value('id');
+                $typeId = DB::table('city') -> where('quest_id',$questId) -> orderBy('id')->orderBy('id') -> offset($typeNum) -> limit(1) ->  value('id');
                 $result &= DB::table('city') -> where('quest_id',$questId) -> where('id',$typeId) ->  update(["title" => $title]);
                 break;
             case "address":
 
-                $typeId = DB::table('address') -> where('quest_id',$questId) -> offset($typeNum) -> limit(1) ->  value('id');
+                $typeId = DB::table('address') -> where('quest_id',$questId) -> orderBy('id')->orderBy('id') -> offset($typeNum) -> limit(1) ->  value('id');
                 $result &= DB::table('address') -> where('quest_id',$questId) -> where('id',$typeId) ->  update(["title" => $title]);
                 break;
             case "matrixRadio":
-                $typeId = DB::table('matrix_radio') -> where('quest_id',$questId) -> offset($typeNum) -> limit(1) ->  value('id');
+                $typeId = DB::table('matrix_radio') -> where('quest_id',$questId) -> orderBy('id')->orderBy('id') -> offset($typeNum) -> limit(1) ->  value('id');
                 if($questType == "title") {
                     $result &= DB::table('matrix_radio') -> where('quest_id',$questId) -> where('id',$typeId) ->  update(["title" => $title]);
                 } elseif ($questType == "option") {
                     if ($direction == "row") {
-                        $optionId =  DB::table('matrix_radio_row') -> where('f_id',$typeId) -> offset($questTypeNum) -> limit(1) -> value('id');
+                        $optionId =  DB::table('matrix_radio_row') -> where('f_id',$typeId)->orderBy('id') -> offset($questTypeNum) -> limit(1) -> value('id');
                         $result &= DB::table('matrix_radio_row') -> where('id',$optionId)  -> update(["content" => $title]);
                     } elseif ($direction == "col") {
                         var_dump($questTypeNum);
-                        $optionId =  DB::table('matrix_radio_col') -> where('f_id',$typeId) -> offset($questTypeNum) -> limit(1) -> value('id');
+                        $optionId =  DB::table('matrix_radio_col') -> where('f_id',$typeId)->orderBy('id') -> offset($questTypeNum) -> limit(1) -> value('id');
                         $result &= DB::table('matrix_radio_col') -> where('id',$optionId) -> update(["content" => $title]);
                     }
                 }
                 break;
             case "matrixScore":
-                $typeId = DB::table('matrix_score') -> where('quest_id',$questId) -> offset($typeNum) -> limit(1) ->  value('id');
+                $typeId = DB::table('matrix_score') -> where('quest_id',$questId) -> orderBy('id') -> offset($typeNum) -> limit(1) ->  value('id');
                 if($questType == "title") {
-                    $result &= DB::table('matrix_score') -> where('quest_id',$questId) -> offset($typeNum) -> limit(1) ->  update(["title" => $title]);
+                    $result &= DB::table('matrix_score') -> where('quest_id',$questId)->orderBy('id') -> offset($typeNum) -> limit(1) ->  update(["title" => $title]);
                 } elseif ($questType == "option") {
                     if ($direction == "row") {
-                        $optionId =  DB::table('matrix_score_row') -> where('f_id',$typeId) -> offset($questTypeNum) -> limit(1) -> value('id');
+                        $optionId =  DB::table('matrix_score_row') -> where('f_id',$typeId)->orderBy('id') -> offset($questTypeNum) -> limit(1) -> value('id');
                         $result &= DB::table('matrix_score_row') -> where('id',$optionId)  -> update(["content" => $title]);
                     } elseif ($direction == "col") {
-                        $optionId =  DB::table('matrix_score_col') -> where('f_id',$typeId) -> offset($questTypeNum) -> limit(1) -> value('id');
+                        $optionId =  DB::table('matrix_score_col') -> where('f_id',$typeId)->orderBy('id') -> offset($questTypeNum) -> limit(1) -> value('id');
                         $result &= DB::table('matrix_score_col') -> where('id',$optionId) -> update(["content" => $title]);
                     }
                 }
                 break;
             case "matrixGapFill":
-                $typeId = DB::table('matrix_gapfill') -> where('quest_id',$questId) -> offset($typeNum) -> limit(1) ->  value('id');
+                $typeId = DB::table('matrix_gapfill') -> where('quest_id',$questId) -> orderBy('id') -> offset($typeNum) -> limit(1) ->  value('id');
                 if($questType == "title") {
-                    $result &= DB::table('matrix_gapfill') -> where('quest_id',$questId) -> offset($typeNum) -> limit(1) ->  update(["title" => $title]);
+                    $result &= DB::table('matrix_gapfill') -> where('quest_id',$questId)->orderBy('id') -> offset($typeNum) -> limit(1) ->  update(["title" => $title]);
                 } elseif ($questType == "option") {
                     if ($direction == "row") {
                         var_dump("questTypeNum:".$questTypeNum);
-                        $optionId =  DB::table('matrix_gapfill_row') -> where('f_id',$typeId) -> offset($questTypeNum) -> limit(1) -> value('id');
+                        $optionId =  DB::table('matrix_gapfill_row') -> where('f_id',$typeId)->orderBy('id') -> offset($questTypeNum) -> limit(1) -> value('id');
                         $result &= DB::table('matrix_gapfill_row') -> where('id',$optionId)  -> update(["content" => $title]);
                     } elseif ($direction == "col") {
-                        $optionId =  DB::table('matrix_gapfill_col') -> where('f_id',$typeId) -> offset($questTypeNum) -> limit(1) -> value('id');
+                        $optionId =  DB::table('matrix_gapfill_col') -> where('f_id',$typeId)->orderBy('id') -> offset($questTypeNum) -> limit(1) -> value('id');
                         $result &= DB::table('matrix_gapfill_col') -> where('id',$optionId) -> update(["content" => $title]);
                     }
                 }

@@ -13,7 +13,7 @@
     <nav>
         <div class="logo" style="float: left"><a href="../index.php">小猪问卷网</a></div>
         <ul style="float: right;margin:20px 30px 0 0">
-            <li><a href="../index.php">首页</a></li>
+            <li><a href="/home/index">首页</a></li>
             <li><a href="">帮助中心</a></li>
             <li><a href="">关于我们</a></li>
             <li><a href="">联系我们</a></li>

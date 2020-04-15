@@ -35,12 +35,12 @@
 <body>
 <article class="page-container">
     <form action="" method="post" class="form form-horizontal" id="form-member-edit">
-            <div class="row cl">
+            {{--<div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>旧密码：</label>
                 <div class="formControls col-xs-8 col-sm-9">
                     <input type="text" class="input-text"  placeholder="" id="oldPass" name="oldPass">
                 </div>
-            </div>
+            </div>--}}
             <div class="row cl">
                 <input type="hidden"   name="id" >
                 <input type="hidden"   name="oldusername">

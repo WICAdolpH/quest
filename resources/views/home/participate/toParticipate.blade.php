@@ -5,7 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>参与调查</title>
+    {{--  layui插件  --}}
+{{--    <link rel="stylesheet" href="/script/layui/css/layui.css">--}}
+{{--    <script src="/script/layui/layui.js"></script>--}}
     <!-- css引入 -->
+    <link rel="stylesheet" type="text/css" href="/admin/static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="/admin/static/h-ui.admin/css/H-ui.admin.css" />
     <link rel="stylesheet" href="/home/css/bootstrap.min.css">
     <link rel="stylesheet" href="/home/css/bootstrap-theme.css">
     <link rel="stylesheet" href="/home/css/index.css">
@@ -26,6 +31,8 @@
     <!-- 时间选择器 -->
     <link rel="stylesheet" href="/home/css/participate/demo.css">
     <script src="/home/js/participate/date-time-picker.min.js"></script>
+{{--    <script src="http://g.tbcdn.cn/mtb/lib-flexible/0.3.4/??flexible_css.js,flexible.js"></script>--}}
+
     <style>
         .create li {
             font-size: 20px;
@@ -35,7 +42,9 @@
 </head>
 <body style="background-color: #f5f5f5;">
 <button class="btn btn-primary" style="margin-left: 60%;" onclick="save();">保存</button>
-    <form action="" class="create-form quest">
+<button  class="btn btn-primary" onclick="sub()">提交</button>
+
+    <form action="" class="create-form quest col-md-8 col-xs-12 page-container" style="width: 60%;">
 
         <div class="quest-title">
             <div class="title">欢迎使用小猪问卷网</div>
@@ -49,7 +58,7 @@
     </div>
     <!-- 选择题单选选项 -->
     <script type="text\html" id="radio-option">
-        <div class="options" class="create-form ">
+        <div class="options" class="create-form  ">
             <label for="option"></label>
 
             <input name="radio1-option1" type="radio" value="1" style="cursor: pointer;" >
@@ -93,7 +102,7 @@
     {{-- 填空题 --}}
     <script type="text/html" id="gapFill">
         <!-- 填空和多项填空 -->
-        <div class="gapFill  create create-option"   name="" id="">
+        <div class="gapFill  create create-option "   name="" id="">
             <div class="gapFillId idStyle" style="display: inline;">
                 <input type="hidden" value="" name="">
                 <li  style="display:inline;">2</li>
@@ -117,7 +126,7 @@
             </div>
 
             <div style="display: inline;">
-            <input type="text" class="option-title" value="请输入标题"  id="title" readonly="true"  disabled style="background-color: white;width: 80%;"/>
+            <input type="text" class="option-title" value="请输入标题"  id="title" readonly="true"  disabled style=""/>
             </div>
 
             <div class="  options">
@@ -137,7 +146,7 @@
     </script>
     {{-- 多项填空选项 --}}
     <script type="text/html" id="gapFill-option">
-        <div class=" options" style=" margin-left: 50px;">
+        <div class=" options" style="">
             <input class="gapInput-title"  type="text" value="选项2" placeholder="选项2" name=""  id="option" readonly="true" disabled style="background-color: white;width: 60%;">
             <br>
             <input type="text" class="gapInput " name=""  style="width: 80%;">
@@ -237,8 +246,8 @@
                 <span class="glyphicon glyphicon-trash hide" style="width: 30px; height: 30px; margin-left: 80px;cursor: pointer;" >
                         </span>
             </div>
-            <div class="allFormate table-responsive" style="width:90%;">
-                <table class="table table-bordered  "    >
+            <div class="allFormate table-responsive " >
+                <table class="table table-border table-bordered  "    >
                     <thead >
                     <tr >
                         <th style="width:122px;"></th>
@@ -286,12 +295,12 @@
                             </div>
                         </th>
                         <td align="center" >
-                            <label>
+                            <label onclick="radioClick(this)">
                                 <input type="radio" name="1" id="" class="a-radio" >
                                 <span class="b-radio"></span>
                             </label>
                         </td>
-                        <td align="center" >
+                        <td align="center" onclick="radioClick(this)">
                             <label>
                                 <input type="radio" name="1" id="" class="a-radio" >
                                 <span class="b-radio"></span>
@@ -306,6 +315,83 @@
             </div>
         </div>
     </script>
+    <script type="text/html" id="matrixRadio1">
+    <div class="matrixRadio  create create-option"    name="matrixRadio" id="matrixRadio">
+        <div class="matrixRadioId idStyle" style="display: inline;" name=""><input type="hidden" value="" name="" ><li style="display:inline;">9</li></div>
+        <div style="display: inline;">
+            <input type="text" class="option-title" placeholder="请输入标题"  name="" value="矩阵单选题" readonly="true"  id="title" disabled style="background-color: white">
+            <span class="glyphicon glyphicon-trash hide" style="width: 30px; height: 30px; margin-left: 80px;cursor: pointer;" >
+                        </span>
+        </div>
+        <div class="allFormate table-responsive" style="width:90%;">
+            <table class="table table-bordered  "    >
+                <thead >
+                <tr >
+                    <th style="width:122px;"></th>
+                    <th class="table_title tableCol1" style="">
+                        <div class="btn-group" style="margin-top: 0px; padding-top: -20px; height: 10px;width: 122px;">
+                            <input type="text" class="btn " value="选项1" style="width: 80px;"  readonly="true" id="option" direction="row" >
+
+                        </div>
+                    </th>
+                    <th class="table_title tableCol1" style="">
+                        <div class="btn-group" style="margin-top: 0px; padding-top: -20px; height: 10px;width: 122px;">
+                            <input type="text" readonly="true" class="btn " value="选项2" style="width: 80px;float: left;"   id="option" direction="row">
+
+                        </div>
+                    </th>
+                </tr>
+
+                </thead>
+
+                <tbody>
+                <tr>
+                    <th class="table_title tableRow" style="width: 140px;">
+                        <div class="btn-group" style="margin-top: 0px; padding-top: -20px; height: 10px;width: 122px;">
+                            <input type="text" class="btn " value="矩阵1" style="width: 80px;" readonly="true"  id="option" direction="col">
+                        </div>
+                    </th>
+                    <td align="center">
+                        <label>
+                            <input type="radio" name="" id="" class="a-radio" >
+                            <span class="b-radio"></span>
+                        </label>
+                    </td>
+                    <td align="center">
+                        <label>
+                            <input type="radio" name="" id="" class="a-radio" >
+                            <span class="b-radio"></span>
+                        </label>
+                    </td>
+
+                </tr>
+                <tr>
+                    <th class="table_title tableRow">
+                        <div class="btn-group" style="margin-top: 0px; padding-top: -20px; height: 10px;width: 122px;">
+                            <input type="text" class="btn " value="矩阵2" style="width: 80px;"  readonly="true" id="option" direction="col">
+                        </div>
+                    </th>
+                    <td align="center" >
+                        <label onclick="radioClick(this)">
+                            <input type="radio" name="1" id="" class="a-radio" >
+                            <span class="b-radio"></span>
+                        </label>
+                    </td>
+                    <td align="center" onclick="radioClick(this)">
+                        <label>
+                            <input type="radio" name="1" id="" class="a-radio" >
+                            <span class="b-radio"></span>
+                        </label>
+                    </td>
+
+                </tr>
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</script>
     {{-- 矩阵单选横添加 --}}
     <script type="text/html" id="matrixRadioRow">
         <th class="table_title tableCol1" style="">
@@ -335,7 +421,7 @@
                 <span class="glyphicon glyphicon-trash hide" style="width: 30px; height: 30px; margin-left: 80px;cursor: pointer;" >
                         </span>
             </div>
-            <div class="allFormate table-responsive" style="width:90%;">
+            <div class="allFormate table-responsive" >
                 <table class="table table-bordered  "    >
                     <thead >
                     <tr >
@@ -422,7 +508,7 @@
                 <span class="glyphicon glyphicon-trash hide" style="width: 30px; height: 30px; margin-left: 80px;cursor: pointer;" >
                         </span>
             </div>
-            <div class="allFormate table-responsive" style="width:90%;">
+            <div class="allFormate table-responsive">
                 <table class="table table-bordered  "    >
                     <thead >
                     <tr >
@@ -500,14 +586,15 @@
         </tr>
     </script>
     <script src="/home/js/page/myPagination.js"></script>
-    <script>
+<script type="text/javascript" src="/admin/static/h-ui/js/H-ui.min.js"></script>
+<script>
         //  对缓存的数据进行处理 将old('checkInfo')里面数据重新整合
         var oldCheck =  "";
         var oldArr = [];
         var oldCheckArr = [];
         var url = window.location.search;
         var questId = url.replace(/[^0-9]+/ig,"");
-
+        var typeNum = "{{ $typeNum }}"
         /*if( oldCheck ) {
             var oldCheckArr = oldCheck.trim(",");
         }*/
@@ -518,9 +605,10 @@
 
         //分页
         window.onload = function () {
+
             new Page({
                 id: 'pagination',
-                pageTotal: 50, //必填,总页数
+                pageTotal: typeNum, //必填,总页数
                 pageAmount: 1,  //每页多少条
                 dataTotal: 500, //总共多少条数据
                 curPage:1, //初始页码,不填默认为1
@@ -563,158 +651,160 @@
                         }
 
 
-                    console.log(oldCheckInfo);
                     questPage[page1].forEach(function(index3,item){
-                        switch (index3['type']) {
-                            case 'radio' :
-                                var _html = document.getElementById('radio').innerHTML;
+                            switch (index3['type']) {
+                                case 'radio' :
+                                    var _html = document.getElementById('radio').innerHTML;
 
-                                $('.create-form').append(_html);
+                                    $('.create-form').append(_html);
 
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                obj.attr('name','radio'+index1);
-                                obj.attr('id','radio'+index1);
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
-                                obj.children("div:eq(1)").find("input").attr("value",index3['title']);
-                                obj.children(".options").remove();
-                                //  追加心得元素
-                                var optionHtml = document.getElementById('radio-option').innerHTML;
-                                var oldCheck = index1 - 1;
-                                for ( key in index3 ) {
-                                    if (key.replace(/[^a-z]+/ig,"") === "option") {
-                                        obj.children("div:last-child").after(optionHtml);
-                                        obj.children("div:last-child").find('input:eq(1)').attr("value",index3[key]);
-                                        obj.children("div:last-child").find('input:eq(0)').attr("name",'radio'+index1);
-                                        //  数据还原
-                                        if(oldCheckInfo[scort]) {
-                                            var optionNum = obj.children(".options").length ;
-                                            for(idx in oldCheckInfo[oldCheck]) {
-                                                if(idx.replace(/[^a-z]+/ig,"") == "option") {
-                                                    var oldCheckNum = 0;
-                                                    if(oldCheckInfo[oldCheck][idx] == 1) {
-                                                        //  获取option末尾的数字
-                                                        oldCheckNum = idx.match(/\d+/);
-                                                        if(oldCheckNum[0] == optionNum) {
-                                                            var optionNum1 = optionNum - 1;
-                                                            obj.children(".options").eq(optionNum1).find('input:eq(0)').attr('checked','true');
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-
-
-                                    }
-                                }
-                                break;
-                            case 'radioMulti' :
-                                var _html = document.getElementById('radioMulti').innerHTML;
-                                $('.create-form').append(_html);
-
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                var oldCheck = index1 -1;
-                                obj.attr('name','radioMulti'+index1);
-                                obj.attr('id','radioMulti'+index1);
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
-                                obj.children("div:eq(1)").find("input").attr("value",index3['title']);
-                                obj.children(".options").remove();
-                                //  追加心得元素
-                                var optionHtml = document.getElementById('radioMulti-option').innerHTML;
-                                for ( key in index3 ) {
-                                    if (key.replace(/[^a-z]+/ig,"") === "option") {
-                                        obj.children("div:last-child").after(optionHtml);
-                                        obj.children("div:last-child").prev().find('input:eq(1)').attr("value",index3[key]);
-                                        obj.children("div:last-child").find('input:eq(0)').attr("name",'radioMulti'+index1);
-                                        //  数据还原
-                                        if(oldCheckInfo) {
-                                            var optionNum = obj.children(".options").length ;
-                                            for(idx in oldCheckInfo[oldCheck]) {
-                                                if(idx.replace(/[^a-z]+/ig,"") == "option") {
-                                                    var oldCheckNum = 0;
-                                                    if(oldCheckInfo[oldCheck][idx] == 1) {
-                                                        //  获取option末尾的数字
-                                                        oldCheckNum = idx.match(/\d+/);
-                                                        if(oldCheckNum[0] == optionNum) {
-                                                            var optionNum1 = optionNum - 1;
-                                                            obj.children(".options").eq(optionNum1).find('input:eq(0)').attr('checked','true');
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                break;
-                            case 'gapFill' :
-                                var _html = document.getElementById('gapFill').innerHTML;
-                                $('.create-form').append(_html);
-
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                var oldCheck = index1 - 1;
-                                obj.attr('name','gapFill'+index1);
-                                obj.attr('id','gapFill'+index1);
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
-                                obj.children("div:eq(1)").find("input").attr("value",index3['title']);
-                                //obj.children(".options").remove();
-                                if(oldCheckInfo[scort]) {
-
-                                    obj.find(".options").find("input").attr("value",oldCheckInfo[oldCheck]['option'])
-                                }
-                                break;
-                            case 'gapMultiFill' :
-                                var _html = document.getElementById('gapMultiFill').innerHTML;
-                                $('.create-form').append(_html);
-
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                obj.attr('name','gapMultiFill'+index1);
-                                obj.attr('id','gapMultiFill'+index1);
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
-                                obj.children("div:eq(1)").find("input").attr("value",index3['title']);
-                                obj.children(".options").remove();
-                                //  追加心得元素
-                                var optionHtml = document.getElementById('gapFill-option').innerHTML;
-                                for ( key in index3 ) {
-                                    if (key.replace(/[^a-z]+/ig,"") === "option") {
-                                        obj.children("div:last-child").after(optionHtml);
-                                        obj.children("div:last-child").find('input:eq(0)').attr("value",index3[key]);
-                                        //  数据还原
-                                        if(oldCheckInfo[scort]) {
-                                            var optionNum = obj.children(".options").length ;
-                                            for(idx in oldCheckInfo[scort]) {
-                                                if(idx.replace(/[^a-z]+/ig,"") == "option") {
-                                                    var oldCheckNum = 0;
-                                                        //  获取option末尾的数字
-                                                        oldCheckNum = idx.match(/\d+/);
-                                                            if(oldCheckInfo[scort]) {
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    obj.attr('name','radio'+index1);
+                                    obj.attr('id','radio'+index1);
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    obj.children("div:eq(1)").find("input").attr("value",index3['title']);
+                                    obj.children(".options").remove();
+                                    //  追加心得元素
+                                    var optionHtml = document.getElementById('radio-option').innerHTML;
+                                    var oldCheck = index1 - 1;
+                                    for ( key in index3 ) {
+                                        if (key.replace(/[^a-z]+/ig,"") === "option") {
+                                            obj.children("div:last-child").after(optionHtml);
+                                            obj.children("div:last-child").find('input:eq(1)').attr("value",index3[key]);
+                                            obj.children("div:last-child").find('input:eq(0)').attr("name",'radio'+index1);
+                                            //  数据还原
+                                            if(oldCheckInfo[scort]) {
+                                                var optionNum = obj.children(".options").length ;
+                                                for(idx in oldCheckInfo[oldCheck]) {
+                                                    if(idx.replace(/[^a-z]+/ig,"") == "option") {
+                                                        var oldCheckNum = 0;
+                                                        if(oldCheckInfo[oldCheck][idx] == 1) {
+                                                            //  获取option末尾的数字
+                                                            oldCheckNum = idx.match(/\d+/);
+                                                            if(oldCheckNum[0] == optionNum) {
                                                                 var optionNum1 = optionNum - 1;
-                                                                obj.children(".options").eq(optionNum1).find('input:eq(1)').attr('value',oldCheckInfo[scort][idx]);
+                                                                obj.children(".options").eq(optionNum1).find('input:eq(0)').attr('checked','true');
                                                             }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+
+                                        }
+                                    }
+                                    break;
+                                case 'radioMulti' :
+                                    var _html = document.getElementById('radioMulti').innerHTML;
+                                    $('.create-form').append(_html);
+
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    var oldCheck = index1 -1;
+                                    obj.attr('name','radioMulti'+index1);
+                                    obj.attr('id','radioMulti'+index1);
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    obj.children("div:eq(1)").find("input").attr("value",index3['title']);
+                                    obj.children(".options").remove();
+                                    //  追加心得元素
+                                    var optionHtml = document.getElementById('radioMulti-option').innerHTML;
+                                    for ( key in index3 ) {
+                                        console.log(index3[key],629)
+                                        if (key.replace(/[^a-z]+/ig,"") === "option") {
+                                            obj.children("div:last-child").after(optionHtml);
+                                            obj.children("div:last-child").find('input:eq(1)').attr("value",index3[key]);
+                                            console.log(index3,663)
+                                            obj.children("div:last-child").find('input:eq(0)').attr("name",'radioMulti'+index1);
+                                            //  数据还原
+                                            if(oldCheckInfo) {
+                                                var optionNum = obj.children(".options").length ;
+                                                for(idx in oldCheckInfo[oldCheck]) {
+                                                    if(idx.replace(/[^a-z]+/ig,"") == "option") {
+                                                        var oldCheckNum = 0;
+                                                        if(oldCheckInfo[oldCheck][idx] == 1) {
+                                                            //  获取option末尾的数字
+                                                            oldCheckNum = idx.match(/\d+/);
+                                                            if(oldCheckNum[0] == optionNum) {
+                                                                var optionNum1 = optionNum - 1;
+                                                                obj.children(".options").eq(optionNum1).find('input:eq(0)').attr('checked','true');
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
                                     }
-                                }
-                                break;
-                            case 'score' :
-                                var _html = document.getElementById('score').innerHTML;
-                                $('.create-form').append(_html);
+                                    break;
+                                case 'gapFill' :
+                                    var _html = document.getElementById('gapFill').innerHTML;
+                                    $('.create-form').append(_html);
 
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                obj.attr('name','score'+index1);
-                                obj.attr('id','score'+index1);
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
-                                obj.children("div:eq(1)").find("input").attr("value",index3['title']);
-                                if(oldCheckInfo) {
-                                    var optionNum = obj.children(".options").length ;
-                                    for(idx in oldCheckInfo[oldCheck]) {
-                                        if(idx.replace(/[^a-z]+/ig,"") == "option") {
-                                            var oldCheckNum = 0;
-                                            //if(oldCheckInfo[oldCheck][idx] == 1) {
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    var oldCheck = index1 - 1;
+                                    obj.attr('name','gapFill'+index1);
+                                    obj.attr('id','gapFill'+index1);
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    obj.children("div:eq(1)").find("input").attr("value",index3['title']);
+                                    //obj.children(".options").remove();
+                                    if(oldCheckInfo[scort]) {
+
+                                        obj.find(".options").find("input").attr("value",oldCheckInfo[oldCheck]['option'])
+                                    }
+                                    break;
+                                case 'gapMultiFill' :
+                                    var _html = document.getElementById('gapMultiFill').innerHTML;
+                                    $('.create-form').append(_html);
+
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    obj.attr('name','gapMultiFill'+index1);
+                                    obj.attr('id','gapMultiFill'+index1);
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    obj.children("div:eq(1)").find("input").attr("value",index3['title']);
+
+                                    obj.children(".options").remove();
+                                    //  追加心得元素
+                                    var optionHtml = document.getElementById('gapFill-option').innerHTML;
+                                    for ( key in index3 ) {
+                                        if (key.replace(/[^a-z]+/ig,"") === "option") {
+                                            obj.children("div:last-child").after(optionHtml);
+                                            obj.children("div:last-child").find('input:eq(0)').attr("value",index3[key]);
+                                            //  数据还原
+                                            if(oldCheckInfo[scort]) {
+                                                var optionNum = obj.children(".options").length ;
+                                                for(idx in oldCheckInfo[scort]) {
+                                                    if(idx.replace(/[^a-z]+/ig,"") == "option") {
+                                                        var oldCheckNum = 0;
+                                                        //  获取option末尾的数字
+                                                        oldCheckNum = idx.match(/\d+/);
+                                                        if(oldCheckInfo[scort]) {
+                                                            var optionNum1 = optionNum - 1;
+                                                            obj.children(".options").eq(optionNum1).find('input:eq(1)').attr('value',oldCheckInfo[scort][idx]);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    break;
+                                case 'score' :
+                                    var _html = document.getElementById('score').innerHTML;
+                                    $('.create-form').append(_html);
+
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    obj.attr('name','score'+index1);
+                                    obj.attr('id','score'+index1);
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    obj.children("div:eq(1)").find("input").attr("value",index3['title']);
+                                    if(oldCheckInfo) {
+                                        var optionNum = obj.children(".options").length ;
+                                        for(idx in oldCheckInfo[oldCheck]) {
+                                            if(idx.replace(/[^a-z]+/ig,"") == "option") {
+                                                var oldCheckNum = 0;
+                                                //if(oldCheckInfo[oldCheck][idx] == 1) {
                                                 //  获取option末尾的数字
                                                 oldCheckNum = idx.match(/\d+/);
                                                 if(oldCheckNum[0] == optionNum) {
@@ -722,234 +812,303 @@
                                                     var oldCheckNum = oldCheckInfo[oldCheck][idx]-1;
                                                     obj.find(".nps_radius").eq(oldCheckNum).trigger("click");
                                                 }
-                                            //}
+                                                //}
+                                            }
                                         }
                                     }
-                                }
-                                break;
-                            case 'descr' :
-                                var _html = document.getElementById('descr').innerHTML;
-                                $('.create-form').append(_html);
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                obj.attr('name','descr'+index1);
-                                obj.attr('id','descr'+index1);
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
-                                obj.children("div:eq(1)").find("input").attr("value",index3['title']);
-                                obj.children(".options").remove();
-                                break;
-                            case 'page' :
-                                var _html = document.getElementById('page').innerHTML;
+                                    break;
+                                case 'descr' :
+                                    var _html = document.getElementById('descr').innerHTML;
+                                    $('.create-form').append(_html);
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    obj.attr('name','descr'+index1);
+                                    obj.attr('id','descr'+index1);
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    obj.children("div:eq(1)").find("input").attr("value",index3['title']);
+                                    obj.children(".options").remove();
+                                    break;
+                                case 'page' :
+                                    var _html = document.getElementById('page').innerHTML;
 
-                                $('.create-form').append(_html);
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                obj.attr('name','descr'+index1);
-                                obj.attr('id','descr'+index1);
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    $('.create-form').append(_html);
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    obj.attr('name','descr'+index1);
+                                    obj.attr('id','descr'+index1);
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
 
-                                var num = index3['num']+"/"+index3['typeNum'];
-                                obj.find('input').attr('value',num);
-                                break;
-                            case 'hr' :
-                                var _html = document.getElementById('hr').innerHTML;
-                                $('.create-form').append(_html);
+                                    var num = index3['num']+"/"+index3['typeNum'];
+                                    obj.find('input').attr('value',num);
+                                    break;
+                                case 'hr' :
+                                    var _html = document.getElementById('hr').innerHTML;
+                                    $('.create-form').append(_html);
 
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                obj.attr('name','hr'+index1);
-                                obj.attr('id','hr'+index1);
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    obj.attr('name','hr'+index1);
+                                    obj.attr('id','hr'+index1);
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
 
-                                break;
-                            case 'name' :
-                                var _html = document.getElementById('name').innerHTML;
-                                $('.create-form').append(_html);
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                var oldCheck = index1 - 1;
-                                obj.attr('name','name'+index1);
-                                obj.attr('id','name'+index1);
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
-                                obj.children("div:eq(1)").find("input").attr("value",index3['title']);
-                                if(oldCheckInfo[scort]){
+                                    break;
+                                case 'name' :
+                                    var _html = document.getElementById('name').innerHTML;
+                                    $('.create-form').append(_html);
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    var oldCheck = index1 - 1;
+                                    obj.attr('name','name'+index1);
+                                    obj.attr('id','name'+index1);
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    obj.children("div:eq(1)").find("input").attr("value",index3['title']);
+                                    if(oldCheckInfo[scort]){
 
-                                    obj.find(".options").find("input").attr("value",oldCheckInfo[oldCheck]['option'])
-                                }
-                                break;
-                            case 'email' :
-                                var _html = document.getElementById('email').innerHTML;
-                                $('.create-form').append(_html);
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                obj.attr('name','email'+index1);
-                                obj.attr('id','email'+index1);
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
-                                obj.children("div:eq(1)").find("input").attr("value",index3['title']);
-                                break;
-                            case 'phone' :
-                                var _html = document.getElementById('phone').innerHTML;
-                                $('.create-form').append(_html);
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                obj.attr('name','phone'+index1);
-                                obj.attr('id','phone'+index1);
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
-                                obj.children("div:eq(1)").find("input").attr("value",index3['title']);
-                                break;
-                            case 'sex' :
-                                var _html = document.getElementById('sex').innerHTML;
-                                $('.create-form').append(_html);
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                obj.attr('name','sex'+index1);
-                                obj.attr('id','sex'+index1);
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
-                                obj.children("div:eq(1)").find("input").attr("value",index3['title']);
-                                break;
-                            case 'date' :
-                                var _html = document.getElementById('date').innerHTML;
-
-                                $('.create-form').append(_html);
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                obj.attr('name','date'+index1);
-                                obj.attr('id','date'+index1);
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
-                                obj.children("div:eq(1)").find("input").attr("value",index3['title']);
-                                obj.find(".mt10px").attr("id","J-demo-"+index1);
-                                $("#J-demo-"+index1).dateTimePicker({
-                                    mode: 'dateTime',
-                                    format: 'yyyy/MM/dd HH:mm:ss'
-                                });
-                                break;
-                            /*case 'time' :
-                                var _html = document.getElementById('time').innerHTML;
-                                $('.create-form').append(_html);
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                obj.attr('name','time'+index1);
-                                obj.attr('id','time'+index1);
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
-                                obj.children("div:eq(1)").find("input").attr("value",index3['title']);
-                                break;*/
-                            case 'city' :
-                                var _html = document.getElementById('city').innerHTML;
-                                $('.create-form').append(_html);
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                obj.attr('name','city'+index1);
-                                obj.attr('id','city'+index1);
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
-                                obj.children("div:eq(1)").find("input").attr("value",index3['title']);
-                                break;
-                            case 'address' :
-                                var _html = document.getElementById('address').innerHTML;
-                                $('.create-form').append(_html);
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                obj.attr('name','address'+index1);
-                                obj.attr('id','address'+index1);
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
-                                obj.children("div:eq(1)").find("input").attr("value",index3['title']);
-                                break;
-                            case 'matrixRadio1' :
-                                var _html = document.getElementById('matrixRadio').innerHTML;
-                                $('.create-form').append(_html);
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                obj.attr('name','matrixRadio'+index1);
-                                obj.attr('id','matrixRadio'+index1);
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
-                                obj.children("div:eq(1)").find("input").attr("value",index3['title']);
-                                //  移除row方向元素和col方向元素
-                                obj.find("thead").find("th:eq(1)").remove();
-                                obj.find("thead").find("th:eq(1)").remove();
-                                obj.find("tbody").find("tr").remove();
-                                //  追加心得元素
-                                var numTr = 0;
-                                var nameVal = 0;
-                                for ( key in index3 ) {
-                                    if (key.replace(/[^a-z]+/ig,"") === "row") {
-                                        //  获取th个数
-                                        var th = obj.find('thead').find('th').length ;
-                                        numTr++;
-                                        var optionHtml = document.getElementById('matrixRadioRow').innerHTML;
-                                        obj.find('thead').find('tr').append(optionHtml);
-                                        obj.find('thead').find('th:last-child').find('input').attr("value",index3[key]);
-                                        obj.find('thead').find('th:last-child').find('input').attr("name","row"+th);
+                                        obj.find(".options").find("input").attr("value",oldCheckInfo[oldCheck]['option'])
                                     }
-                                    if (key.replace(/[^a-z]+/ig,"") === "col") {
-                                        var td = "<td align=\"center\">\n" +
-                                            "  <label>\n" +
-                                            "   <input type=\"radio\" name=\"1\" id=\"\" class=\"a-radio\" >\n" +
-                                            "   <span class=\"b-radio\"></span>\n" +
-                                            " </label>\n" +
-                                            "</td>";
-                                        //  获取tr个数
-                                        var trLen = obj.find('tbody').find('tr').length  + 1;
-                                        var optionHtml = document.getElementById('matrixRadioCol').innerHTML;
-                                        obj.find('tbody').append(optionHtml);
-                                        obj.find('tbody').find('tr:last-child').find('input').attr("value",index3[key]);
-                                        obj.find('tbody').find('tr:last-child').find('input').attr("name","col"+trLen);
-                                        for(var i = 0; i<numTr; i++) {
-                                            obj.find('tbody').find('tr:last-child').find('th').after(td);
-                                            obj.find('tbody').find('tr:last-child').find("td").find("input").attr("name",nameVal);
+                                    break;
+                                case 'email' :
+                                    var _html = document.getElementById('email').innerHTML;
+                                    $('.create-form').append(_html);
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    obj.attr('name','email'+index1);
+                                    obj.attr('id','email'+index1);
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    obj.children("div:eq(1)").find("input").attr("value",index3['title']);
+                                    break;
+                                case 'phone' :
+                                    var _html = document.getElementById('phone').innerHTML;
+                                    $('.create-form').append(_html);
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    obj.attr('name','phone'+index1);
+                                    obj.attr('id','phone'+index1);
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    obj.children("div:eq(1)").find("input").attr("value",index3['title']);
+                                    break;
+                                case 'sex' :
+                                    var _html = document.getElementById('sex').innerHTML;
+                                    $('.create-form').append(_html);
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    obj.attr('name','sex'+index1);
+                                    obj.attr('id','sex'+index1);
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    obj.children("div:eq(1)").find("input").attr("value",index3['title']);
+                                    break;
+                                case 'date' :
+                                    var _html = document.getElementById('date').innerHTML;
+
+                                    $('.create-form').append(_html);
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    obj.attr('name','date'+index1);
+                                    obj.attr('id','date'+index1);
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    obj.children("div:eq(1)").find("input").attr("value",index3['title']);
+                                    obj.find(".mt10px").attr("id","J-demo-"+index1);
+                                    $("#J-demo-"+index1).dateTimePicker({
+                                        mode: 'dateTime',
+                                        format: 'yyyy/MM/dd HH:mm:ss'
+                                    });
+                                    break;
+                                /*case 'time' :
+                                    var _html = document.getElementById('time').innerHTML;
+                                    $('.create-form').append(_html);
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    obj.attr('name','time'+index1);
+                                    obj.attr('id','time'+index1);
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    obj.children("div:eq(1)").find("input").attr("value",index3['title']);
+                                    break;*/
+                                case 'city' :
+                                    var _html = document.getElementById('city').innerHTML;
+                                    $('.create-form').append(_html);
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    obj.attr('name','city'+index1);
+                                    obj.attr('id','city'+index1);
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    obj.children("div:eq(1)").find("input").attr("value",index3['title']);
+                                    break;
+                                case 'address' :
+                                    var _html = document.getElementById('address').innerHTML;
+                                    $('.create-form').append(_html);
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    obj.attr('name','address'+index1);
+                                    obj.attr('id','address'+index1);
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    obj.children("div:eq(1)").find("input").attr("value",index3['title']);
+                                    break;
+                                case 'matrixRadio1' :
+                                    var _html = document.getElementById('matrixRadio').innerHTML;
+                                    $('.create-form').append(_html);
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    obj.attr('name','matrixRadio'+index1);
+                                    obj.attr('id','matrixRadio'+index1);
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    obj.children("div:eq(1)").find("input").attr("value",index3['title']);
+                                    //  移除row方向元素和col方向元素
+                                    obj.find("thead").find("th:eq(1)").remove();
+                                    obj.find("thead").find("th:eq(1)").remove();
+                                    obj.find("tbody").find("tr").remove();
+                                    //  追加心得元素
+                                    var numTr = 0;
+                                    var nameVal = 0;
+                                    for ( key in index3 ) {
+                                        if (key.replace(/[^a-z]+/ig,"") === "row") {
+                                            //  获取th个数
+                                            var th = obj.find('thead').find('th').length ;
+                                            numTr++;
+                                            var optionHtml = document.getElementById('matrixRadioRow').innerHTML;
+                                            obj.find('thead').find('tr').append(optionHtml);
+                                            obj.find('thead').find('th:last-child').find('input').attr("value",index3[key]);
+                                            obj.find('thead').find('th:last-child').find('input').attr("name","row"+th);
                                         }
-                                        nameVal++;
-                                    }
-                                }
-                                break;
-                            case 'matrixRadio' :
-                                var _html = document.getElementById('matrixRadio').innerHTML;
-                                $('.create-form').append(_html);
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                obj.attr('name','matrixRadio'+index1);
-                                obj.attr('id','matrixRadio'+index1);
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
-                                obj.children("div:eq(1)").find("input").attr("value",index3['title']);
-                                //  移除row方向元素和col方向元素
-                                obj.find("thead").find("th:eq(1)").remove();
-                                obj.find("thead").find("th:eq(1)").remove();
-                                obj.find("tbody").find("tr").remove();
-                                //  追加心得元素
-                                var numTr = 0;
-                                var nameVal = 0;
-                                for ( key in index3 ) {
-                                    if (key.replace(/[^a-z]+/ig,"") === "row") {
-                                        //  获取th个数
-                                        var th = obj.find('thead').find('th').length ;
-                                        numTr++;
-                                        var optionHtml = document.getElementById('matrixRadioRow').innerHTML;
-                                        obj.find('thead').find('tr').append(optionHtml);
-                                        obj.find('thead').find('th:last-child').find('input').attr("value",index3[key]);
-                                        obj.find('thead').find('th:last-child').find('input').attr("name","row"+th);
-                                    }
-                                    if (key.replace(/[^a-z]+/ig,"") === "col") {
-                                        var td = "<td align=\"center\">\n" +
-                                            "  <label>\n" +
-                                            "   <input type=\"radio\" name=\"\" id=\"\" value=\"1\" class=\"a-radio\" >\n" +
-                                            "   <span class=\"b-radio\"></span>\n" +
-                                            " </label>\n" +
-                                            "</td>";
-                                        //  获取tr个数
-                                        var trLen = obj.find('tbody').find('tr').length  + 1;
-                                        var optionHtml = document.getElementById('matrixRadioCol').innerHTML;
-                                        obj.find('tbody').append(optionHtml);
-                                        obj.find('tbody').find('tr:last-child').find('input').attr("value",index3[key]);
-                                        obj.find('tbody').find('tr:last-child').find('input').attr("name","col"+trLen);
-                                        for(var i = 0; i<numTr; i++) {
-                                            obj.find('tbody').find('tr:last-child').find('th').after(td);
-                                            obj.find('tbody').find('tr:last-child').find("td").find("input").attr("name",nameVal);
+                                        if (key.replace(/[^a-z]+/ig,"") === "col") {
+                                            var td = "<td align=\"center\">\n" +
+                                                "  <label>\n" +
+                                                "   <input type=\"radio\" name=\"1\" id=\"\" class=\"a-radio\" >\n" +
+                                                "   <span class=\"b-radio\"></span>\n" +
+                                                " </label>\n" +
+                                                "</td>";
+                                            //  获取tr个数
+                                            var trLen = obj.find('tbody').find('tr').length  + 1;
+                                            var optionHtml = document.getElementById('matrixRadioCol').innerHTML;
+                                            obj.find('tbody').append(optionHtml);
+                                            obj.find('tbody').find('tr:last-child').find('input').attr("value",index3[key]);
+                                            obj.find('tbody').find('tr:last-child').find('input').attr("name","col"+trLen);
+                                            for(var i = 0; i<numTr; i++) {
+                                                obj.find('tbody').find('tr:last-child').find('th').after(td);
+                                                obj.find('tbody').find('tr:last-child').find("td").find("input").attr("name",nameVal);
+                                            }
+                                            nameVal++;
                                         }
-                                        nameVal++;
                                     }
-                                    if(oldCheckInfo[scort]) {
-                                        var optionNum = obj.children(".options").length ;
-                                        for(idx in oldCheckInfo[scort]) {
+                                    break;
+                                case 'matrixRadio' :
+                                    var _html = document.getElementById('matrixRadio').innerHTML;
+                                    $('.create-form').append(_html);
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    obj.attr('name','matrixRadio'+index1);
+                                    obj.attr('id','matrixRadio'+index1);
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    obj.children("div:eq(1)").find("input").attr("value",index3['title']);
+                                    //  移除row方向元素和col方向元素
+                                    obj.find("thead").find("th:eq(1)").remove();
+                                    obj.find("thead").find("th:eq(1)").remove();
+                                    obj.find("tbody").find("tr").remove();
+                                    //  追加心得元素
+                                    var numTr = 0;
+                                    var nameVal = 0;
+                                    for ( key in index3 ) {
+                                        if (key.replace(/[^a-z]+/ig,"") === "row") {
+                                            //  获取th个数
+                                            var th = obj.find('thead').find('th').length ;
+                                            numTr++;
+                                            var optionHtml = document.getElementById('matrixRadioRow').innerHTML;
+                                            obj.find('thead').find('tr').append(optionHtml);
+                                            obj.find('thead').find('th:last-child').find('input').attr("value",index3[key]);
+                                            obj.find('thead').find('th:last-child').find('input').attr("name","row"+th);
+                                        }
+                                        if (key.replace(/[^a-z]+/ig,"") === "col") {
+                                            var td = "<td align=\"center\">\n" +
+                                                "  <label onclick=\"radioClick(this)\">\n" +
+                                                "   <input type=\"radio\" name=\"\" id=\"\" value=\"1\" class=\"a-radio\" >\n" +
+                                                "   <span class=\"b-radio\"></span>\n" +
+                                                " </label>\n" +
+                                                "</td>";
+                                            //  获取tr个数
+                                            var trLen = obj.find('tbody').find('tr').length  + 1;
+                                            var optionHtml = document.getElementById('matrixRadioCol').innerHTML;
+                                            obj.find('tbody').append(optionHtml);
+                                            obj.find('tbody').find('tr:last-child').find('input').attr("value",index3[key]);
+                                            obj.find('tbody').find('tr:last-child').find('input').attr("name","col"+trLen);
+                                            for(var i = 0; i<numTr; i++) {
+                                                obj.find('tbody').find('tr:last-child').find('th').after(td);
+                                                obj.find('tbody').find('tr:last-child').find("td").find("input").attr("name",'matrixRadio'+index1+nameVal);
+                                            }
+                                            nameVal++;
+                                        }
+                                        if(oldCheckInfo[scort]) {
+                                            var optionNum = obj.children(".options").length ;
+                                            for(idx in oldCheckInfo[scort]) {
+                                                var oldCheckNum = 0;
+                                                /*if(oldCheckInfo[scort][idx] == 1) {
+                                                    //  获取option末尾的数字
+                                                    oldCheckNum = idx.match(/\d+/);
+                                                    var optionNum1 = optionNum - 1;
+                                                    obj.children(".options").eq(optionNum1).find('input:eq(0)').attr('checked','true');
+                                                }*/
+                                                oldCheckNum = idx.match(/\d+.\d+/);
+                                                if(oldCheckNum) {
+                                                    var oldCoordinates = oldCheckNum[0];
+                                                    //console.log(oldCoordinates);
+
+                                                    var oldCor = oldCoordinates.split(".");
+                                                    /*var oldRow = key;
+                                                    var oldCol = oldCoordinates[key];*/
+                                                    if(oldCheckInfo[scort][idx] == 1) {
+                                                        obj.find('tbody').find("tr").eq(oldCor[1]).children("td").eq(oldCor[0]).find("label").click();
+                                                    }
+
+
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                    break;
+                                case 'matrixScore' :
+                                    var _html = document.getElementById('matrixScore').innerHTML;
+                                    $('.create-form').append(_html);
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    obj.attr('name','matrixScore'+index1);
+                                    obj.attr('id','matrixScore'+index1);
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    obj.children("div:eq(1)").find("input").attr("value",index3['title']);
+                                    //  移除row方向元素和col方向元素
+                                    obj.find("thead").find("th:eq(1)").remove();
+                                    obj.find("thead").find("th:eq(1)").remove();
+                                    obj.find("tbody").find("tr").remove();
+                                    //  追加心得元素
+                                    var numTr = 0;
+                                    for ( key in index3 ) {
+                                        if (key.replace(/[^a-z]+/ig,"") === "row") {
+                                            //  获取th个数
+                                            var th = obj.find('thead').find('th').length ;
+                                            numTr++;
+                                            var optionHtml = document.getElementById('matrixScoreRow').innerHTML;
+                                            obj.find('thead').find('tr').append(optionHtml);
+                                            obj.find('thead').find('th:last-child').find('input').attr("value",index3[key]);
+                                            obj.find('thead').find('th:last-child').find('input').attr("name","row"+th);
+                                        }
+                                        if (key.replace(/[^a-z]+/ig,"") === "col") {
+                                            var td = " <td align=\"center\" >\n" +
+                                                "                <input type=\"text\" class=\"btn \" placeholder=\"分数\" style=\"width: 80px;border: 1px solid #2672ff;\" oninput = \"value=value.replace(/[^\\d]/g,'')\">\n" +
+                                                "            </td>";
+                                            //  获取tr个数
+                                            var trLen = obj.find('tbody').find('tr').length  + 1;
+                                            var optionHtml = document.getElementById('matrixScoreCol').innerHTML;
+                                            obj.find('tbody').append(optionHtml);
+                                            obj.find('tbody').find('tr:last-child').find('input').attr("value",index3[key]);
+                                            obj.find('tbody').find('tr:last-child').find('input').attr("name","col"+trLen);
+                                            for(var i = 0; i<numTr; i++) {
+                                                obj.find('tbody').find('tr:last-child').find('th').after(td);
+                                            }
+                                        }
+
+                                        if(oldCheckInfo[scort]) {
+                                            var optionNum = obj.children(".options").length ;
+                                            for(idx in oldCheckInfo[scort]) {
                                                 var oldCheckNum = 0;
                                                 /*if(oldCheckInfo[scort][idx] == 1) {
                                                     //  获取option末尾的数字
@@ -960,138 +1119,75 @@
                                                 oldCheckNum = idx.match(/\d+.\d+/);
                                                 if(oldCheckNum) {
                                                     var oldCoordinates = oldCheckNum[0].split(".");
-                                                    for(key in oldCoordinates) {
-                                                        var oldRow = key;
-                                                        var oldCol = oldCoordinates[key];
-                                                        if(oldCheckInfo[scort][idx] == 1) {
-                                                            obj.find('tbody').find("tr").eq(oldCol).children("td").eq(oldRow).children("span").trigger('click');
-                                                        }
-                                                    }
+                                                    obj.find('tbody').find("tr").eq(oldCoordinates[1]).children("td").eq(oldCoordinates[0]).children("input").attr("value",oldCheckInfo[scort][idx]);
                                                 }
+                                            }
                                         }
                                     }
-                                }
-                                break;
-                            case 'matrixScore' :
-                                var _html = document.getElementById('matrixScore').innerHTML;
-                                $('.create-form').append(_html);
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                obj.attr('name','matrixScore'+index1);
-                                obj.attr('id','matrixScore'+index1);
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
-                                obj.children("div:eq(1)").find("input").attr("value",index3['title']);
-                                //  移除row方向元素和col方向元素
-                                obj.find("thead").find("th:eq(1)").remove();
-                                obj.find("thead").find("th:eq(1)").remove();
-                                obj.find("tbody").find("tr").remove();
-                                //  追加心得元素
-                                var numTr = 0;
-                                for ( key in index3 ) {
-                                    if (key.replace(/[^a-z]+/ig,"") === "row") {
-                                        //  获取th个数
-                                        var th = obj.find('thead').find('th').length ;
-                                        numTr++;
-                                        var optionHtml = document.getElementById('matrixScoreRow').innerHTML;
-                                        obj.find('thead').find('tr').append(optionHtml);
-                                        obj.find('thead').find('th:last-child').find('input').attr("value",index3[key]);
-                                        obj.find('thead').find('th:last-child').find('input').attr("name","row"+th);
-                                    }
-                                    if (key.replace(/[^a-z]+/ig,"") === "col") {
-                                        var td = " <td align=\"center\" >\n" +
-                                            "                <input type=\"text\" class=\"btn \" placeholder=\"分数\" style=\"width: 80px;border: 1px solid #2672ff;\" oninput = \"value=value.replace(/[^\\d]/g,'')\">\n" +
-                                            "            </td>";
-                                        //  获取tr个数
-                                        var trLen = obj.find('tbody').find('tr').length  + 1;
-                                        var optionHtml = document.getElementById('matrixScoreCol').innerHTML;
-                                        obj.find('tbody').append(optionHtml);
-                                        obj.find('tbody').find('tr:last-child').find('input').attr("value",index3[key]);
-                                        obj.find('tbody').find('tr:last-child').find('input').attr("name","col"+trLen);
-                                        for(var i = 0; i<numTr; i++) {
-                                            obj.find('tbody').find('tr:last-child').find('th').after(td);
+                                    break;
+                                case 'matrixGapFill' :
+                                    var _html = document.getElementById('matrixGapFill').innerHTML;
+                                    $('.create-form').append(_html);
+                                    var obj = $(".create-option:last-child");
+                                    var index1 = scort + 1;
+                                    obj.attr('name','matrixGapFill'+index1);
+                                    obj.attr('id','matrixGapFill'+index1);
+                                    $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
+                                    obj.children("div:eq(1)").find("input").attr("value",index3['title']);
+                                    //  移除row方向元素和col方向元素
+                                    obj.find("thead").find("th:eq(1)").remove();
+                                    obj.find("thead").find("th:eq(1)").remove();
+                                    obj.find("tbody").find("tr").remove();
+                                    //  追加心得元素
+                                    var numTr = 0;
+                                    for ( key in index3 ) {
+                                        if (key.replace(/[^a-z]+/ig,"") === "row") {
+                                            //  获取th个数
+                                            var th = obj.find('thead').find('th').length ;
+                                            numTr++;
+                                            var optionHtml = document.getElementById('matrixGapFillRow').innerHTML;
+                                            obj.find('thead').find('tr').append(optionHtml);
+                                            obj.find('thead').find('th:last-child').find('input').attr("value",index3[key]);
+                                            obj.find('thead').find('th:last-child').find('input').attr("name","row"+th);
+                                        }
+                                        if (key.replace(/[^a-z]+/ig,"") === "col") {
+                                            var td = '<td align="center">'+
+                                                '<input type="text" class="btn " value="" style="width: 80px;border: 1px solid #2672ff;" >'+
+                                                '</td>';
+                                            //  获取tr个数
+                                            var trLen = obj.find('tbody').find('tr').length  + 1;
+                                            var optionHtml = document.getElementById('matrixGapFillCol').innerHTML;
+                                            obj.find('tbody').append(optionHtml);
+                                            obj.find('tbody').find('tr:last-child').find('input').attr("value",index3[key]);
+                                            obj.find('tbody').find('tr:last-child').find('input').attr("name","col"+trLen);
+                                            for(var i = 0; i<numTr; i++) {
+                                                obj.find('tbody').find('tr:last-child').find('th').after(td);
+                                            }
+                                        }
+                                        if(oldCheckInfo[scort]) {
+                                            var optionNum = obj.children(".options").length ;
+                                            for(idx in oldCheckInfo[scort]) {
+                                                var oldCheckNum = 0;
+                                                /*if(oldCheckInfo[scort][idx] == 1) {
+                                                    //  获取option末尾的数字
+                                                    oldCheckNum = idx.match(/\d+/);
+                                                    var optionNum1 = optionNum - 1;
+                                                    obj.children(".options").eq(optionNum1).find('input:eq(0)').attr('checked','true');
+                                                }*/
+                                                oldCheckNum = idx.match(/\d+.\d+/);
+                                                if(oldCheckNum) {
+                                                    var oldCoordinates = oldCheckNum[0].split(".");
+                                                    obj.find('tbody').find("tr").eq(oldCoordinates[1]).children("td").eq(oldCoordinates[0]).children("input").attr("value",oldCheckInfo[scort][idx]);
+                                                }
+                                            }
                                         }
                                     }
+                                    break;
+                            }
+                            scort++;
+                        });
 
-                                    if(oldCheckInfo[scort]) {
-                                        var optionNum = obj.children(".options").length ;
-                                        for(idx in oldCheckInfo[scort]) {
-                                            var oldCheckNum = 0;
-                                            /*if(oldCheckInfo[scort][idx] == 1) {
-                                                //  获取option末尾的数字
-                                                oldCheckNum = idx.match(/\d+/);
-                                                var optionNum1 = optionNum - 1;
-                                                obj.children(".options").eq(optionNum1).find('input:eq(0)').attr('checked','true');
-                                            }*/
-                                            oldCheckNum = idx.match(/\d+.\d+/);
-                                            if(oldCheckNum) {
-                                                var oldCoordinates = oldCheckNum[0].split(".");
-                                                obj.find('tbody').find("tr").eq(oldCoordinates[1]).children("td").eq(oldCoordinates[0]).children("input").attr("value",oldCheckInfo[scort][idx]);
-                                            }
-                                        }
-                                    }
-                                }
-                                break;
-                            case 'matrixGapFill' :
-                                var _html = document.getElementById('matrixGapFill').innerHTML;
-                                $('.create-form').append(_html);
-                                var obj = $(".create-option:last-child");
-                                var index1 = scort + 1;
-                                obj.attr('name','matrixGapFill'+index1);
-                                obj.attr('id','matrixGapFill'+index1);
-                                $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
-                                obj.children("div:eq(1)").find("input").attr("value",index3['title']);
-                                //  移除row方向元素和col方向元素
-                                obj.find("thead").find("th:eq(1)").remove();
-                                obj.find("thead").find("th:eq(1)").remove();
-                                obj.find("tbody").find("tr").remove();
-                                //  追加心得元素
-                                var numTr = 0;
-                                for ( key in index3 ) {
-                                    if (key.replace(/[^a-z]+/ig,"") === "row") {
-                                        //  获取th个数
-                                        var th = obj.find('thead').find('th').length ;
-                                        numTr++;
-                                        var optionHtml = document.getElementById('matrixGapFillRow').innerHTML;
-                                        obj.find('thead').find('tr').append(optionHtml);
-                                        obj.find('thead').find('th:last-child').find('input').attr("value",index3[key]);
-                                        obj.find('thead').find('th:last-child').find('input').attr("name","row"+th);
-                                    }
-                                    if (key.replace(/[^a-z]+/ig,"") === "col") {
-                                        var td = '<td align="center">'+
-                                            '<input type="text" class="btn " value="" style="width: 80px;border: 1px solid #2672ff;" >'+
-                                            '</td>';
-                                        //  获取tr个数
-                                        var trLen = obj.find('tbody').find('tr').length  + 1;
-                                        var optionHtml = document.getElementById('matrixGapFillCol').innerHTML;
-                                        obj.find('tbody').append(optionHtml);
-                                        obj.find('tbody').find('tr:last-child').find('input').attr("value",index3[key]);
-                                        obj.find('tbody').find('tr:last-child').find('input').attr("name","col"+trLen);
-                                        for(var i = 0; i<numTr; i++) {
-                                            obj.find('tbody').find('tr:last-child').find('th').after(td);
-                                        }
-                                    }
-                                    if(oldCheckInfo[scort]) {
-                                        var optionNum = obj.children(".options").length ;
-                                        for(idx in oldCheckInfo[scort]) {
-                                            var oldCheckNum = 0;
-                                            /*if(oldCheckInfo[scort][idx] == 1) {
-                                                //  获取option末尾的数字
-                                                oldCheckNum = idx.match(/\d+/);
-                                                var optionNum1 = optionNum - 1;
-                                                obj.children(".options").eq(optionNum1).find('input:eq(0)').attr('checked','true');
-                                            }*/
-                                            oldCheckNum = idx.match(/\d+.\d+/);
-                                            if(oldCheckNum) {
-                                                var oldCoordinates = oldCheckNum[0].split(".");
-                                                obj.find('tbody').find("tr").eq(oldCoordinates[1]).children("td").eq(oldCoordinates[0]).children("input").attr("value",oldCheckInfo[scort][idx]);
-                                            }
-                                        }
-                                    }
-                                }
-                                break;
-                        }
-                        scort++;
-                    });
+
 
                     //获取当前页数
                         console.log(page);
@@ -1104,6 +1200,12 @@
             "overflow-x":"auto",
             "overflow-y":"auto"
         });
+
+        function radioClick(obj) {
+            $(obj).parents("tr").find('input:gt(0)').attr('value', "0");
+            $(obj).find("input").attr("value","1");
+        }
+
 
         function score(obj) {
             $(obj).parents('.allFormate').children('div').each(function(){
@@ -1145,7 +1247,9 @@
         });
         //  分页逻辑
         if(questPage.length !== 0) {
+
             questPage[0].forEach(function(index3,item){
+
                 switch (index3['type']) {
                     case 'radio' :
                         var _html = document.getElementById('radio').innerHTML;
@@ -1165,6 +1269,7 @@
                             if (key.replace(/[^a-z]+/ig,"") === "option") {
                                 obj.children("div:last-child").after(optionHtml);
                                 obj.children("div:last-child").find('input:eq(1)').attr("value",index3[key]);
+                                console.log(index3[key])
                                 obj.children("div:last-child").find('input:eq(0)').attr("name",'radio'+index1);
                             }
                         }
@@ -1179,13 +1284,16 @@
                         obj.attr('id','radioMulti'+index1);
                         $(".create-option:last-child").children("div:eq(0)").find('li').html(index1);
                         obj.children("div:eq(1)").find("input").attr("value",index3['title']);
+
                         obj.children(".options").remove();
                         //  追加心得元素
                         var optionHtml = document.getElementById('radioMulti-option').innerHTML;
                         for ( key in index3 ) {
+
                             if (key.replace(/[^a-z]+/ig,"") === "option") {
+                                console.log(index3[key],obj)
                                 obj.children("div:last-child").after(optionHtml);
-                                obj.children("div:last-child").prev().find('input:eq(1)').attr("value",index3[key]);
+                                obj.children("div:last-child").find('input:eq(1)').attr("value",index3[key]);
                                 obj.children("div:last-child").find('input:eq(0)').attr("name",'radio'+index1);
                             }
                         }
@@ -1379,8 +1487,8 @@
                             }
                             if (key.replace(/[^a-z]+/ig,"") === "col") {
                                 var td = "<td align=\"center\">\n" +
-                                    "  <label>\n" +
-                                    "   <input type=\"radio\" name=\"\" id=\"\" value=\"1\" class=\"a-radio\" >\n" +
+                                    "  <label onclick=\"radioClick(this)\">\n" +
+                                    "   <input type=\"radio\" name=\"\" id=\"\" value=\"0\" class=\"a-radio\" >\n" +
                                     "   <span class=\"b-radio\"></span>\n" +
                                     " </label>\n" +
                                     "</td>";
@@ -1392,7 +1500,7 @@
                                 obj.find('tbody').find('tr:last-child').find('input').attr("name","col"+trLen);
                                 for(var i = 0; i<numTr; i++) {
                                     obj.find('tbody').find('tr:last-child').find('th').after(td);
-                                    obj.find('tbody').find('tr:last-child').find("td").find("input").attr("name",nameVal);
+                                    obj.find('tbody').find('tr:last-child').find("td").find("input").attr("name",'matrixRadio'+index1+nameVal);
                                 }
                                 nameVal++;
                             }
@@ -1486,16 +1594,18 @@
                 scort++;
             });
         }
-
+        var userId = "{{ $userId }}";
         //console.log(questPage);
         //保存处理
-        function save() {
+        function save(res) {
+
             var checkInfo = "";
             $(".create-form").children("div:gt(0)").each(function(item,obj){
                 var type = $(obj).attr('name');
                 var typeName = type.replace(/[^a-z]+/ig,"");
                 var num = $(obj).children("div:eq(0)").find("li").html();
-                var sum = $(".create-form").children("."+typeName).index("."+typeName);
+                var sum = $(obj).index("."+typeName);
+
                 switch(typeName){
                     case "radio" :
                         checkInfo += ",type:radio|";
@@ -1585,7 +1695,7 @@
                         $(obj).find('tbody').find("tr").each(function(key1,index1){
 
                             for(row=0;row<trSum;row++) {
-                                var val = $(index1).find("td").eq(row).find("input:checked").val();
+                                var val = $(index1).find("td").eq(row).find("input").attr('value');
                                 checkInfo += row+"."+key1+":"+val+"|";
                             }
                         });
@@ -1640,7 +1750,7 @@
                 }
             });
 
-
+            console.log(checkInfo);
             //  AJax请求 想后台传送数据
             $.ajax({
                 type: 'POST',
@@ -1648,7 +1758,7 @@
                 dataType: "json",
                 data:{
                     "checkInfo" : checkInfo,
-                    'userId' : 506,
+                    'userId' : userId,
                     'questId' : questId,
                     'page' : page1,
                     '_token':$('input[name=_token]').val(),
@@ -1659,8 +1769,10 @@
                 },
                 success : function(data) {
                     console.log(data);
+                    result = data.status;
                     if (data.status == 422) {
                         layer.alert(data.msg,{title:'错误提示',icon: 5});
+
                     } else {
                         $.each(data,function(idx,obj){
                             console.log(obj);
@@ -1679,6 +1791,50 @@
                     });*/
                 }
             });
+        }
+        var result = 0;
+        function sub() {
+
+            //询问框
+
+            layer.confirm('您确定答完题了吗？', {
+                btn: ['是','否'] //按钮
+            }, function(){
+                $.ajax({
+                    type: 'POST',
+                    url: '/home/add_user_quest',
+                    dataType: "json",
+                    data:{
+                        'userId' : userId,
+                        'questId' : questId,
+                        '_token':$('input[name=_token]').val(),
+                    },
+                    complete : function(data) {
+
+
+                    },
+                    success : function(data) {
+                        if (data != 1) {
+                            layer.alert(data.msg,{title:data,icon: 5});
+                        }
+
+                        /*oldArr = $.parseJSON(data);
+                        oldArr.forEach(function(index,item){
+                            console.log(index);
+                        });*/
+                    }
+                });
+                window.location.href = "/home/participate";
+            }, function(){
+                layer.msg('请继续作答', {
+                    time: 20000, //20s后自动关闭
+                    btn: ['OK']
+                });
+            });
+            // if ( result != 422 ) {
+            //     window.location.href = "/home/participate"
+            // }
+
         }
 
     </script>

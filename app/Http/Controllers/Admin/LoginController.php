@@ -13,7 +13,7 @@ class LoginController extends Controller
 
         if ( Auth::guard('admin') -> check() ) {
             //跳转到后台首页
-            return redirect('/admin/index');
+            return redirect('/admin/index?random='.time()."0");
         }
         return view("admin.login.index");
     }
@@ -39,7 +39,7 @@ class LoginController extends Controller
         // 判断是否成功
         if ($result) {
             // 跳转到后台页面
-            return redirect('/admin/index');
+            return redirect('/admin/index?rand='.time()."1");
         } else {
             // 跳转到登陆页面
             return redirect('/admin/login') -> withErrors([
@@ -52,7 +52,8 @@ class LoginController extends Controller
     public function logout(Request $request) {
         // 退出
         Auth::guard('admin')->logout();
+        \Session::flush();
         // 跳转到登陆页面
-        return redirect('/admin/login');
+        return redirect('/admin/login?random='.time()."2");
     }
 }

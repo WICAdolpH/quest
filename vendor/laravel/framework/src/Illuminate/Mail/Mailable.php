@@ -167,7 +167,7 @@ class Mailable implements MailableContract, Renderable
     /**
      * Render the mailable into a view.
      *
-     * @return \Illuminate\View\View
+     * @return string
      */
     public function render()
     {
@@ -461,6 +461,18 @@ class Mailable implements MailableContract, Renderable
     }
 
     /**
+     * Determine if the given recipient is set on the mailable.
+     *
+     * @param  object|array|string  $address
+     * @param  string|null  $name
+     * @return bool
+     */
+    public function hasReplyTo($address, $name = null)
+    {
+        return $this->hasRecipient($address, $name, 'replyTo');
+    }
+
+    /**
      * Set the recipients of the message.
      *
      * All recipients are stored internally as [['name' => ?, 'address' => ?]]
@@ -539,9 +551,9 @@ class Mailable implements MailableContract, Renderable
         return collect($this->{$property})->contains(function ($actual) use ($expected) {
             if (! isset($expected['name'])) {
                 return $actual['address'] == $expected['address'];
-            } else {
-                return $actual == $expected;
             }
+
+            return $actual == $expected;
         });
     }
 

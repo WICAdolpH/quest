@@ -48,6 +48,17 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin','middleware' => ['auth
     Route::get('user/detail','UserController@detail');
     //上传
     Route::post('user/webuploader', 'UploaderController@webuploader');
+    //问卷管理
+    Route::get('quest/show','QuestController@show');
+    Route::post('quest/list','QuestController@list');
+    Route::post('quest/edit','QuestController@list');
+    Route::post('quest/del','QuestController@del');
+    Route::get('quest/analysis','QuestController@questAnalysis');
+    //数据库管理
+    Route::get('backup/show','BackupController@show');
+    Route::get('backup/operate','BackupController@backup');
+    Route::get('backup/clean','BackupController@clean');
+
 });
 
 Route::group(['prefix' => 'home', 'namespace' => 'Home'],function(){
@@ -64,8 +75,10 @@ Route::group(['prefix' => 'home', 'namespace' => 'Home','middleware' => ['auth:u
 
 
     //前台首页
-    Route::get('index','IndexConTroller@index');    //  前台首页展示
-    Route::get('usecheck','UseCheckController@index'); //   这是使用页面的首页
+    Route::get('index','IndexController@index');    //  前台首页展示
+    Route::any('usecheck','UseCheckController@index'); //   这是使用页面的首页
+    Route::post('pub_status','UseCheckController@pub_status'); //   发布状态修改
+    Route::get('export_quest',"UseCheckController@export_quest"); //  导出问卷
     Route::any('createcheck','CreateCheckController@createCheck');  //这是创建调查问卷页面
     Route::any('checksave','CreateCheckController@checkSave');  //  创建出的页面保存
     Route::any('addchecksave','CreateCheckController@addCheckSave');  //页面新增保存
@@ -79,12 +92,13 @@ Route::group(['prefix' => 'home', 'namespace' => 'Home','middleware' => ['auth:u
     Route::any('create',"UseCheckController@create"); //   创建页面
     Route::any('editcheck',"UseCheckController@editCheck"); //  对已有的页面进行编辑
     //创建调查问卷页面使用的API接口
-    Route::any('addressapi','UserCheckController@addressApi');  //获取当前位置接口
+    Route::any('addressapi','UseCheckController@addressApi');  //获取当前位置接口
 
     Route::any('participate',"ParticipateCheckController@index");    //  参与调查前端页面
     Route::any('toparticiate',"ParticipateCheckController@toParticipate"); //  参与调查
     Route::any("savecheck","ParticipateCheckController@saveCheck"); //  问卷数据保存
     Route::post('passcheck','CheckDataController@passCheck'); // 问卷密码检验
+    Route::post("add_user_quest","CheckDataController@addUserQuest");    // 判断是否投过票
 });
 
 
